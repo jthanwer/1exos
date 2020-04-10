@@ -1,0 +1,24 @@
+// Contents
+div.list-item-content p {
+    display: flex;
+    padding: 0.6em 0;
+    margin: 0;
+    font-size: 1.05em;
+    &:hover {
+        font-weight: 500;
+        background-color: #F5F5F5;
+    }
+}
+
+div.list-item-content .icon {
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+div.column.is-bordered {
+  border-right: 1px dashed black;
+}
+
+.tag.card-footer-item {
+  margin: 1em;
+}

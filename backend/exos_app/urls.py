@@ -37,11 +37,17 @@ urlpatterns = [
     #########
 
     # API
-    # path('api/', include('users.urls')),
+    path('api/', include('users.urls')),
     path('api/', include('filemanager.urls')),
 
     # Entry point of the VueJS web application
-    re_path(r'^.*$', IndexTemplateView.as_view(), name='entry_point')
+    # re_path(r'^.*$', IndexTemplateView.as_view(), name='entry_point')
+    path('', IndexTemplateView.as_view(), name='entry_point')
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

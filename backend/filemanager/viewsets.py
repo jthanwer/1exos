@@ -2,6 +2,10 @@ from rest_framework import generics, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 from .serializers import ExerciceSerializer
 from .models import Exercice
@@ -14,7 +18,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
 
-    def post(self, request, format=None):
+    def create(self, request, *args, **kwargs):
         serializer = ExerciceSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

@@ -20,7 +20,7 @@ $max-size: 20;
 $positions: ("t": "top", "b": "bottom", "l": "left", "r": "right");
 $scaling: 6;
 
-@for $size from 1 through $max-size{
+@for $size from 0 through $max-size{
   .m-#{$size} {
     margin: $scaling * $size + px;
   }

@@ -41,7 +41,7 @@ export default new Router({
       component: Home,
     },
     {
-      path: "/profile",
+      path: "/mon-compte",
       name: "profile",
       component: Profile,
       // beforeEnter: ifAuthenticated

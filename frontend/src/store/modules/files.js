@@ -1,4 +1,5 @@
-import axios from "axios";
+import api from "@/services/api";
+import filesService from "@/services/filesService";
 
 const state = {
   rowData: []
@@ -18,9 +19,10 @@ const mutations = {
 
 const actions = {
   loadFiles({ commit }) {
-    axios.get('api/files/')
+    // axios.get('api/files/')
+    filesService.getFiles()
       .then(data => {
-        let rowData = data.data.results
+        let rowData = data.results
         commit('SET_FILES', rowData)
       })
       .catch(error => {
@@ -28,32 +30,34 @@ const actions = {
       })
   },
   postFile({ dispatch, commit }, newFile) {
-    const config = {
-      onUploadProgress(e) {
-        var percentCompleted = Math.round((e.loaded * 5000) / e.total);
-      }
-    };
-    axios.post('api/files/', newFile, config, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then(res => {
-        commit('POST_FILE', res.data)
+    filesService.postFile(newFile)
+      .then(data => {
+        commit('POST_FILE', data)
       })
       .catch(error => {
         console.log(error);
       })
   },
   deleteFile({ dispatch, commit }, file_id, data_index) {
-    axios.delete('api/files/' + file_id)
-      .then(res => {
+    filesService.deleteFile(file_id)
+      .then(data => {
         commit('DELETE_FILE', data_index)
       })
       .catch(error => {
         console.log(error)
       })
   },
+  downloadFile({ dispatch }, file) {
+    filesService.downloadFile(file.file_id)
+      .then((data) => {
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', file.name);
+        document.body.appendChild(link);
+        link.click();
+      })
+  }
 };
 
 export default {

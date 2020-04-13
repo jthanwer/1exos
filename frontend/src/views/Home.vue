@@ -38,7 +38,7 @@
           <b-button type="is-success"
                     :disabled="!drop_file"
                     expanded
-                    @click="submitFile()">
+                    @click="uploadFile()">
             Importer le fichier
           </b-button>
         </section>
@@ -66,6 +66,13 @@
                           size="is-medium"
                           @click.native.stop="deleteFile(file.file_id, index)" />
               </a>
+
+              <a class="card-header-icon">
+                <b-button icon-left="download"
+                          type="is-light"
+                          size="is-medium"
+                          @click.native.stop="downloadFile(file)" />
+              </a>
             </div>
 
           </b-collapse>
@@ -92,7 +99,7 @@ export default {
     ...mapState('files', ['rowData'])
   },
   methods: {
-    submitFile() {
+    uploadFile() {
       if (this.drop_file) {
         if (this.drop_file.size < 5 * 1024 * 1024) {
           const fd = new FormData()
@@ -112,6 +119,9 @@ export default {
     },
     deleteFile(file_id, data_index) {
       this.$store.dispatch('files/deleteFile', file_id, data_index)
+    },
+    downloadFile(file) {
+      this.$store.dispatch('files/downloadFile', file)
     }
   },
 }

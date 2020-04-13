@@ -1,5 +1,5 @@
 import api from "@/services/api";
-import authenticationService from "@/services/authenticationService";
+import usersService from "@/services/usersService";
 import axios from "axios";
 
 const state = {
@@ -31,13 +31,12 @@ const mutations = {
 const actions = {
   authRequest({ commit }, user) {
     return new Promise((resolve, reject) => {
-      authenticationService
+      usersService
         .authenticate(user)
         .then(data => {
           const token = data.access;
           localStorage.setItem("user-token", token);
           api.defaults.headers["Authorization"] = "Bearer " + token;
-          console.log(api);
           commit("AUTH_SUCCESS", token);
           resolve(data);
         })

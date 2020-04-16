@@ -8,17 +8,18 @@
   </header>
   <div class="content">
     <section class="card-content">
-      <form @submit.prevent="validate">
-        <b-field label="Laboratoire d'affiliation">
-          <b-checkbox v-model="nolab">
-            Aucune affililation
-          </b-checkbox>
+      <form @submit.prevent="validate()">
+        <b-field label="Nom d'utilisateur">
+          <b-input v-model="form.username"
+                   type="text"
+                   placeholder="">
+          </b-input>
         </b-field>
 
         <b-field label="Adresse e-mail">
           <b-input v-model="form.email"
                    type="email"
-                   placeholder="Example@lsce.ipsl.fr">
+                   placeholder="Example@domaine.fr">
           </b-input>
         </b-field>
 
@@ -59,6 +60,7 @@ export default {
   data() {
     return {
       form: {
+        username: null,
         email: null,
         password1: null,
         password2: null,
@@ -69,16 +71,15 @@ export default {
   },
   methods: {
     validate() {
-      let endpoint = '/api/auth/registration/';
       this.form.email = this.form.email.toLowerCase();
+      let username = this.form.username;
       let email = this.form.email;
       let password = this.form.password1;
-      this.$http(endpoint, 'POST', this.form)
-        .then(() => {
-          return this.$store.dispatch('authentication/authRequest', { email, password })
-        }).then(() => {
-          this.$router.push('/');
-        }).catch(() => {
+      this.$store.dispatch("authentication/registerUser", { username, email, password })
+        .then(res => {
+          this.$router.push('/')
+        }).catch(err => {
+          console.log(err)
           this.error = true;
         })
     },

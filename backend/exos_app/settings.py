@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'webpack_loader',
+    'corsheaders',
 
     'rest_framework',
     'users',
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -166,6 +168,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+# Simple-JWT Authentication
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
@@ -176,7 +179,7 @@ SIMPLE_JWT = {
 }
 
 
-# webpack
+# Webpack-loader
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'dist/',
@@ -184,7 +187,10 @@ WEBPACK_LOADER = {
     }
 }
 
-# whitenoise and dj_database_url if production
+# django-cors-headers
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Whitenoise and dj_database_url if production
 if os.environ.get('ENV') == 'PRODUCTION':
     # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     db_from_env = dj_database_url.config(conn_max_age=500)

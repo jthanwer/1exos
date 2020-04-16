@@ -6,9 +6,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, action
 
+import stripe
+
 from .models import CustomUser
 from .serializers import RegistrationSerializer, UserSerializer, \
-    PasswordSerializer, UpdateUserSerializer
+    PasswordSerializer, UpdateUserSerializer, PaymentIntentSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -22,6 +24,8 @@ class UserViewSet(viewsets.ModelViewSet):
             return UpdateUserSerializer
         elif self.action == 'set_password':
             return PasswordSerializer
+        elif self.action == 'client_secret':
+            return PaymentIntentSerializer
         else:
             return UserSerializer
 
@@ -61,6 +65,14 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
+    @action(detail=False, methods=['post'])
+    def client_secret(self, request, pk=None):
+        stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
+        serializer = PaymentIntentSerializer(data=request.data)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            intent = stripe.PaymentIntent.create(**serializer.validated_data)
+            return Response(intent)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)

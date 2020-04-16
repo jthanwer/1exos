@@ -45,7 +45,7 @@ html {
   flex-direction: column;
   min-height: 1000px;
   margin-top: 0px;
-  padding-top: 0px;
+  padding-top: 50px;
 }
 
 .fade-enter-active,

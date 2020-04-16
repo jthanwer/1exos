@@ -61,17 +61,17 @@
               </div>
 
               <a class="card-header-icon">
-                <b-button icon-left="delete"
+                <b-button icon-right="delete"
                           type="is-light"
                           size="is-medium"
                           @click.native.stop="deleteFile(file.file_id, index)" />
               </a>
 
               <a class="card-header-icon">
-                <b-button icon-left="download"
+                <b-button icon-right="arrow-right-drop-circle"
                           type="is-light"
                           size="is-medium"
-                          @click.native.stop="downloadFile(file)" />
+                          @click.native.stop="$router.push({name: 'exercice', params: {file_id: file.file_id}})" />
               </a>
             </div>
 
@@ -106,15 +106,12 @@ export default {
           fd.append('file', this.drop_file)
           this.$store.dispatch('files/postFile', fd)
             .then(() => {
-              alert("Le fichier a été importé")
               this.drop_file = null
             })
             .catch(err => alert("Problème d'importation"))
         } else {
           alert("La taille du fichier ne doit pas excéder 5MB")
         }
-      } else {
-        alert("Aucun fichier sélectionné")
       }
     },
     deleteFile(file_id, data_index) {
@@ -122,7 +119,7 @@ export default {
     },
     downloadFile(file) {
       this.$store.dispatch('files/downloadFile', file)
-    }
+    },
   },
 }
 </script>

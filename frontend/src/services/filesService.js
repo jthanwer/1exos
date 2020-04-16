@@ -5,6 +5,10 @@ export default {
     return api.get('files/')
       .then(response => response.data);
   },
+  getFile(id) {
+    return api.get(`files/${id}/`)
+      .then(response => response.data);
+  },
   postFile(file) {
     const config = {
       onUploadProgress(e) {

@@ -6,7 +6,12 @@ export default {
       .then(response => response.data);
   },
   register(user) {
-    return api.post("auth/users/", user)
+    return api.post("users/", user)
       .then(response => response.data);
+  },
+  getClientSecret(payload) {
+    console.log(payload);
+    return api.post("users/client_secret/", payload)
+      .then(response => response.data)
   }
 };

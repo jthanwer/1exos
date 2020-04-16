@@ -1,6 +1,5 @@
 import api from "@/services/api";
 import usersService from "@/services/usersService";
-import axios from "axios";
 
 const state = {
   token: localStorage.getItem("user-token") || "",
@@ -29,10 +28,21 @@ const mutations = {
 };
 
 const actions = {
+  registerUser({ commit, dispatch }, user) {
+    return new Promise((resolve, reject) => {
+      usersService.register(user)
+        .then(data => {
+          dispatch("authRequest", user)
+          resolve(data)
+        })
+        .catch(err => {
+          reject(err)
+        });
+    });
+  },
   authRequest({ commit }, user) {
     return new Promise((resolve, reject) => {
-      usersService
-        .authenticate(user)
+      usersService.authenticate(user)
         .then(data => {
           const token = data.access;
           localStorage.setItem("user-token", token);

@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import usersService from "@/services/usersService"
 export default {
   name: "Profile",
   data() {
@@ -20,10 +19,4 @@ export default {
 </script>
 
 <style scoped>
-.form-inline {
-  font-size: 1.25rem;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-}
 </style>

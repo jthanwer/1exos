@@ -59,3 +59,15 @@ class UpdateUserSerializer(serializers.Serializer):
             raise serializers.ValidationError(error)
 
 
+class PaymentIntentSerializer(serializers.Serializer):
+    amount = serializers.FloatField()
+    currency = serializers.CharField(max_length=3)
+
+    def validate_amount(self, value):
+        if value < 0.50:
+            error = 'Le montant doit être supérieur à 50cts'
+            raise serializers.ValidationError(error)
+        return int(value * 100)
+
+
+

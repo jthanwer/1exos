@@ -12,25 +12,6 @@ $primary-invert: findColorInvert($primary);
 $secondary: #A13C50;
 $secondary-invert: findColorInvert($secondary);
 
-$distance: #2C7ED5;
-$distance-invert: findColorInvert($info);
-$carbon: #FF9800;
-$carbon-invert: findColorInvert($carbon);
-$round: #388E3C;
-$round-invert: findColorInvert($round);
-$carbon-distance: #388E3C;
-$carbon-distance-invert: findColorInvert($carbon-distance);
-
-$airplanetrans: #9F4163;
-$airplanetrans-invert: findColorInvert($airplanetrans);
-$cartrans: #964D83;
-$cartrans-invert: findColorInvert($cartrans);
-$traintrans: #7C5693;
-$traintrans-invert: findColorInvert($traintrans);
-$publictrans: #636CAD;
-$publictrans-invert: findColorInvert($publictrans);
-$lighttrans: #2F79B5;
-$lighttrans-invert: findColorInvert($lighttrans);
 
 // Setup $colors to use as bulma classes
 $colors: (
@@ -43,17 +24,6 @@ $colors: (
     "success": ($success, $success-invert),
     "warning": ($warning, $warning-invert),
     "danger": ($danger, $danger-invert),
-
-    "distance": ($distance, $distance-invert),
-    "carbon": ($carbon, $carbon-invert),
-    "round": ($round, $round-invert),
-    "carbon-distance": ($carbon-distance, $carbon-distance-invert),
-
-    "airplanetrans": ($airplanetrans, $airplanetrans-invert),
-    "traintrans": ($traintrans, $traintrans-invert),
-    "cartrans": ($cartrans, $cartrans-invert),
-    "publictrans": ($publictrans, $publictrans-invert),
-    "lighttrans": ($lighttrans, $lighttrans-invert),
 );
 
 // Links
@@ -72,7 +42,6 @@ $link-focus-border: $primary;
 @import 'partials/modals';
 @import 'partials/forms';
 @import 'partials/cards';
-@import 'partials/buttons';
 
 @import 'partials/profile';
 @import 'partials/contents';

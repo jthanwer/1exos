@@ -1,6 +1,6 @@
 <template>
 <div class="card"
-     style="width: 30%; margin: auto; margin-top: 130px;">
+     style="width: 30%; margin: auto">
   <header class="card-header">
     <p class="card-header-title is-centered has-background-primary has-text-white">
       Créer un compte

@@ -1,34 +1,42 @@
 import api from "@/services/api";
 
 export default {
-  getFiles() {
-    return api.get('files/')
+  getAllExercices() {
+    return api.get('exercices/')
       .then(response => response.data);
   },
-  getFile(id) {
-    return api.get(`files/${id}/`)
+  getMyExercices() {
+    return api.get('exercices/my_exercices/')
       .then(response => response.data);
   },
-  postFile(file) {
+  searchExercices(text_query) {
+    return api.get(`exercices/?search=${text_query}`)
+      .then(response => response.data);
+  },
+  postExercice(file) {
     const config = {
       onUploadProgress(e) {
         var percentCompleted = Math.round((e.loaded * 5000) / e.total);
       }
     }
-    return api.post('files/', file, config, {
+    return api.post('exercices/', file, config, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
       .then(response => response.data);
   },
-  deleteFile(id) {
-    return api.delete(`files/${id}/`)
+  getExercice(id) {
+    return api.get(`exercices/${id}/`)
+      .then(response => response.data);
+  },
+  deleteExercice(id) {
+    return api.delete(`exercices/${id}/`)
       .then(response => response.data);
   },
   downloadFile(id) {
     return api({
-        url: `files/${id}/download/`,
+        url: `exercices/${id}/download/`,
         method: 'GET',
         responseType: 'blob'
       })

@@ -29,8 +29,8 @@
         Problème d'authentification
       </div>
     </form>
-    <div class="card-footer-item mt-3 has-text-centered">
-      Vous n'avez pas encore de compte ?
+    <div class="mt-3 has-text-centered">
+      <span class="has-text-black">Vous n'avez pas encore de compte ?</span>
       <router-link class="pl-1"
                    :to="{ name: 'register' }">
         <span @click="$parent.close()">Créez-en un ici</span>

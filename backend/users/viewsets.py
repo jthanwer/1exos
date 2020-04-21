@@ -1,21 +1,26 @@
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated, \
+    IsAdminUser
 from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, action
 
 import stripe
 
 from .models import CustomUser
+from .permissions import IsAdminOrIsSelf
 from .serializers import RegistrationSerializer, UserSerializer, \
     PasswordSerializer, UpdateUserSerializer, PaymentIntentSerializer
+
+from django.contrib.auth.forms import PasswordResetForm
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    permission_classes = (AllowAny,)
+    search_fields = ['username']
+    filter_backends = (filters.SearchFilter,)
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -28,6 +33,18 @@ class UserViewSet(viewsets.ModelViewSet):
             return PaymentIntentSerializer
         else:
             return UserSerializer
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'set_password']:
+            # permission_classes = [IsAdminOrIsSelf]
+            permission_classes = [AllowAny]
+        elif self.action == 'list':
+            # permission_classes = [IsAdminUser]
+            permission_classes = [AllowAny]
+        else:
+            # permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         serializer = RegistrationSerializer(data=request.data)
@@ -65,14 +82,26 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False)
+    def my_profile(self, request):
+        user = request.user
+        if user.is_authenticated:
+            serializer = UserSerializer(request.user)
+            return Response(serializer.data,
+                            status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     @action(detail=False, methods=['post'])
-    def client_secret(self, request, pk=None):
+    def client_secret(self, request):
         stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
         serializer = PaymentIntentSerializer(data=request.data)
         if serializer.is_valid():
-            print(serializer.validated_data)
             intent = stripe.PaymentIntent.create(**serializer.validated_data)
             return Response(intent)
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+
+

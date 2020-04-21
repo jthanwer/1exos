@@ -1,4 +1,4 @@
-from rest_framework import generics, status, viewsets, renderers
+from rest_framework import generics, status, viewsets, renderers, filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -23,9 +23,20 @@ class PassthroughRenderer(renderers.BaseRenderer):
 class ExerciceViewSet(viewsets.ModelViewSet):
     queryset = Exercice.objects.all()
     serializer_class = ExerciceSerializer
+    search_fields = ['file']
+    filter_backends = (filters.SearchFilter,)
 
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # name_file = serializer.validated_data['file'].name
+        # extension = name_file.split('.')[-1]
+        # serializer.validated_data['file'].name = 'Exercice.' + extension
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -45,5 +56,17 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 
         return response
 
+    @action(methods=['get'], detail=False, permission_classes=[AllowAny])
+    def my_exercices(self, request):
+        user = request.user
+        queryset = Exercice.objects.filter(user=user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 

@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from users.models import CustomUser
+from .models import CustomUser
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ('pk', 'username', 'email', 'moneybox')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -17,13 +24,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
         user = CustomUser.objects.create_user(**cleaned_data)
         return user
-
-
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CustomUser
-        fields = ('pk', 'username', 'email')
 
 
 class PasswordSerializer(serializers.Serializer):
@@ -67,6 +67,7 @@ class PaymentIntentSerializer(serializers.Serializer):
         if value < 0.50:
             error = 'Le montant doit être supérieur à 50cts'
             raise serializers.ValidationError(error)
+        # Convert the given value into cents for Stripe
         return int(value * 100)
 
 

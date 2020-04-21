@@ -4,7 +4,9 @@
   <div class="app-container">
     <transition name="fade"
                 mode='out-in'>
-      <router-view />
+      <keep-alive include="search">
+        <router-view />
+      </keep-alive>
     </transition>
   </div>
   <footer class="footer has-background-primary"
@@ -23,6 +25,9 @@ export default {
   name: "App",
   components: {
     NavbarComponent,
+  },
+  created() {
+    this.$store.dispatch('authentication/getProfileUser')
   }
 }
 </script>

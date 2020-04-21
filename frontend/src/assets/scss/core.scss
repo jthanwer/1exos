@@ -31,12 +31,6 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
-// Tabs
-#subsection-tabs .tab-content{
-  height: 1000px;
-  overflow: scroll;
-}
-
 // Partials scss
 @import 'partials/navbar';
 @import 'partials/modals';
@@ -47,6 +41,7 @@ $link-focus-border: $primary;
 @import 'partials/contents';
 
 @import 'partials/helpers';
+@import 'partials/transitions';
 
 // Import Bulma and Buefy styles
 @import "~bulma";

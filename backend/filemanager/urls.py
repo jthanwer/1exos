@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .viewsets import ExerciceViewSet
 
 router = DefaultRouter()
-router.register(r'files', ExerciceViewSet, base_name='data')
+router.register(r'exercices', ExerciceViewSet, base_name='data')
 
 urlpatterns = [
     path('', include(router.urls))

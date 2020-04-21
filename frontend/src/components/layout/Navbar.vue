@@ -1,10 +1,18 @@
 <template>
-<b-navbar id="main-navbar"
+<b-navbar type="is-primary"
           shadow>
   <template slot="brand">
-    <b-navbar-item class="is-size-4"
-                   tag="router-link"
+    <b-navbar-item tag="router-link"
                    :to="{ name: 'home' }">
+      <img src="~@/assets/images/logo_void.png"
+           alt="1exo">
+    </b-navbar-item>
+  </template>
+  <template slot="start"
+            v-if="user">
+    <b-navbar-item tag="div"
+                   class="ml-10 has-text-weight-bold">
+      Bonjour {{user.username}}
     </b-navbar-item>
   </template>
   <template slot="end">
@@ -12,13 +20,17 @@
                    :key="item.title"
                    tag="router-link"
                    :to="{ name: item.path }">
-      <span class="is-uppercase is-size-5">{{item.title}}</span>
+      <b-icon class="mr-1"
+              :icon="item.icon"></b-icon>
+      <span class="is-uppercase is-size-6">{{item.title}}</span>
     </b-navbar-item>
     <b-navbar-dropdown v-if="isAuthenticated"
                        right
                        hoverable
-                       class="is-size-5">
+                       class="is-size-6">
       <template slot="label">
+        <b-icon class="mr-1"
+                icon="account"></b-icon>
         <span class="is-uppercase">Profil</span>
       </template>
       <b-navbar-item tag="router-link"
@@ -26,15 +38,25 @@
         Mon profil
       </b-navbar-item>
       <b-navbar-item tag="router-link"
-                     :to="{ name: 'recharge' }">
-        Recharger mon compte
+                     :to="{ name: 'moneybox' }">
+        Ma tirelire
       </b-navbar-item>
+      <b-navbar-item tag="router-link"
+                     :to="{ name: 'mes-exercices' }">
+        Mes exercices
+      </b-navbar-item>
+      <b-navbar-item tag="router-link"
+                     :to="{ name: 'mes-exercices' }">
+        Mes corrections
+      </b-navbar-item>
+      <hr class="navbar-divider">
       <b-navbar-item @click="logout"> Se déconnecter </b-navbar-item>
     </b-navbar-dropdown>
     <b-navbar-item v-if="!isAuthenticated"
                    tag="div">
       <b-button icon-left="account"
                 type="is-primary"
+                inverted
                 @click="loginModal = true">
         Se connecter
       </b-button>
@@ -49,6 +71,15 @@
       </b-modal>
       </div>
     </b-navbar-item>
+    <b-navbar-item v-if="isAuthenticated && user"
+                   tag="div">
+      <b-button type="is-primary"
+                @click="$router.push({ name: 'moneybox' })"
+                inverted>
+        {{user.moneybox}} €
+      </b-button>
+      </div>
+    </b-navbar-item>
 
   </template>
 </b-navbar>
@@ -56,7 +87,7 @@
 
 <script>
 import AuthModal from '@/components/layout/AuthModal.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: "NavbarComponent",
   components: {
@@ -70,19 +101,24 @@ export default {
         {
           title: 'Accueil',
           path: 'home',
-        },
-      ],
-      items_profil: [{
-          title: 'Mon profil'
+          icon: 'home'
         },
         {
-          title: 'Se déconnecter'
-        }
+          title: 'Rechercher un exo',
+          path: 'search',
+          icon: 'magnify'
+        },
+        {
+          title: 'Poster un énoncé',
+          path: 'submit',
+          icon: 'upload'
+        },
       ],
     }
   },
   computed: {
-    ...mapGetters('authentication', ['isAuthenticated']),
+    ...mapGetters('authentication', ['isAuthenticated', '']),
+    ...mapState('authentication', ['user'])
   },
   methods: {
     logout() {

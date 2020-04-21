@@ -3,15 +3,19 @@ import usersService from "@/services/usersService";
 
 const state = {
   token: localStorage.getItem("user-token") || "",
-  status: ""
+  status: "",
+  user: null
 };
 
 const getters = {
   isAuthenticated: state => !!state.token,
-  authStatus: station => state.status
+  authStatus: state => state.status
 };
 
 const mutations = {
+  SET_USER(state, user) {
+    state.user = user;
+  },
   AUTH_REQUEST(state) {
     state.status = "loading";
   },
@@ -40,7 +44,7 @@ const actions = {
         });
     });
   },
-  authRequest({ commit }, user) {
+  authRequest({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
       usersService.authenticate(user)
         .then(data => {
@@ -48,6 +52,7 @@ const actions = {
           localStorage.setItem("user-token", token);
           api.defaults.headers["Authorization"] = "Bearer " + token;
           commit("AUTH_SUCCESS", token);
+          dispatch("getProfileUser")
           resolve(data);
         })
         .catch(err => {
@@ -64,6 +69,13 @@ const actions = {
       localStorage.removeItem("user-token");
       resolve();
     });
+  },
+  getProfileUser({ commit }) {
+    usersService.getProfileUser()
+      .then(data => {
+        console.log(data);
+        commit("SET_USER", data);
+      })
   }
 };
 

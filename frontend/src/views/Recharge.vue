@@ -1,7 +1,7 @@
 <template>
 <div class="container">
   <header class="modal-card-head">
-    <p class="modal-card-title">Rechargez votre compte</p>
+    <p class="modal-card-title">Recharger mon compte</p>
   </header>
   <section class="modal-card-body">
     <form @submit.prevent="recharge()">
@@ -20,6 +20,12 @@
              class="m-3"
              ref="card-number"></div>
       </b-field>
+
+      <!-- <label>
+        <span>Card</span>
+        <div ref="card-number"
+             class="field"></div>
+      </label> -->
 
       <b-field grouped>
         <b-field label="Nom (sur la carte bancaire)">
@@ -60,6 +66,20 @@ import { mapState } from 'vuex';
 import usersService from '@/services/usersService';
 let stripe = Stripe('pk_test_IXadVylpLM9tE8ENmliIkZHB00vhacO7Tu')
 
+var styles = {
+  base: {
+    iconColor: '#F99A52',
+    color: '#32315E',
+    lineHeight: '48px',
+    fontWeight: 400,
+    fontFamily: '"Open Sans", "Helvetica Neue", "Helvetica", sans-serif',
+    fontSize: '15px',
+
+    '::placeholder': {
+      color: '#CFD7DF',
+    }
+  },
+}
 
 export default {
   name: "Recharge",
@@ -78,9 +98,9 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('files/loadFiles')
+    this.$store.dispatch('exercices/loadFiles')
     var elements = stripe.elements()
-    this.card_number = elements.create('cardNumber')
+    this.card_number = elements.create('cardNumber', { style: styles })
     this.card_expiry = elements.create('cardExpiry')
     this.card_cvc = elements.create('cardCvc')
     this.card_number.mount(this.$refs['card-number']);
@@ -120,7 +140,8 @@ export default {
             console.log(result.error.message);
           } else {
             if (result.paymentIntent.status === 'succeeded') {
-              alert('success')
+              console.log(result)
+              alert('Le paiement a bien été effectué. Votre tirelire a été créditée.')
             }
           }
         });
@@ -131,4 +152,10 @@ export default {
 </script>
 
 <style>
+div.StripeElement {
+  border-radius: 4px;
+  border: 1px solid #dbdbdb !important;
+  -webkit-box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+  height: 40px;
+}
 </style>

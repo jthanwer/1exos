@@ -41,5 +41,9 @@ export default {
         responseType: 'blob'
       })
       .then(response => response.data);
-  }
+  },
+  getExerciceCorrections(id) {
+    return api.get(`exercices/${id}/corrections/`)
+      .then(response => response.data);
+  },
 };

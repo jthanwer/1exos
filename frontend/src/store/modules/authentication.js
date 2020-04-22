@@ -71,14 +71,15 @@ const actions = {
     });
   },
   getProfileUser({ commit }) {
-    usersService.getProfileUser()
-      .then(data => {
-        console.log(data);
-        commit("SET_USER", data);
-      })
+    return new Promise((resolve, reject) => {
+      usersService.getProfileUser()
+        .then(data => {
+          commit("SET_USER", data);
+          resolve(data);
+        })
+    })
   }
-};
-
+}
 export default {
   namespaced: true,
   state,

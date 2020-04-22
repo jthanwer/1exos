@@ -196,6 +196,10 @@ export default {
         fd.append('file', this.drop_file)
       }
       this.$store.dispatch('exercices/postExercice', fd)
+        .then(data => {
+          console.log(data)
+          this.$router.push({ name: 'exercice', params: { id: data.id } })
+        })
         .catch(err => alert("Problème d'importation"))
     },
   },

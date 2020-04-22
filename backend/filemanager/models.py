@@ -27,6 +27,7 @@ class Correction(models.Model):
                                on_delete=models.CASCADE,
                                related_name='corrections')
     file = models.FileField(null=True, max_length=255)
+    price = models.DecimalField(max_digits=5, decimal_places=2, default=1)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

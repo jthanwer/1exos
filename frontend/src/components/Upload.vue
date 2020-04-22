@@ -12,7 +12,7 @@
             </b-icon>
           </p>
           <p>
-            <strong>Glissez votre énoncé </strong> dans cette zone <br>
+            <strong>Glissez votre fichier </strong> dans cette zone <br>
             ou <br>
             <strong>Cliquez dessus</strong> pour choisir le fichier à importer
           </p>

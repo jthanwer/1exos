@@ -22,17 +22,39 @@ $scaling: 6;
 
 @for $size from 0 through $max-size{
   .m-#{$size} {
-    margin: $scaling * $size + px;
+    margin: $scaling * $size + px !important;
   }
   .p-#{$size} {
-    padding: $scaling * $size + px;
+    padding: $scaling * $size + px !important;
+  }
+  .mx-#{$size} {
+    margin-left: $scaling * $size + px !important;
+    margin-right: $scaling * $size + px !important;
+  }
+  .px-#{$size} {
+    padding-left: $scaling * $size + px !important;
+    padding-right: $scaling * $size + px !important;
+  }
+  .my-#{$size} {
+    margin-top: $scaling * $size + px !important;
+    margin-bottom: $scaling * $size + px !important;
+  }
+  .py-#{$size} {
+    padding-top: $scaling * $size + px !important;
+    padding-bottom: $scaling * $size + px !important;
+  }
+  .pa-#{$size} {
+    padding: $scaling * $size + px !important;
+  }
+  .ma-#{$size} {
+    margin: $scaling * $size + px !important;
   }
   @each $pos, $position in $positions {
     .m#{$pos}-#{$size} {
-       margin-#{$position}: $scaling * $size + px;;
+       margin-#{$position}: $scaling * $size + px !important;
     }
     .p#{$pos}-#{$size} {
-       padding-#{$position}: $scaling * $size + px;;
+       padding-#{$position}: $scaling * $size + px !important;
     }
   }
 }

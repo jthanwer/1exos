@@ -2,9 +2,9 @@
 <div class="container is-fluid">
   <div class="columns">
     <div class="column is-6">
-      <div v-for="(exo, index) in myExercices"
+      <div v-for="(correc, index) in myCorrections"
            class="mb-2"
-           :key="exo.id">
+           :key="correc.id">
 
         <b-collapse class="card"
                     aria-id="contentId">
@@ -15,21 +15,21 @@
                aria-controls="contentId">
 
             <div class="card-header-title is-size-5">
-              <span>{{exo.name}}</span>
+              <span>{{correc.name}}</span>
             </div>
 
             <a class="card-header-icon">
               <b-button icon-right="delete"
                         type="is-light"
                         size="is-medium"
-                        @click.native.stop="deleteExercice(exo.id, index)" />
+                        @click.native.stop="deleteCorrection(correc.id, index)" />
             </a>
 
             <a class="card-header-icon">
               <b-button icon-right="arrow-right-drop-circle"
                         type="is-light"
                         size="is-medium"
-                        @click.native.stop="$router.push({name: 'exercice', params: {id: exo.id}})" />
+                        @click.native.stop="$router.push({name: 'correction', params: {id: correc.id}})" />
             </a>
           </div>
         </b-collapse>
@@ -41,22 +41,22 @@
 </template>
 
 <script>
-import exercicesService from '@/services/exercicesService'
+import correctionsService from '@/services/correctionsService'
 import { mapState } from 'vuex'
 export default {
-  name: 'MyExercices',
+  name: 'MyCorrections',
   data() {
     return {}
   },
   mounted() {
-    this.$store.dispatch('exercices/loadMyExercices')
+    this.$store.dispatch('corrections/loadMyCorrections')
   },
   computed: {
-    ...mapState('exercices', ['myExercices'])
+    ...mapState('corrections', ['myCorrections'])
   },
   methods: {
-    deleteExercice(id, data_index) {
-      this.$store.dispatch('exercices/deleteExercice', { id, data_index })
+    deleteCorrection(id, data_index) {
+      this.$store.dispatch('corrections/deleteCorrection', { id, data_index })
     },
   },
 }

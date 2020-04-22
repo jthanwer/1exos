@@ -19,7 +19,6 @@ const mutations = {
 
 const actions = {
   loadMyExercices({ commit }) {
-    // axios.get('api/files/')
     exercicesService.getMyExercices()
       .then(data => {
         let myExercices = data.results
@@ -30,13 +29,16 @@ const actions = {
       })
   },
   postExercice({ dispatch, commit }, newExercice) {
-    exercicesService.postExercice(newExercice)
-      .then(data => {
-        commit('POST_EXERCICE', data)
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    return new Promise((resolve, reject) => {
+      exercicesService.postExercice(newExercice)
+        .then(data => {
+          commit('POST_EXERCICE', data)
+          resolve(data)
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    });
   },
   deleteExercice({ dispatch, commit }, payload) {
     exercicesService.deleteExercice(payload.id)
@@ -53,7 +55,7 @@ const actions = {
         const url = window.URL.createObjectURL(new Blob([data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', data.name);
+        link.setAttribute('download', exo.name);
         document.body.appendChild(link);
         link.click();
       })

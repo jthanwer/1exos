@@ -16,5 +16,9 @@ export default {
   getClientSecret(payload) {
     return api.post("users/client_secret/", payload)
       .then(response => response.data)
+  },
+  validatePayment(payload) {
+    return api.post("users/validate_payment/", payload)
+      .then(response => response.data)
   }
 };

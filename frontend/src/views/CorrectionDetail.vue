@@ -1,18 +1,18 @@
 <template>
 <div class="container is-fluid">
   <!-- <div class="has-text-centered"> -->
-  <!-- <p class="title is-2">Exercice {{id}}</p> -->
+  <!-- <p class="title is-2">Correction {{id}}</p> -->
   <!-- </div> -->
   <div class="mt-2"></div>
   <div class="columns">
     <div class="column is-6">
-      <div v-if="exo">
-        <div v-if="exo.file">
-          <div class="exo-container"
-               v-if="['png', 'jpg', 'jpeg'].includes(exo.filetype)">
-            <img :src="exo.file">
+      <div v-if="correc">
+        <div v-if="correc.file">
+          <div class="correc-container"
+               v-if="['png', 'jpg', 'jpeg'].includes(correc.filetype)">
+            <img :src="correc.file">
           </div>
-          <div v-else-if="exo.filetype == 'pdf'">
+          <div v-else-if="correc.filetype == 'pdf'">
             <div class="field is-grouped is-grouped-centered">
               <div class="control">
                 <b-button @click="rotate -= 90"
@@ -51,8 +51,8 @@
             </div>
 
             <pdf ref="pdf"
-                 class="exo-container"
-                 :src="exo.file"
+                 class="correc-container"
+                 :src="correc.file"
                  :page="page"
                  :rotate="rotate"
                  @progress="loadedRatio = $event"
@@ -60,12 +60,12 @@
           </div>
         </div>
         <div v-else
-             class="exo-info pa-9 has-text-centered">
+             class="correc-info pa-9 has-text-centered">
           <div class="level">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Manuel</p>
-                <p class="title is-5">{{exo.manuel}}</p>
+                <p class="title is-5">{{correc.enonce.manuel}}</p>
               </div>
             </div>
           </div>
@@ -73,13 +73,13 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Page</p>
-                <p class="title is-5">{{exo.num_page}}</p>
+                <p class="title is-5">{{correc.enonce.num_page}}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Numéro</p>
-                <p class="title is-5">{{exo.num_exo}}</p>
+                <p class="title is-5">{{correc.enonce.num_correc}}</p>
               </div>
             </div>
           </div>
@@ -88,88 +88,47 @@
     </div>
 
     <div class="column is-5 is-offset-1">
-      <div class="exo-info pa-9 has-text-centered">
-        <div v-if="exo">
+      <div class="correc-info pa-9 mb-8 has-text-centered">
+        <div v-if="correc">
           <div class="columns is-centered is-multiline">
             <div class="column is-6 has-text-centered">
               <p class="heading">Ajouté par</p>
-              <p class="title is-5">{{exo.user}}</p>
+              <p class="title is-5">{{correc.user}}</p>
             </div>
             <div class="column is-6 has-text-centered">
               <p class="heading">Le</p>
-              <p class="title is-5">{{exo.date_created | dateFormatter}}</p>
-            </div>
-            <div class="column is-12 has-text-centered mt-6">
-              <p class="heading">Catégorie</p>
-              <p class="title is-5">{{exo.category}}</p>
-            </div>
-            <div class="column is-6 has-text-centered">
-              <p class="heading">Niveau</p>
-              <p class="title is-5">{{classes[exo.classe]}}</p>
-            </div>
-            <div class="column is-6 has-text-centered">
-              <p class="heading">Difficulté</p>
-              <b-rate v-model="mark"
-                      style="justify-content: center;"
-                      :max="5"
-                      :disabled="true"></b-rate>
+              <p class="title is-5">{{correc.date_created | dateFormatter}}</p>
             </div>
           </div>
-          <div>
-            <b-button v-if="exo.file"
-                      class="mt-6"
+        </div>
+      </div>
+      <div class="correc-info pa-9 has-text-centered">
+        <div v-if="correc">
+          <div v-if="correc.enonce.manuel"
+               class="columns is-centered is-multiline">
+            <div class="column is-12 has-text-centered">
+              <p class="heading">Manuel</p>
+              <p class="title is-5">{{correc.enonce.manuel}}</p>
+            </div>
+            <div class="column is-6 has-text-centered">
+              <p class="heading">Page</p>
+              <p class="title is-5">{{correc.enonce.num_page}}</p>
+            </div>
+            <div class="column is-6 has-text-centered">
+              <p class="heading">Numéro</p>
+              <p class="title is-5">{{correc.enonce.num_exo}}</p>
+            </div>
+          </div>
+          <div v-else>
+            <b-button class="mt-6"
                       type="is-primary"
                       expanded
-                      icon-left="download"
-                      @click="downloadFile()">
-              Télécharger l'énoncé
+                      icon-left="book-open-page-variant"
+                      @click="$router.push({name: 'exercice', params: {id: correc.enonce.id}})">
+              Voir l'énoncé associé
             </b-button>
           </div>
         </div>
-      </div>
-      <div>
-        <div v-if="exo">
-          <b-button class="mt-6"
-                    expanded
-                    size="is-large"
-                    type="is-secondary"
-                    icon-left="lock-open"
-                    @click="$router.push({name: 'exo-corrections', params: {id: exo.id}})">
-            Accéder aux corrections
-          </b-button>
-        </div>
-        <b-button class="
-                    mt-6"
-                  expanded
-                  type="is-success"
-                  size="is-large"
-                  icon-left="upload"
-                  @click="modal_correction = !modal_correction">
-          Soumettre une correction
-        </b-button>
-      </div>
-      <div class="mt-8">
-        <b-modal :active.sync="modal_correction"
-                 has-modal-card
-                 trap-focus
-                 aria-role="dialog"
-                 aria-modal>
-          <div class="modal-card"
-               style="width: auto">
-            <header class="modal-card-head">
-              <p class="modal-card-title">Soumettre une correction</p>
-            </header>
-            <div class="modal-card-body">
-              <Upload v-model="correction_file" />
-              <b-button class="my-2"
-                        expanded
-                        type="is-primary"
-                        @click="submitCorrection()">
-                Soumettre
-              </b-button>
-            </div>
-          </div>
-        </b-modal>
       </div>
     </div>
   </div>
@@ -181,9 +140,9 @@
 import pdf from 'vue-pdf'
 import Upload from '@/components/Upload.vue'
 import classes from '@/data/classes.json'
-import exercicesService from "@/services/exercicesService"
+import correctionsService from "@/services/correctionsService"
 export default {
-  name: "ExerciceDetail",
+  name: "CorrectionDetail",
   components: {
     pdf,
     Upload
@@ -194,7 +153,8 @@ export default {
   data() {
     return {
       classes: classes,
-      exo: null,
+      correc: null,
+      correction_bought: false,
       modal_correction: false,
       correction_file: null,
 
@@ -206,16 +166,16 @@ export default {
     }
   },
   created() {
-    exercicesService.getExercice(this.id)
+    correctionsService.getCorrection(this.id)
       .then(data => {
-        this.exo = data
+        this.correc = data
       })
   },
   methods: {
     submitCorrection() {
       if (this.correction_file) {
         const fd = new FormData()
-        fd.append('enonce_id', this.exo.id)
+        fd.append('enonce_id', this.correc.id)
         fd.append('file', this.correction_file)
         console.log(this.correction_file)
         this.$store.dispatch('corrections/postCorrection', fd)
@@ -228,7 +188,7 @@ export default {
       }
     },
     downloadFile() {
-      this.$store.dispatch('exercices/downloadFile', this.exo)
+      this.$store.dispatch('corrections/downloadFile', this.correc)
     },
   },
 }
@@ -243,11 +203,11 @@ export default {
   width: 250px;
 }
 
-.exo-container {
+.correc-container {
   border: 2px solid black;
 }
 
-.exo-info {
+.correc-info {
   border: 2px solid black;
   background-color: white;
 }

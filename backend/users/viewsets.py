@@ -1,20 +1,17 @@
 from rest_framework import generics, status, viewsets, filters
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, \
     IsAdminUser
-from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view, action
 
 import stripe
+import decimal
 
 from .models import CustomUser
 from .permissions import IsAdminOrIsSelf
 from .serializers import RegistrationSerializer, UserSerializer, \
     PasswordSerializer, UpdateUserSerializer, PaymentIntentSerializer
-
-from django.contrib.auth.forms import PasswordResetForm
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -102,6 +99,20 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['post'])
+    def validate_payment(self, request):
+        stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
+        user = request.user
+        payload = request.data
+        payment_intent = stripe.PaymentIntent.retrieve(
+            payload['id'],
+        )
+        if payment_intent.status == "succeeded":
+            user.moneybox += decimal.Decimal(payment_intent.amount) / decimal.Decimal(100)
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_402_PAYMENT_REQUIRED)
 
 
 

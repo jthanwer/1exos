@@ -46,7 +46,7 @@
         Mes exercices
       </b-navbar-item>
       <b-navbar-item tag="router-link"
-                     :to="{ name: 'mes-exercices' }">
+                     :to="{ name: 'mes-corrections' }">
         Mes corrections
       </b-navbar-item>
       <hr class="navbar-divider">

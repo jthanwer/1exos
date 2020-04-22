@@ -6,11 +6,14 @@ import Home from "@/views/Home.vue";
 import Search from "@/views/Search.vue";
 import Submit from "@/views/Submit.vue";
 import ExerciceDetail from "@/views/ExerciceDetail.vue";
+import CorrectionDetail from "@/views/CorrectionDetail.vue";
+import ExerciceCorrections from "@/views/ExerciceCorrections.vue";
 
 import Profile from "@/views/Profile.vue";
 import MoneyBox from "@/views/MoneyBox.vue";
 import Recharge from "@/views/Recharge.vue";
 import MyExercices from "@/views/MyExercices.vue";
+import MyCorrections from "@/views/MyCorrections.vue";
 
 import Register from "@/views/Register.vue";
 import store from "@/store";
@@ -53,6 +56,18 @@ export default new Router({
       props: true
     },
     {
+      path: "/exercice/:id/corrections/",
+      name: "exo-corrections",
+      component: ExerciceCorrections,
+      props: true
+    },
+    {
+      path: "/correction/:id/",
+      name: "correction",
+      component: CorrectionDetail,
+      props: true
+    },
+    {
       path: "/rechercher-un-exo/",
       name: "search",
       component: Search,
@@ -78,6 +93,12 @@ export default new Router({
       path: "/mon-compte/mes-exercices/",
       name: "mes-exercices",
       component: MyExercices,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/mon-compte/mes-corrections/",
+      name: "mes-corrections",
+      component: MyCorrections,
       beforeEnter: ifAuthenticated
     },
     {

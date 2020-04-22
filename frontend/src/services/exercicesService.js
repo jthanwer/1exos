@@ -10,7 +10,7 @@ export default {
       .then(response => response.data);
   },
   searchExercices(text_query) {
-    return api.get(`exercices/?search=${text_query}`)
+    return api.get(`exercices/${text_query}`)
       .then(response => response.data);
   },
   postExercice(file) {

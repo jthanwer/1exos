@@ -1,38 +1,40 @@
 <template>
 <div class="container is-fluid">
-  <div class="columns">
-    <div class="column is-6">
-      <div v-for="(exo, index) in myExercices"
-           class="mb-2"
-           :key="exo.id">
+  <div class="columns is-multiline">
+    <div v-for="(exo, index) in myExercices"
+         class="column is-6"
+         :key="exo.id">
 
-        <b-collapse class="card"
-                    aria-id="contentId">
-          <div slot="trigger"
-               slot-scope="props"
-               class="card-header"
-               role="button"
-               aria-controls="contentId">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left pa-1 has-background-warning">
+              <b-icon icon="lock"></b-icon>
+            </div>
+            <div class="media-content">
+              <p>
+                <span class="title is-4">{{classes[exo.classe]}} - {{exo.category}}</span>
+              </p>
+              <span class="subtitle is-6">{{exo.manuel}} - Page {{exo.num_page}} - Exercice {{exo.num_exo}}
+              </span>
 
-            <div class="card-header-title is-size-5">
-              <span>{{exo.name}}</span>
+            </div>
+          </div>
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+              </div>
             </div>
 
-            <a class="card-header-icon">
-              <b-button icon-right="delete"
-                        type="is-light"
-                        size="is-medium"
-                        @click.native.stop="deleteExercice(exo.id, index)" />
-            </a>
-
-            <a class="card-header-icon">
-              <b-button icon-right="arrow-right-drop-circle"
-                        type="is-light"
-                        size="is-medium"
-                        @click.native.stop="$router.push({name: 'exercice', params: {id: exo.id}})" />
-            </a>
+            <div class="level-right">
+              <b-button type="is-success"
+                        icon-left="arrow-right"
+                        @click="$router.push({name: 'exercice', params: {id: exo.id}})">
+                Accéder
+              </b-button>
+            </div>
           </div>
-        </b-collapse>
+        </div>
       </div>
     </div>
   </div>
@@ -41,12 +43,15 @@
 </template>
 
 <script>
+import classes from "@/data/classes.json"
 import exercicesService from '@/services/exercicesService'
 import { mapState } from 'vuex'
 export default {
   name: 'MyExercices',
   data() {
-    return {}
+    return {
+      classes: classes
+    }
   },
   mounted() {
     this.$store.dispatch('exercices/loadMyExercices')

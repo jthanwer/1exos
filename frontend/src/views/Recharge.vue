@@ -196,7 +196,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch('exercices/loadFiles')
     var elements = stripe.elements()
     this.card_number = elements.create('cardNumber', { style: styles })
     this.card_expiry = elements.create('cardExpiry')

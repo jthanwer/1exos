@@ -8,6 +8,8 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.http import Http404, FileResponse
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from .serializers import ExerciceSerializer, CorrectionSerializer, \
     UnlockCorrectionSerializer
 from .models import Exercice, Correction
@@ -27,8 +29,8 @@ class PassthroughRenderer(renderers.BaseRenderer):
 class ExerciceViewSet(viewsets.ModelViewSet):
     queryset = Exercice.objects.all()
     serializer_class = ExerciceSerializer
-    search_fields = ['file']
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['classe', 'category', 'manuel', 'num_page', 'num_exo']
 
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)

@@ -8,14 +8,15 @@
             <div class="media-left">
             </div>
             <div class="media-content">
-              <p class="title is-2">Ma tirelire</p>
+              <p class="title is-3">Ma tirelire</p>
             </div>
           </div>
           <div class="level">
             <div class="level-left">
             </div>
             <div class="level-right">
-              <p class="title is-1 has-text-info">{{user.moneybox}} €</p>
+              <p class="title has-text-info"
+                 style="font-size: 5em;">{{user.moneybox}} €</p>
             </div>
           </div>
         </div>
@@ -23,6 +24,7 @@
 
       <b-button tag="router-link"
                 type="is-info"
+                class="mt-3"
                 expanded
                 size="is-large"
                 :to="{name: 'recharge'}">Recharger ma tirelire</b-button>

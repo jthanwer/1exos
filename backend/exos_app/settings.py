@@ -43,12 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    'django_extensions',
-
-    'webpack_loader',
-    'corsheaders',
-
     'rest_framework',
+    'django_extensions',
+    'django_filters',
+    'corsheaders',
+    'webpack_loader',
+
     'users',
     'filemanager',
 ]

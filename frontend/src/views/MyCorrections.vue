@@ -1,39 +1,56 @@
 <template>
 <div class="container is-fluid">
-  <div class="columns">
-    <div class="column is-6">
-      <div v-for="(correc, index) in myCorrections"
-           class="mb-2"
-           :key="correc.id">
+  <div class="columns is-multiline">
+    <div v-for="(correc, index) in myCorrections"
+         class="column is-6"
+         :key="correc.id">
 
-        <b-collapse class="card"
-                    aria-id="contentId">
-          <div slot="trigger"
-               slot-scope="props"
-               class="card-header"
-               role="button"
-               aria-controls="contentId">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left pa-1 has-background-warning">
+              <b-icon icon="lock"></b-icon>
+            </div>
+            <div class="media-content">
+              <p>
+                <span class="title is-4">Correction {{index + 1}}</span>
+              </p>
+              <span class="subtitle is-6">par {{correc.user}}
+                <span>
+                  <b-rate :max="5"
+                          :disabled="true"></b-rate>
+                </span>
+              </span>
 
-            <div class="card-header-title is-size-5">
-              <span>{{correc.name}}</span>
+            </div>
+            <div class="media-right">
+              <b-tag type="is-info"
+                     size="is-medium">{{correc.price}} €</b-tag>
+            </div>
+          </div>
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <b-tag type="is-success"
+                       size="is-medium">
+                  <b-icon icon="check"
+                          class="mr-1"
+                          size="is-small" />Correction vérifiée
+                </b-tag>
+              </div>
             </div>
 
-            <a class="card-header-icon">
-              <b-button icon-right="delete"
-                        type="is-light"
-                        size="is-medium"
-                        @click.native.stop="deleteCorrection(correc.id, index)" />
-            </a>
-
-            <a class="card-header-icon">
-              <b-button icon-right="arrow-right-drop-circle"
-                        type="is-light"
-                        size="is-medium"
-                        @click.native.stop="$router.push({name: 'correction', params: {id: correc.id}})" />
-            </a>
+            <div class="level-right">
+              <b-button type="is-success"
+                        icon-left="arrow-right"
+                        @click="$router.push({name: 'correction', params: {id: correc.id}})">
+                Accéder
+              </b-button>
+            </div>
           </div>
-        </b-collapse>
+        </div>
       </div>
+
     </div>
   </div>
 

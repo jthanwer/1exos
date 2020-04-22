@@ -104,7 +104,7 @@ export default {
           icon: 'home'
         },
         {
-          title: 'Rechercher un exo',
+          title: 'Rechercher un exercice',
           path: 'search',
           icon: 'magnify'
         },

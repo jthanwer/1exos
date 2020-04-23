@@ -26,14 +26,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '0j(tt(%#edg&@11_#*0svn5s@710q781t)g&$
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get('ENV') == 'PRODUCTION':
     DEBUG = False
-    ALLOWED_HOSTS = ['1exo.herokuapp.com', 'localhost', '0.0.0.0']
+    ALLOWED_HOSTS = ['161.35.84.142', 'localhost', '0.0.0.0']
 else:
     DEBUG = True
     ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -88,16 +86,28 @@ WSGI_APPLICATION = 'exos_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_exos',
-        'USER': 'jthanwer',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '5432',
+if os.environ.get('ENV') == 'PRODUCTION':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'db_exos',
+            'USER': 'jthanwer',
+            'PASSWORD': '',
+            'HOST': '',
+            'PORT': '5432',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'db_exos',
+            'USER': 'jthanwer',
+            'PASSWORD': 'Zdv:45??',
+            'HOST': '',
+            'PORT': '5432',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -171,13 +181,12 @@ REST_FRAMEWORK = {
 # Simple-JWT Authentication
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
 
 # Webpack-loader
 WEBPACK_LOADER = {

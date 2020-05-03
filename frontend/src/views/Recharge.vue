@@ -21,28 +21,28 @@
                               :disabled="specific_amount"
                               size='is-large'
                               type="is-info">
-                <span>5 €</span>
+                <span>5 pts</span>
               </b-radio-button>
               <b-radio-button v-model="amount"
                               native-value="10"
                               :disabled="specific_amount"
                               size='is-large'
                               type="is-info">
-                <span>10 €</span>
+                <span>10 pts</span>
               </b-radio-button>
               <b-radio-button v-model="amount"
                               native-value="15"
                               :disabled="specific_amount"
                               size='is-large'
                               type="is-info">
-                <span>15 €</span>
+                <span>15 pts</span>
               </b-radio-button>
               <b-radio-button v-model="amount"
                               native-value="20"
                               :disabled="specific_amount"
                               size='is-large'
                               type="is-info">
-                <span>20 €</span>
+                <span>20 pts</span>
               </b-radio-button>
               <b-button @click="specific_amount = !specific_amount"
                         class="ml-2"
@@ -59,7 +59,7 @@
                        placeholder="Entrez le montant voulu">
               </b-input>
               <p class="control">
-                <span class="button is-large is-static">€</span>
+                <span class="button is-large is-static">pts</span>
               </p>
             </b-field>
           </b-step-item>
@@ -108,8 +108,9 @@
             <hr>
             <div class="columns is-centered">
               <div class="column is-6">
-                <p class="subtitle">Utilisateur : <span class="is-pulled-right">{{user.username}}</span></p>
-                <p class="subtitle">Montant : <span class="is-pulled-right">{{amount}} €</span></p>
+                <p v-if="user"
+                   class="subtitle">Utilisateur : <span class="is-pulled-right">{{user.username}}</span></p>
+                <p class="subtitle">Montant : <span class="is-pulled-right">{{amount}} pts</span></p>
               </div>
             </div>
 
@@ -189,6 +190,7 @@ export default {
       is_loading: false,
 
       client_secret: null,
+      payment_id: null,
 
       card_number: null,
       card_expiry: null,
@@ -214,56 +216,71 @@ export default {
         amount: parseFloat(this.amount),
         currency: 'eur',
       }
-      usersService.getClientSecret(payload)
+      usersService.stripe_createPaymentIntent(payload)
         .then(data => {
-          this.client_secret = data.client_secret;
+          this.payment_id = data.id;
         })
     },
     confirmPayment() {
+      this.is_loading = true
       let data = {
-        payment_method: {
-          card: this.card_number,
-          billing_details: {
-            name: `${this.first_name} ${this.last_name}`,
-            address: {
-              postal_code: this.postal_code
-            }
+        type: 'card',
+        card: this.card_number,
+        billing_details: {
+          name: `${this.first_name} ${this.last_name}`,
+          address: {
+            postal_code: this.postal_code
           }
         }
       }
-      this.is_loading = true
-      stripe.confirmCardPayment(this.client_secret, data)
+      stripe.createPaymentMethod(data)
         .then(result => {
-          if (result.error) {
-            console.log(result.error.message);
-            this.is_loading = false;
-            this.$buefy.toast.open({
-              duration: 5000,
-              message: `Le paiment n'a pas abouti !
-              Votre carte n'a pas été créditée. <br>
-              Vérifiez les informations données.`,
-              type: 'is-danger'
-            })
-          } else {
-            if (result.paymentIntent.status === 'succeeded') {
-              usersService.validatePayment(result.paymentIntent)
-                .then((data) => {
-                  return this.$store.dispatch('authentication/getProfileUser')
-                }).then((data) => {
-                  this.is_loading = false;
-                  this.$buefy.toast.open({
-                    message: `Le paiment a bien été effectué !
-                     Votre tirelire a été créditée. <br>
-                     Vous êtes maintenant redirigé.`,
-                    type: 'is-success'
-                  })
-                  setTimeout(() => this.$router.push({ name: 'moneybox' }), 1000);
-                })
-            }
+          let payload = {
+            'payment_id': this.payment_id,
+            'payment_method_id': result.paymentMethod['id']
           }
-        });
-    }
-
+          usersService.stripe_validatePayment(payload)
+            .then(response => {
+              this.handleServerResponse(response)
+            })
+        })
+    },
+    handleServerResponse(response) {
+      if (response.data.requires_action) {
+        stripe.handleCardAction(response.data.payment_intent_client_secret)
+          .then(this.handleStripeJsResult)
+      } else {
+        this.$store.dispatch('authentication/getProfileUser')
+          .then(() => {
+            this.is_loading = false
+            this.$buefy.toast.open({
+              duration: 3000,
+              message: `Le paiment a bien été effectué !
+                      Ta tirelire a été créditée. <br>
+                      Tu es maintenant redirigé.`,
+              type: 'is-success'
+            })
+            setTimeout(() => this.$router.push({ name: 'tirelire' }), 1000);
+          })
+      }
+    },
+    handleStripeJsResult(result) {
+      let payload = {
+        'payment_id': this.payment_id,
+      }
+      usersService.stripe_validatePayment(payload)
+        .then(this.handleServerResponse)
+        .catch((err) => {
+          this.is_loading = false
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: `Le paiment n'a pas abouti !
+                    Ta carte n'a pas été créditée. <br>
+                    Vérifie les informations données.`,
+            type: 'is-danger'
+          })
+        })
+    },
   },
 }
 </script>

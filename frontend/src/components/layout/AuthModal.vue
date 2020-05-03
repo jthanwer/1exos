@@ -1,8 +1,7 @@
 <template>
-<div class="modal-card"
-     style="width: auto;">
+<div class="card">
   <header class="modal-card-head">
-    <p class="modal-card-title">Identifiez-vous</p>
+    <p class="modal-card-title">Connecte-toi</p>
   </header>
   <section class="modal-card-body">
     <form @submit.prevent="validate()">
@@ -30,7 +29,7 @@
       </div>
     </form>
     <div class="mt-3 has-text-centered">
-      <span class="has-text-black">Vous n'avez pas encore de compte ?</span>
+      <span class="has-text-black">Tu n'as pas encore de compte ?</span>
       <router-link class="pl-1"
                    :to="{ name: 'register' }">
         <span @click="$parent.close()">Créez-en un ici</span>

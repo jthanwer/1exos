@@ -7,30 +7,54 @@
       <section class="section">
         <div class="content has-text-centered">
           <p>
-            <b-icon icon="upload"
+            <b-icon v-if="!value"
+                    icon="upload"
+                    size="is-large">
+            </b-icon>
+            <b-icon v-else
+                    icon="check"
+                    class="has-background-success"
+                    style="border-radius: 50%;"
+                    type="is-white"
                     size="is-large">
             </b-icon>
           </p>
-          <p>
-            <strong>Glissez votre fichier </strong> dans cette zone <br>
-            ou <br>
-            <strong>Cliquez dessus</strong> pour choisir le fichier à importer
-          </p>
+          <div v-if="!value">
+            <p>
+              <strong>Glisse ton fichier (.pdf, .jpg, .png) </strong> dans cette zone <br>
+              ou <br>
+              <strong>Clique dessus</strong> pour choisir le fichier à importer
+            </p>
+
+            <p>
+              Si ton énoncé ou ta correction est composé de plusieurs fichiers, groupe-les d'abord
+              <strong>sous un même pdf</strong>. <br>
+              Nous n'acceptons que les fichiers uniques.
+            </p>
+
+            <p>
+              Dans le cas d'une photo, elle doit être <strong>bien cadrée</strong>
+              et le <strong>texte parfaitement lisible.</strong> <br>
+              Sinon, ton exo risque de ne pas être corrigé. Merci !
+            </p>
+          </div>
+
+          <b-tag v-else
+                 class="mb-3"
+                 type="is-primary"
+                 size="is-large"
+                 closable
+                 aria-close-label="Close tag"
+                 @close.prevent="value = null">
+            {{value.name}}
+          </b-tag>
+
         </div>
+
       </section>
     </b-upload>
   </b-field>
 
-  <div class="tags">
-    <span class="tag is-medium is-primary"
-          v-if="value">
-      {{ value.name }} | {{ value.size }} octets
-      <button class="delete is-small"
-              type="button"
-              @click="$emit('input', null)">
-      </button>
-    </span>
-  </div>
 </section>
 </template>
 

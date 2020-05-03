@@ -26,8 +26,8 @@ export default {
     return api.delete(`corrections/${id}/`)
       .then(response => response.data);
   },
-  collectAndUnlock(id, price) {
-    return api.post(`corrections/${id}/collect_unlock/`, price)
+  collectAndUnlock(id, prix) {
+    return api.post(`corrections/${id}/collect_unlock/`, prix)
       .then(response => response.data);
   },
 };

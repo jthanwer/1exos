@@ -4,15 +4,17 @@ from django.utils import timezone
 
 
 class Exercice(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE,
-                             related_name='exercices')
-    classe = models.IntegerField()
+    posteur = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                on_delete=models.CASCADE,
+                                related_name='exercices')
     category = models.CharField(max_length=100)
+    type = models.CharField(max_length=10)
     file = models.FileField(null=True, blank=True, max_length=100)
-    manuel = models.CharField(null=True, blank=True, max_length=100)
+    livre = models.CharField(null=True, blank=True, max_length=100)
     num_page = models.IntegerField(null=True, blank=True)
     num_exo = models.IntegerField(null=True, blank=True)
+    prix = models.DecimalField(max_digits=5, decimal_places=2, default=1)
+    date_limite = models.DateTimeField()
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -20,14 +22,14 @@ class Exercice(models.Model):
 
 
 class Correction(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE,
-                             related_name='corrections')
+    correcteur = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.CASCADE,
+                                   related_name='corrections')
     enonce = models.ForeignKey(Exercice,
                                on_delete=models.CASCADE,
                                related_name='corrections')
     file = models.FileField(null=True, max_length=255)
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=1)
+    prix = models.DecimalField(max_digits=5, decimal_places=2, default=1)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

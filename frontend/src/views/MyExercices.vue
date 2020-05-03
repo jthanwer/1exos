@@ -1,57 +1,35 @@
 <template>
 <div class="container is-fluid">
   <div class="columns is-multiline">
-    <div v-for="(exo, index) in myExercices"
-         class="column is-6"
-         :key="exo.id">
+    <div class="column is-6">
+      <div class="box">
+        <h1 class="title"> Mes exercices postés</h1>
+      </div>
+      <div v-for="(exo, index) in myExercices"
+           class="column is-12"
+           :key="exo.id">
 
-      <div class="card">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left pa-1 has-background-warning">
-              <b-icon icon="lock"></b-icon>
-            </div>
-            <div class="media-content">
-              <p>
-                <span class="title is-4">{{classes[exo.classe]}} - {{exo.category}}</span>
-              </p>
-              <span class="subtitle is-6">{{exo.manuel}} - Page {{exo.num_page}} - Exercice {{exo.num_exo}}
-              </span>
+        <ExercicePreview :exo="exo"></ExercicePreview>
 
-            </div>
-          </div>
-          <div class="level">
-            <div class="level-left">
-              <div class="level-item">
-              </div>
-            </div>
-
-            <div class="level-right">
-              <b-button type="is-success"
-                        icon-left="arrow-right"
-                        @click="$router.push({name: 'exercice', params: {id: exo.id}})">
-                Accéder
-              </b-button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
+
   </div>
 
 </div>
 </template>
 
 <script>
-import classes from "@/data/classes.json"
-import exercicesService from '@/services/exercicesService'
 import { mapState } from 'vuex'
+import exercicesService from '@/services/exercicesService'
+import ExercicePreview from '@/components/ExercicePreview.vue'
 export default {
   name: 'MyExercices',
+  components: {
+    ExercicePreview
+  },
   data() {
-    return {
-      classes: classes
-    }
+    return {}
   },
   mounted() {
     this.$store.dispatch('exercices/loadMyExercices')

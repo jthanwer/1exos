@@ -11,8 +11,11 @@ from django.http import Http404, FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import ExerciceSerializer, CorrectionSerializer, \
-    UnlockCorrectionSerializer
+    UnlockCorrectionSerializer, PreviewCorrectionSerializer
 from .models import Exercice, Correction
+from .filters import ExerciceFilter
+
+from datetime import datetime, timezone
 
 
 class PassthroughRenderer(renderers.BaseRenderer):
@@ -30,19 +33,20 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     queryset = Exercice.objects.all()
     serializer_class = ExerciceSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['classe', 'category', 'manuel', 'num_page', 'num_exo']
+    filterset_class = ExerciceFilter
 
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
+        user = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if serializer.validated_data.get('file', None):
             name_file = serializer.validated_data['file'].name
             extension = name_file.split('.')[-1]
             serializer.validated_data['file'].name = 'Exercice.' + extension
-        serializer.save(user=request.user)
+        serializer.save(posteur=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
@@ -78,8 +82,8 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
     def my_exercices(self, request):
-        user = request.user
-        queryset = Exercice.objects.filter(user=user)
+        posteur = request.user
+        queryset = Exercice.objects.filter(posteur=posteur)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -103,13 +107,32 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
+        correcteur = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         if serializer.validated_data.get('file', None):
             name_file = serializer.validated_data['file'].name
             extension = name_file.split('.')[-1]
             serializer.validated_data['file'].name = 'Correction.' + extension
-        serializer.save(user=request.user)
+        correction = serializer.save(correcteur=correcteur)
+
+        exercice = correction.enonce
+        posteur = exercice.posteur
+
+        now = datetime.now(timezone.utc)
+        condition = posteur != correcteur and \
+                    now < exercice.date_limite and \
+                    len(exercice.corrections.all()) == 1
+        if condition:
+            posteur.tirelire -= exercice.prix
+            correcteur.tirelire += exercice.prix
+        else:
+            correcteur.tirelire += 3
+        correcteur.correc.add(correction)
+        posteur.correc.add(correction)
+        posteur.save()
+        correcteur.save()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
@@ -121,9 +144,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True, renderer_classes=(PassthroughRenderer,))
     def download(self, request, pk=None):
         instance = self.get_object()
-
         file_handle = instance.file.open()
-
         response = FileResponse(file_handle, content_type='whatever')
         response['Content-Length'] = instance.file.size
         response['Content-Disposition'] = 'attachment; filename="{}"'.format(instance.file.name)
@@ -133,7 +154,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
     def my_corrections(self, request):
         user = request.user
-        queryset = Correction.objects.filter(user=user)
+        queryset = Correction.objects.filter(correcteur=user)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -150,10 +171,8 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        price = serializer.validated_data.get('price', 0)
-        user.bought_correc.add(correction)
-        user.moneybox -= price
+        prix = serializer.validated_data.get('prix', 0)
+        user.correc.add(correction)
+        user.tirelire -= prix
         user.save()
         return Response(status.HTTP_200_OK)
-
-

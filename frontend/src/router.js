@@ -16,6 +16,7 @@ import MyExercices from "@/views/MyExercices.vue";
 import MyCorrections from "@/views/MyCorrections.vue";
 
 import Register from "@/views/Register.vue";
+import Login from "@/views/Login.vue";
 import store from "@/store";
 
 Vue.use(Router);
@@ -36,7 +37,7 @@ const ifAuthenticated = (to, from, next) => {
     next();
     return;
   } else {
-    next("/");
+    next("/se-connecter");
   }
 };
 
@@ -53,19 +54,22 @@ export default new Router({
       path: "/exercice/:id/",
       name: "exercice",
       component: ExerciceDetail,
-      props: true
+      props: true,
+      beforeEnter: ifAuthenticated
     },
     {
       path: "/exercice/:id/corrections/",
       name: "exo-corrections",
       component: ExerciceCorrections,
-      props: true
+      props: true,
+      beforeEnter: ifAuthenticated
     },
     {
       path: "/correction/:id/",
       name: "correction",
       component: CorrectionDetail,
-      props: true
+      props: true,
+      beforeEnter: ifAuthenticated
     },
     {
       path: "/rechercher-un-exo/",
@@ -76,6 +80,7 @@ export default new Router({
       path: "/poster-un-enonce/",
       name: "submit",
       component: Submit,
+      beforeEnter: ifAuthenticated
     },
     {
       path: "/mon-compte/",
@@ -85,7 +90,7 @@ export default new Router({
     },
     {
       path: "/mon-compte/ma-tirelire/",
-      name: "moneybox",
+      name: "tirelire",
       component: MoneyBox,
       beforeEnter: ifAuthenticated
     },
@@ -111,6 +116,12 @@ export default new Router({
       path: "/creer-un-compte/",
       name: "register",
       component: Register,
+      beforeEnter: ifNotAuthenticated
+    },
+    {
+      path: "/se-connecter/",
+      name: "login",
+      component: Login,
       beforeEnter: ifNotAuthenticated
     },
     {

@@ -29,7 +29,7 @@ if os.environ.get('ENV') == 'PRODUCTION':
     ALLOWED_HOSTS = ['161.35.84.142', 'localhost', '0.0.0.0']
 else:
     DEBUG = True
-    ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
+    ALLOWED_HOSTS = ['192.168.0.16', '0.0.0.0', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -51,10 +51,12 @@ INSTALLED_APPS = [
     'filemanager',
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -80,6 +82,8 @@ TEMPLATES = [
         },
     },
 ]
+
+print(os.path.join(BASE_DIR, 'templates'))
 
 WSGI_APPLICATION = 'exos_app.wsgi.application'
 
@@ -199,8 +203,3 @@ WEBPACK_LOADER = {
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 
-# Whitenoise and dj_database_url if production
-if os.environ.get('ENV') == 'PRODUCTION':
-    # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)

@@ -13,12 +13,11 @@ export default {
     return api.get("users/my_profile/")
       .then(response => response.data);
   },
-  getClientSecret(payload) {
-    return api.post("users/client_secret/", payload)
+  stripe_createPaymentIntent(payload) {
+    return api.post("users/stripe_create_payment_intent/", payload)
       .then(response => response.data)
   },
-  validatePayment(payload) {
-    return api.post("users/validate_payment/", payload)
-      .then(response => response.data)
+  stripe_validatePayment(payload) {
+    return api.post("users/stripe_validate_payment/", payload)
   }
 };

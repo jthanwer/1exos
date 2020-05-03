@@ -16,7 +16,7 @@
             </div>
             <div class="level-right">
               <p class="title has-text-info"
-                 style="font-size: 5em;">{{user.moneybox}} €</p>
+                 style="font-size: 5em;">{{user.tirelire}} pts</p>
             </div>
           </div>
         </div>

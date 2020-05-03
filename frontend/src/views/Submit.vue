@@ -1,5 +1,7 @@
 <template>
 <div class="container is-fluid">
+  <b-loading is-full-page
+             :active.sync="is_loading"></b-loading>
   <div class="columns is-centered">
     <div class="column is-10">
       <div class="box">
@@ -7,35 +9,68 @@
                  animated
                  has-navigation>
 
-          <b-step-item label="Général"
+          <b-step-item label="Infos"
                        :style="{'min-height': height}"
                        clickable>
             <hr>
-            <h1 class="title has-text-centered">Général</h1>
+            <h1 class="title has-text-centered">Infos</h1>
             <hr>
-            <b-field label="Quel est le niveau de cet exercice ?">
-              <b-select v-model="form.classe"
-                        placeholder="Choisir une classe">
-                <option v-for="(classe, index) in classes"
-                        :value="index">{{classe}}</option>
-              </b-select>
-            </b-field>
-            <b-field label="De quoi traite cet exercice ?">
-              <b-select v-model="form.category"
+            <b-field label="De quoi traite cet exo ?">
+              <b-select v-if="user"
+                        v-model="form.category"
                         placeholder="Choisir une catégorie">
-                <option v-for="option in categories[form.classe]">
+                <option v-for="option in categories[user.classe]">
                   {{option}}
                 </option>
               </b-select>
             </b-field>
-            <b-field label="Cet exercice est-il directement issu d'un manuel scolaire ?">
-              <b-switch v-model="form.is_from_manuel">
-                {{is_from_manuel_text}}
+            <b-field label="Cet exo est-il directement issu d'un livre scolaire ?">
+              <b-switch v-model="form.is_from_livre">
+                {{is_from_livre_text}}
               </b-switch>
+            </b-field>
+            <b-field label="De quel type d'exo s'agit-il ?">
+              <b-select v-model="form.type"
+                        placeholder="Choisir un type d'exo">
+                <option> Exo simple </option>
+                <option> DM </option>
+                <option> DHC </option>
+                <option> DS </option>
+              </b-select>
             </b-field>
           </b-step-item>
 
-          <b-step-item v-if="!form.is_from_manuel"
+          <b-step-item label="Prix et Délai"
+                       :style="{'min-height': height}"
+                       clickable>
+            <hr>
+            <h1 class="title has-text-centered">Prix et Délai</h1>
+            <hr>
+            <b-field grouped>
+              <b-field v-model="form.prix"
+                       label="Prix"
+                       message="Combien de points es-tu prêt à donner pour obtenir la correction de ton exo ?">
+                <b-numberinput v-model="form.prix"
+                               :min="1">
+                </b-numberinput>
+              </b-field>
+            </b-field>
+
+            <b-field grouped>
+              <b-field label="Délai"
+                       message="Quel jour souhaiterais-tu avoir ta correction ?">
+                <b-datetimepicker v-model="form.date_limite"
+                                  placeholder="Choisir une date limite"
+                                  :min-datetime="minDatetime"
+                                  icon="calendar-today"
+                                  horizontal-time-picker>
+                </b-datetimepicker>
+              </b-field>
+            </b-field>
+
+          </b-step-item>
+
+          <b-step-item v-if="!form.is_from_livre"
                        :style="{'min-height': height}"
                        label="Énoncé"
                        clickable>
@@ -51,64 +86,38 @@
                        clickable>
             <hr>
 
-            <h1 class="title has-text-centered">{{activeStep}} Manuel</h1>
+            <h1 class="title has-text-centered">Manuel</h1>
             <hr>
-            <b-field label="De quel manuel scolaire cet énoncé est-il issu ?">
-              <b-select v-model="form.manuel.name"
-                        placeholder="Choisir un manuel">
+            <b-field label="De quel livre scolaire cet énoncé est-il issu ?">
+              <b-select v-model="form.livre.name"
+                        placeholder="Choisir un livre">
                 <option value="Sesamath">Sesamath</option>
                 <option value="Autres">Autres</option>
               </b-select>
             </b-field>
-            <b-field label="Quel numéro de page ?">
-              <b-numberinput v-model="form.manuel.num_page"
-                             :min="1"></b-numberinput>
+            <b-field grouped>
+              <b-field label="Quel numéro de page ?">
+                <b-numberinput v-model="form.livre.num_page"
+                               :min="1"></b-numberinput>
+              </b-field>
             </b-field>
-            <b-field label="Quel numéro d'exercice ?">
-              <b-numberinput v-model="form.manuel.num_exo"
-                             :min="1"></b-numberinput>
+            <b-field grouped>
+              <b-field label="Quel numéro d'exercice ?">
+                <b-numberinput v-model="form.livre.num_exo"
+                               :min="1"></b-numberinput>
+              </b-field>
             </b-field>
           </b-step-item>
 
-          <b-step-item label="Confirmation"
-                       :style="{'min-height': height}"
-                       clickable>
+          <b-step-item label="Aperçu"
+                       :style="{'min-height': height}">
             <hr>
-            <h1 class="title has-text-centered">Confirmation</h1>
+            <h1 class="title has-text-centered">Aperçu</h1>
             <hr class="mb-10">
-            <div class="columns">
-              <div class="column is-4">
-                <div class="has-text-centered mb-6">
-                  <p class="heading">Classe</p>
-                  <p class="title is-5">{{classes[form.classe]}}</p>
-                </div>
-                <div v-if="form.is_from_manuel"
-                     class="has-text-centered">
-                  <p class="heading">Manuel</p>
-                  <p class="title is-5">{{form.manuel.name}}</p>
-                </div>
-              </div>
-              <div class="column is-4">
-                <div class="has-text-centered mb-6">
-                  <p class="heading">Catégorie</p>
-                  <p class="title is-5">{{form.category}}</p>
-                </div>
-                <div v-if="form.is_from_manuel"
-                     class="has-text-centered">
-                  <p class="heading">Numéro de la page</p>
-                  <p class="title is-5">{{form.manuel.num_page}}</p>
-                </div>
-              </div>
-              <div class="column is-4">
-                <div class="has-text-centered mb-6">
-                  <p class="heading">Extrait d'un manuel</p>
-                  <p class="title is-5">{{is_from_manuel_text}}</p>
-                </div>
-                <div v-if="form.is_from_manuel"
-                     class="has-text-centered">
-                  <p class="heading">Numéro de l'exercice</p>
-                  <p class="title is-5">{{form.manuel.num_exo}}</p>
-                </div>
+            <div class="columns is-centered">
+              <div class="column is-6">
+                <ExercicePreview :exo="exo"
+                                 :activated="true"></ExercicePreview>
               </div>
             </div>
           </b-step-item>
@@ -122,7 +131,7 @@
                  @click.prevent="previous.action">
                 <b-icon icon="chevron-left" />
               </a>
-              <a v-if="activeStep < 2"
+              <a v-if="activeStep < 3"
                  role="button"
                  class="pagination-next"
                  :disabled="next.disabled"
@@ -134,7 +143,7 @@
                  class="pagination-next has-background-success has-text-white"
                  type="is-success"
                  @click.prevent="submit()">
-                Valider le formulaire
+                Poster l'exo
               </a>
             </div>
           </template>
@@ -146,61 +155,104 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import moment from 'moment'
 import categories from "@/data/categories.json"
 import classes from "@/data/classes.json"
 import Upload from '@/components/Upload.vue'
+import ExercicePreview from '@/components/ExercicePreview.vue'
 export default {
   name: 'submit',
   components: {
-    Upload
+    Upload,
+    ExercicePreview
   },
   data() {
+    const min = new Date(moment().toISOString(true))
     return {
       categories: categories,
       classes: classes,
       height: "400px",
+      minDatetime: min,
+
+      is_loading: false,
 
       activeStep: null,
       drop_file: null,
       form: {
-        classe: null,
         category: null,
-        is_from_manuel: false,
-        manuel: {
+        type: null,
+        is_from_livre: false,
+        livre: {
           name: null,
           num_page: 1,
           num_exo: 1
-        }
+        },
+        date_limite: new Date(),
+        prix: 2,
       }
     }
   },
   computed: {
-    is_from_manuel_text() {
-      if (this.form.is_from_manuel) {
+    ...mapState('authentication', ['user']),
+    is_from_livre_text() {
+      if (this.form.is_from_livre) {
         return "Oui"
       } else {
         return "Non"
       }
+    },
+    exo() {
+      return {
+        id: 1,
+        posteur: this.user,
+        category: this.form.category,
+        type: this.form.type,
+        file: this.drop_file,
+        livre: this.form.livre.name,
+        num_page: this.form.livre.num_page,
+        num_exo: this.form.livre.num_exo,
+        prix: this.form.prix,
+        date_created: moment(),
+        date_limite: this.date_limite,
+        corrections: [],
+      }
+    },
+    date_limite() {
+      let formattedTime = moment(this.form.date_limite).toISOString(true)
+      return formattedTime
     }
   },
   methods: {
     submit() {
+      this.is_loading = true
       const fd = new FormData()
       fd.append('classe', parseInt(this.form.classe))
       fd.append('category', this.form.category)
-      if (this.form.is_from_manuel) {
-        fd.append('manuel', this.form.manuel.name)
-        fd.append('num_page', parseInt(this.form.manuel.num_page))
-        fd.append('num_exo', parseInt(this.form.manuel.num_exo))
+      fd.append('type', this.form.type)
+      fd.append('prix', parseInt(this.form.prix))
+      fd.append('date_limite', moment(this.form.date_limite).toISOString(true))
+      if (this.form.is_from_livre) {
+        fd.append('livre', this.form.livre.name)
+        fd.append('num_page', parseInt(this.form.livre.num_page))
+        fd.append('num_exo', parseInt(this.form.livre.num_exo))
       } else {
         fd.append('file', this.drop_file)
       }
       this.$store.dispatch('exercices/postExercice', fd)
         .then(data => {
-          console.log(data)
+          this.is_loading = false
           this.$router.push({ name: 'exercice', params: { id: data.id } })
         })
-        .catch(err => alert("Problème d'importation"))
+        .catch(err => {
+          this.is_loading = false
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: `L'exo n'a pas pu être posté.
+            Il manque sûrement des informations essentielles.`,
+            type: 'is-danger'
+          })
+        })
     },
   },
 }

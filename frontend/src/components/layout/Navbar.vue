@@ -31,14 +31,14 @@
       <template slot="label">
         <b-icon class="mr-1"
                 icon="account"></b-icon>
-        <span class="is-uppercase">Profil</span>
+        <span class="is-uppercase">Menu</span>
       </template>
       <b-navbar-item tag="router-link"
                      :to="{ name: 'profile' }">
         Mon profil
       </b-navbar-item>
       <b-navbar-item tag="router-link"
-                     :to="{ name: 'moneybox' }">
+                     :to="{ name: 'tirelire' }">
         Ma tirelire
       </b-navbar-item>
       <b-navbar-item tag="router-link"
@@ -56,27 +56,17 @@
                    tag="div">
       <b-button icon-left="account"
                 type="is-primary"
-                inverted
-                @click="loginModal = true">
+                @click="$router.push({ name: 'login' })"
+                inverted>
         Se connecter
       </b-button>
-      <b-modal :active.sync="loginModal"
-               :width="500"
-               has-modal-card
-               trap-focus
-               aria-role="dialog"
-               aria-modal
-               :can-cancel="['escape', 'x']">
-        <auth-modal />
-      </b-modal>
-      </div>
     </b-navbar-item>
     <b-navbar-item v-if="isAuthenticated && user"
                    tag="div">
       <b-button type="is-primary"
-                @click="$router.push({ name: 'moneybox' })"
+                @click="$router.push({ name: 'tirelire' })"
                 inverted>
-        {{user.moneybox}} €
+        {{user.tirelire}} pts
       </b-button>
       </div>
     </b-navbar-item>
@@ -104,7 +94,7 @@ export default {
           icon: 'home'
         },
         {
-          title: 'Rechercher un exercice',
+          title: 'Rechercher un exo',
           path: 'search',
           icon: 'magnify'
         },
@@ -123,6 +113,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('authentication/authLogout')
+        .then(this.$router.push({ name: 'home' }))
     }
   }
 }

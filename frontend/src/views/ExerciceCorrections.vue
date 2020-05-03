@@ -15,7 +15,7 @@
               <p>
                 <span class="title is-4">Correction</span>
               </p>
-              <span class="subtitle is-6">par {{correc.user}}
+              <span class="subtitle is-6">par {{correc.correcteur}}
                 <span>
                   <b-rate :max="5"
                           :disabled="true"></b-rate>
@@ -25,7 +25,7 @@
             </div>
             <div class="media-right">
               <b-tag type="is-info"
-                     size="is-medium">{{correc.price}} €</b-tag>
+                     size="is-medium">{{correc.prix}} pts</b-tag>
             </div>
           </div>
           <div class="level">
@@ -41,7 +41,7 @@
             </div>
 
             <div class="level-right">
-              <b-button v-if="user.bought_correc.includes(correc.id)"
+              <b-button v-if="user.correc.includes(correc.id)"
                         type="is-success"
                         icon-left="arrow-right"
                         @click="$router.push({name: 'correction', params: {id: correc.id}})">
@@ -64,12 +64,12 @@
                     <p class="modal-card-title">Confirmer le prélèvement</p>
                   </header>
                   <div class="modal-card-body">
-                    Etes-vous sûr de vouloir prélever le montant de {{correc.price}} € sur
-                    votre tirelire ? <br> Il vous restera {{user.moneybox - correc.price}} €.
+                    Es-tu sûr de vouloir prélever le montant de {{correc.prix}} pts sur
+                    ta tirelire ? <br> Il te restera {{user.tirelire - correc.prix}} pts.
                   </div>
                   <footer class="modal-card-foot">
                     <b-button @click="confirm_modal = false">Annuler</b-button>
-                    <b-button @click="confirmUnlock(correc.id, correc.price)"
+                    <b-button @click="confirmUnlock(correc.id, correc.prix)"
                               type="is-success">Confirmer</b-button>
                   </footer>
                 </div>
@@ -109,12 +109,12 @@ export default {
     ...mapState('authentication', ['user'])
   },
   methods: {
-    confirmUnlock(correc_id, price) {
+    confirmUnlock(correc_id, prix) {
       this.confirm_modal = false
-      this.collectAndUnlock(correc_id, price)
+      this.collectAndUnlock(correc_id, prix)
     },
-    collectAndUnlock(correc_id, price) {
-      let payload = { 'price': price }
+    collectAndUnlock(correc_id, prix) {
+      let payload = { 'prix': prix }
       correctionsService.collectAndUnlock(correc_id, payload)
         .then(data => {
           this.$store.dispatch('authentication/getProfileUser')

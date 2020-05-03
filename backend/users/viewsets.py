@@ -5,13 +5,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, \
     IsAdminUser
 from rest_framework.decorators import api_view, action
 
-import stripe
-import decimal
+from core.payment import stripe_validate_payment, \
+    stripe_create_payment
 
 from .models import CustomUser
 from .permissions import IsAdminOrIsSelf
 from .serializers import RegistrationSerializer, UserSerializer, \
-    PasswordSerializer, UpdateUserSerializer, PaymentIntentSerializer
+    PasswordChangeSerializer, UpdateUserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action == 'update':
             return UpdateUserSerializer
         elif self.action == 'set_password':
-            return PasswordSerializer
+            return PasswordChangeSerializer
         elif self.action == 'client_secret':
             return PaymentIntentSerializer
         else:
@@ -65,7 +65,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def set_password(self, request, pk=None):
         user = self.get_object()
-        serializer = PasswordSerializer(data=request.data)
+        serializer = PasswordChangeSerializer(data=request.data)
         if serializer.is_valid():
             old_pw = serializer.validated_data.get('old_password', '')
             if user.check_password(old_pw):
@@ -89,30 +89,16 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=False, methods=['post'])
-    def client_secret(self, request):
-        stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
-        serializer = PaymentIntentSerializer(data=request.data)
-        if serializer.is_valid():
-            intent = stripe.PaymentIntent.create(**serializer.validated_data)
-            return Response(intent)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+    def stripe_create_payment_intent(self, request):
+        return stripe_create_payment(request)
+
 
     @action(detail=False, methods=['post'])
-    def validate_payment(self, request):
-        stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
-        user = request.user
-        payload = request.data
-        payment_intent = stripe.PaymentIntent.retrieve(
-            payload['id'],
-        )
-        if payment_intent.status == "succeeded":
-            user.moneybox += decimal.Decimal(payment_intent.amount) / decimal.Decimal(100)
-            user.save()
-            return Response(status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_402_PAYMENT_REQUIRED)
+    def stripe_validate_payment(self, request):
+        return stripe_validate_payment(request)
+
+
+
 
 
 

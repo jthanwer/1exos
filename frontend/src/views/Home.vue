@@ -1,72 +1,79 @@
 <template>
 <div>
-  <section class="hero is-bold">
-    <div class="hero-body">
-      <div class="container">
-        <h1 class="title">
-          Bienvenue sur 1Exo !
-        </h1>
-        <div class="columns">
-          <div class="column is-8">
-            <h2 class="subtitle">
-              1Exo est une base de données communautaire d'énoncés et
-              de corrections d'exercices de mathématiques accessibles par tous les élèves
-              du secondaire de France.
-            </h2>
-          </div>
-        </div>
-      </div>
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <section class="is-bold">
+          <h1 class="title is-1 has-text-centered">
+            Bienvenue sur 1Exo !
+          </h1>
+          <h2 class="mt-8 mb-15 subtitle">
+            1Exo est une base de données communautaire d'énoncés et
+            de corrections d'exercices de mathématiques accessibles par tous les élèves
+            du secondaire de France.
+          </h2>
 
-      <div class="has-text-centered mt-5">
-        <b-button tag="router-link"
-                  type="is-primary"
-                  class="m-3"
-                  size="is-large"
-                  icon-left="magnify"
-                  :to="{name: 'search'}">Rechercher un exercice</b-button>
-        <b-button tag="router-link"
-                  type="is-secondary"
-                  class="m-3"
-                  size="is-large"
-                  icon-left="upload"
-                  :to="{name: 'submit'}">Poster un énoncé</b-button>
+          <div class="columns">
+            <div class="column is-6">
+              <b-button v-if="!isAuthenticated"
+                        tag="router-link"
+                        type="is-success"
+                        expanded
+                        class="m-3"
+                        size="is-large"
+                        icon-left="account"
+                        :to="{name: 'login'}">Se connecter</b-button>
+            </div>
+            <div class="column is-6">
+              <b-button v-if="!isAuthenticated"
+                        tag="router-link"
+                        type="is-warning"
+                        expanded
+                        class="m-3"
+                        size="is-large"
+                        icon-left="account-plus"
+                        :to="{name: 'register'}">Créer un compte</b-button>
+            </div>
+          </div>
+
+          <div class="columns is-centered">
+            <div class="column is-6">
+              <b-button tag="router-link"
+                        type="is-primary"
+                        class="m-3"
+                        expanded
+                        size="is-large"
+                        icon-left="magnify"
+                        :to="{name: 'search'}">Rechercher un exo</b-button>
+            </div>
+            <div class="column is-6">
+              <b-button tag="router-link"
+                        type="is-secondary"
+                        expanded
+                        class="m-3"
+                        size="is-large"
+                        icon-left="upload"
+                        :to="{name: 'submit'}">Poster un exo</b-button>
+            </div>
+          </div>
+
+        </section>
       </div>
     </div>
-
-  </section>
+  </div>
 
 </div>
 </template>
 
 <script>
-import exercicesService from '@/services/exercicesService'
-import { mapState } from 'vuex'
-import Upload from '@/components/Upload.vue'
+import { mapGetters } from 'vuex'
 export default {
   name: 'home',
-  components: {
-    Upload
-  },
   data() {
-    return {
-      text_query: null,
-      used_search: false,
-      result_files: [],
-
-      allFiles: []
-    }
+    return {}
   },
-  computed: {},
-  mounted() {
-    exercicesService.getAllExercices()
-      .then((data) => {
-        this.allFiles = data.results
-      })
-  },
-  methods: {
-    deleteExercice(id, data_index) {
-      this.$store.dispatch('exercices/deleteExercice', { id, data_index })
-    },
+  computed: {
+    ...mapGetters('authentication', ['isAuthenticated', '']),
   },
 }
 </script>

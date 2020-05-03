@@ -1,11 +1,19 @@
 from rest_framework import serializers
 from .models import Exercice, Correction
+from users.serializers import BasicUserSerializer
 import decimal
 
 
+class PreviewCorrectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Correction
+        fields = ('id', 'prix')
+
+
 class ExerciceSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    posteur = BasicUserSerializer(read_only=True)
     # size = serializers.SerializerMethodField()
+    corrections = PreviewCorrectionSerializer(many=True, read_only=True)
     name = serializers.SerializerMethodField()
     filetype = serializers.SerializerMethodField()
 
@@ -26,7 +34,7 @@ class ExerciceSerializer(serializers.ModelSerializer):
 
 
 class CorrectionSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    correcteur = serializers.StringRelatedField(read_only=True)
     enonce = ExerciceSerializer(read_only=True)
     enonce_id = serializers.IntegerField(write_only=True)
     name = serializers.SerializerMethodField()
@@ -49,7 +57,7 @@ class CorrectionSerializer(serializers.ModelSerializer):
 
 
 class UnlockCorrectionSerializer(serializers.Serializer):
-    price = serializers.DecimalField(max_digits=5, decimal_places=2)
+    prix = serializers.DecimalField(max_digits=5, decimal_places=2)
 
-    def validate_price(self, value):
+    def validate_prix(self, value):
         return value

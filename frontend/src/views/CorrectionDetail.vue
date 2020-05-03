@@ -65,7 +65,7 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Manuel</p>
-                <p class="title is-5">{{correc.enonce.manuel}}</p>
+                <p class="title is-5">{{correc.enonce.livre}}</p>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@
           <div class="columns is-centered is-multiline">
             <div class="column is-6 has-text-centered">
               <p class="heading">Ajouté par</p>
-              <p class="title is-5">{{correc.user}}</p>
+              <p class="title is-5">{{correc.correcteur}}</p>
             </div>
             <div class="column is-6 has-text-centered">
               <p class="heading">Le</p>
@@ -104,11 +104,11 @@
       </div>
       <div class="correc-info pa-9 has-text-centered">
         <div v-if="correc">
-          <div v-if="correc.enonce.manuel"
+          <div v-if="correc.enonce.livre"
                class="columns is-centered is-multiline">
             <div class="column is-12 has-text-centered">
               <p class="heading">Manuel</p>
-              <p class="title is-5">{{correc.enonce.manuel}}</p>
+              <p class="title is-5">{{correc.enonce.livre}}</p>
             </div>
             <div class="column is-6 has-text-centered">
               <p class="heading">Page</p>

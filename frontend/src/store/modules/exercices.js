@@ -24,9 +24,6 @@ const actions = {
         let myExercices = data.results
         commit('SET_MY_EXERCICES', myExercices)
       })
-      .catch(error => {
-        console.log(error)
-      })
   },
   postExercice({ dispatch, commit }, newExercice) {
     return new Promise((resolve, reject) => {
@@ -35,18 +32,13 @@ const actions = {
           commit('POST_EXERCICE', data)
           resolve(data)
         })
-        .catch(error => {
-          console.log(error);
-        })
+        .catch(err => reject(err))
     });
   },
   deleteExercice({ dispatch, commit }, payload) {
     exercicesService.deleteExercice(payload.id)
       .then(data => {
         commit('DELETE_EXERCICE', payload.data_index)
-      })
-      .catch(error => {
-        console.log(error)
       })
   },
   downloadFile({ dispatch }, exo) {

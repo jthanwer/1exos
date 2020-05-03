@@ -165,20 +165,14 @@ export default {
   },
   methods: {
     validate() {
-      this.form.email = this.form.email1.toLowerCase();
+      let email = this.form.email1.toLowerCase();
       const fd = new FormData()
       fd.append('username', this.form.username)
-      fd.append('email', this.form.email)
-      fd.append('password', this.form.password)
+      fd.append('email', email)
+      fd.append('password', this.form.password1)
       fd.append('classe', parseInt(this.form.classe))
       fd.append('etablissement', this.form.etablissement)
       fd.append('prof', this.form.prof)
-      let username = this.form.username;
-      let email = this.form.email1;
-      let password = this.form.password1;
-      let classe = this.form.classe;
-      let etablissement = this.form.etablissement;
-      let prof = this.form.prof;
       this.$store.dispatch("authentication/registerUser", fd)
         .then(res => {
           this.$router.push('/')

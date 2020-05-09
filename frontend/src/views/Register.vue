@@ -261,7 +261,7 @@ export default {
         if (!success) {
           return;
         }
-        submit()
+        this.submit()
       })
     },
     submit() {

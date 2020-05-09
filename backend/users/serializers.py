@@ -15,7 +15,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'classe',
-                  'etablissement', 'prof')
+                  'etablissement', 'nom_prof', 'sexe_prof')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,7 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('pk', 'username', 'email',
-                  'classe', 'etablissement', 'prof',
+                  'classe', 'etablissement',
+                  'nom_prof', 'sexe_prof',
                   'tirelire', 'correc')
 
 
@@ -33,7 +34,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password',
-                  'classe', 'etablissement', 'prof')
+                  'classe', 'etablissement',
+                  'nom_prof', 'sexe_prof')
 
     def save(self):
         cleaned_data = {
@@ -42,7 +44,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'password': self.validated_data.get('password', ''),
             'classe': self.validated_data.get('classe', ''),
             'etablissement': self.validated_data.get('etablissement', ''),
-            'prof': self.validated_data.get('prof', ''),
+            'sexe_prof': self.validated_data.get('sexe_prof', ''),
+            'nom_prof': self.validated_data.get('nom_prof', ''),
         }
         user = CustomUser.objects.create_user(**cleaned_data)
         return user

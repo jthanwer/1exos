@@ -71,14 +71,16 @@ const actions = {
       resolve();
     });
   },
-  getProfileUser({ commit }) {
-    return new Promise((resolve, reject) => {
-      usersService.getProfileUser()
-        .then(data => {
-          commit("SET_USER", data);
-          resolve(data);
-        })
-    })
+  getProfileUser({ commit, getters }) {
+    if (getters.isAuthenticated) {
+      return new Promise((resolve, reject) => {
+        usersService.getProfileUser()
+          .then(data => {
+            commit("SET_USER", data);
+            resolve(data);
+          })
+      })
+    }
   }
 }
 export default {

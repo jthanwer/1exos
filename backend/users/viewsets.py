@@ -89,9 +89,27 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=False, methods=['post'])
-    def stripe_create_payment_intent(self, request):
-        return stripe_create_payment(request)
+    def check_credentials(self, request):
+        data = request.data
+        if 'email' in data:
+            email = data['email']
+            print(email)
+            exists = CustomUser.objects.filter(email=email).exists()
+        elif 'username' in data:
+            username = data['username']
+            print(username)
+            exists = CustomUser.objects.filter(username=username).exists()
+        else:
+            exists = True
+        if exists:
+            return Response({'unique': False},
+                            status=status.HTTP_200_OK)
+        return Response({'unique': True},
+                        status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'])
+    def stripe_create_payment(self, request):
+        return stripe_create_payment(request)
 
     @action(detail=False, methods=['post'])
     def stripe_validate_payment(self, request):

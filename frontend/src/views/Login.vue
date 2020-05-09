@@ -64,7 +64,6 @@ export default {
   methods: {
     validate() {
       let { username, password } = this.form
-      console.log({ username, password })
       this.$store.dispatch('authentication/authRequest', { username, password })
         .then(() => { this.$router.push('/') })
         .catch(() => { this.error = true })

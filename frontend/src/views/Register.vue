@@ -1,151 +1,226 @@
 <template>
 <div class="container is-fluid">
+  <ValidationObserver ref="form"
+                      v-slot="{ handleSubmit }">
 
-  <div class="columns is-centered">
-    <div class="column is-10">
-      <div class="card">
-        <header class="card-header">
-          <p class="card-header-title is-centered has-background-primary has-text-white">
-            Créer un compte
-          </p>
-        </header>
-        <section class="card-content">
-          <b-steps v-model="activeStep"
-                   animated
-                   has-navigation>
-
-            <b-step-item label="Infos"
-                         :style="{'min-height': height}"
-                         clickable>
-              <hr>
-              <h1 class="title has-text-centered">Infos</h1>
-              <hr>
-
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title is-centered has-background-primary has-text-white">
+              Crée ton compte
+            </p>
+          </header>
+          <section class="card-content">
+            <form @submit.prevent="validate()">
               <b-field grouped>
-                <b-field label="Nom d'utilisateur">
-                  <b-input v-model="form.username"
-                           type="text"
-                           placeholder="xxXLeMatheuxXxx">
-                  </b-input>
-                </b-field>
+                <ValidationProvider class="is-flex"
+                                    ref="username_validator"
+                                    rules="required|unique_user"
+                                    v-slot="{ errors, valid, failed, pending, failedRules }">
+                  <b-field label="Ton pseudo"
+                           :message="errors"
+                           :loading="pending"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.username"
+                             type="text"
+                             @input="reset_validation_username(failed) "
+                             placeholder="xxXLeMatheuxXxx">
+                    </b-input>
+                  </b-field>
+                  <b-field v-if="failedRules.hasOwnProperty('unique_user')"
+                           :label="'Tu es ' +  input_username + ' ?'"
+                           addons>
+                    <div class="control">
+                      <b-button type="is-primary"
+                                @click="$router.push({ name: 'login' })">
+                        Connecte-toi ici !
+                      </b-button>
+                    </div>
+                  </b-field>
+
+                </ValidationProvider>
               </b-field>
 
               <b-field grouped>
-                <b-field label="Adresse e-mail">
-                  <b-input v-model="form.email1"
-                           type="email"
-                           placeholder="Example@domaine.fr">
-                  </b-input>
-                </b-field>
-                <b-field label="Confirmation de l'adresse e-mail">
-                  <b-input v-model="form.emai2"
-                           type="email"
-                           placeholder="Retape ton adresse e-mail">
-                  </b-input>
-                </b-field>
+                <ValidationProvider rules="required"
+                                    v-slot="{ errors, valid }">
+                  <b-field label="Ta classe"
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-select v-model="form.classe"
+                              placeholder="Choisis ta classe...">
+                      <option v-for="(value, key) in classes"
+                              :value="key">{{value}}</option>
+                    </b-select>
+                  </b-field>
+                </ValidationProvider>
+              </b-field>
+
+              <b-field label="Ton établissement"></b-field>
+              <!-- <b-field>
+                <ValidationProvider rules="required"
+                                    v-slot="{ errors, valid }">
+                  <b-field :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-select v-model="form.type_etablissement"
+                              placeholder="Type d'établissement">
+                      <option>Collège</option>
+                      <option>Lycée</option>
+                    </b-select>
+                  </b-field>
+                </ValidationProvider>
+              </b-field> -->
+
+              <b-field>
+                <ValidationProvider rules="required"
+                                    v-slot="{ errors, valid }">
+                  <b-field expanded
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-autocomplete expanded
+                                    v-model="etablissement_input"
+                                    :loading="autocomplete_loading"
+                                    placeholder="Cherche ton établissement..."
+                                    :data="etablissement_items"
+                                    field="n"
+                                    keep-first>
+                      <template slot="empty">
+                        <span v-if="etablissement_input.length > 5">Aucun résultat</span>
+                        <span v-else>Tapes au moins 6 caractères</span>
+                      </template>
+                      <template slot-scope="props">
+                        <div class="is-pulled-left has-text-weight-bold">
+                          {{ props.option.n }}
+                        </div>
+                        <br>
+                        <small>
+                          {{ props.option.c }}
+                        </small>
+                      </template>
+                    </b-autocomplete>
+                  </b-field>
+                </ValidationProvider>
+              </b-field>
+
+              <b-field label="Ton/ta prof de maths"></b-field>
+              <b-field grouped>
+                <ValidationProvider rules="required"
+                                    v-slot="{ errors, valid }">
+                  <b-field :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-select v-model="form.sexe_prof"
+                              placeholder="M. ou Mme">
+                      <option :value="true">M.</option>
+                      <option :value="false">Mme</option>
+                    </b-select>
+                  </b-field>
+                </ValidationProvider>
+                <ValidationProvider rules="required"
+                                    v-slot="{ errors, valid }">
+                  <b-field :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.nom_prof"
+                             type="text"
+                             placeholder="Dupont">
+                    </b-input>
+                  </b-field>
+                </ValidationProvider>
               </b-field>
 
               <b-field grouped>
-                <b-field label="Mot de passe">
-                  <b-input v-model="form.password1"
-                           type="password"
-                           placeholder="Mot de passe"></b-input>
-                </b-field>
-
-                <b-field label="Confirmation du mot de passe">
-                  <b-input v-model="form.password2"
-                           type="password"
-                           @keydown.enter="validate"
-                           placeholder="Retape ton mot de passe"></b-input>
-                </b-field>
+                <ValidationProvider rules="required|email|unique_email"
+                                    ref="email_validator"
+                                    name="email1"
+                                    v-slot="{ errors, failed, valid, pending }">
+                  <b-field label="Ton adresse e-mail"
+                           :message="errors"
+                           :loading="pending"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.email1"
+                             placeholder="Example@domaine.fr"
+                             @input="reset_validation_email(failed) "></b-input>
+                  </b-field>
+                </ValidationProvider>
+                <ValidationProvider rules="required|same_email:@email1"
+                                    v-slot="{ errors, valid }">
+                  <b-field label="Confirmation"
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.email2"
+                             placeholder="Retape ton adresse e-mail..."></b-input>
+                  </b-field>
+                </ValidationProvider>
               </b-field>
 
-            </b-step-item>
-
-            <b-step-item label="Confirmation"
-                         :style="{'min-height': height}"
-                         clickable>
-              <hr>
-              <h1 class="title has-text-centered">Confirmation</h1>
-              <hr class="mb-10">
               <b-field grouped>
-                <b-field label="Classe">
-                  <b-select v-model="form.classe">
-                    <option v-for="(value, key) in classes"
-                            :value="key">{{value}}</option>
-                  </b-select>
-                </b-field>
-              </b-field>
-              <b-field grouped>
-                <b-field label="Nom de l'établissement fréquenté">
-                  <b-input v-model="form.etablissement"
-                           type="text"
-                           placeholder="Lycée Clément Marot">
-                  </b-input>
-                </b-field>
-              </b-field>
-              <b-field grouped>
-                <b-field label="Nom du professeur de mathématiques">
-                  <b-input v-model="form.prof"
-                           type="text"
-                           placeholder="Mme Durant ou M. Dupont">
-                  </b-input>
-                </b-field>
+                <ValidationProvider rules="required|min:6"
+                                    name="password1"
+                                    v-slot="{ errors, valid }">
+                  <b-field label="Ton mot de passe"
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.password1"
+                             type="password"
+                             placeholder="Mot de passe"></b-input>
+                  </b-field>
+                </ValidationProvider>
+                <ValidationProvider rules="required|same_password:@password1"
+                                    v-slot="{ errors, valid }">
+                  <b-field label="Confirmation"
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-input v-model="form.password2"
+                             type="password"
+                             @keydown.enter="validate"
+                             placeholder="Retape ton mot de passe..."></b-input>
+                  </b-field>
+                </ValidationProvider>
               </b-field>
 
-            </b-step-item>
-
-            <template slot="navigation"
-                      slot-scope="{previous, next}">
               <div class="has-text-centered">
-                <a role="button"
-                   class="pagination-previous"
-                   :disabled="previous.disabled"
-                   @click.prevent="previous.action">
-                  <b-icon icon="chevron-left" />
-                </a>
-                <a v-if="activeStep < 1"
-                   role="button"
-                   class="pagination-next"
-                   :disabled="next.disabled"
-                   @click.prevent="next.action">
-                  <b-icon icon="chevron-right" />
-                </a>
-                <a v-else
-                   role="button"
-                   class="pagination-next has-background-success has-text-white"
-                   type="is-success"
-                   @click.prevent="validate()">
-                  Créer le compte
-                </a>
+                <button class="button is-primary is-medium"
+                        type="submit">Valider</button>
               </div>
-            </template>
-          </b-steps>
-        </section>
 
-        <section class="card-footer">
-          <div class="card-footer-item has-text-centered">
-            Tu as déjà un compte ?
-            <router-link :to="{ name: 'login' }"
-                         style="padding-left: 0.3em;">
-              Connecte-toi ici.
-            </router-link>
-          </div>
-        </section>
+            </form>
+
+          </section>
+
+          <section class="card-footer">
+            <div class="card-footer-item has-text-centered">
+              Tu as déjà un compte ?
+              <router-link :to="{ name: 'login' }"
+                           style="padding-left: 0.3em;">
+                Connecte-toi ici.
+              </router-link>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
-  </div>
+  </ValidationObserver>
+
 </div>
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider } from "vee-validate";
 import classes from '@/data/classes.json'
+import etablissements from '@/data/etablissements.json'
+import usersService from "@/services/usersService"
+
 export default {
   name: "Register",
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   data() {
     return {
       classes: classes,
       height: "400px",
+      input_username: null,
 
       activeStep: null,
 
@@ -157,14 +232,39 @@ export default {
         password2: null,
         classe: null,
         etablissement: null,
-        prof: null,
+        sexe_prof: null,
+        nom_prof: null,
       },
+
+      etablissements: etablissements,
+      etablissement_items: [],
+      etablissement_input: '',
+      autocomplete_loading: false,
 
       error: false,
     }
   },
   methods: {
+    reset_validation_username(failed) {
+      if (failed) {
+        this.$refs.username_validator.reset()
+      }
+    },
+    reset_validation_email(failed) {
+      if (failed) {
+        this.$refs.email_validator.reset()
+      }
+    },
     validate() {
+      this.$refs.form.validate().then(success => {
+        this.input_username = this.form.username;
+        if (!success) {
+          return;
+        }
+        submit()
+      })
+    },
+    submit() {
       let email = this.form.email1.toLowerCase();
       const fd = new FormData()
       fd.append('username', this.form.username)
@@ -172,20 +272,32 @@ export default {
       fd.append('password', this.form.password1)
       fd.append('classe', parseInt(this.form.classe))
       fd.append('etablissement', this.form.etablissement)
-      fd.append('prof', this.form.prof)
+      fd.append('nom_prof', this.form.nom_prof)
+      fd.append('sexe_prof', this.form.sexe_prof)
       this.$store.dispatch("authentication/registerUser", fd)
         .then(res => {
           this.$router.push('/')
         }).catch(err => {
-          console.log(err)
           this.error = true;
         })
     },
+    filterEtablissements(v) {
+      this.etablissement_items = this.etablissements.filter(object => {
+        return (object.n || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .indexOf((v || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) > -1
+      });
+    },
   },
-  watch: {}
+  watch: {
+    etablissement_input: function(input) {
+      input && input.length > 5 && this.filterEtablissements(input);
+    }
+  }
 }
 </script>
 
 <style scoped>
-
+.field.is-grouped .field {
+  margin-right: 0.75rem;
+}
 </style>

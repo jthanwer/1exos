@@ -177,7 +177,6 @@ export default {
         const fd = new FormData()
         fd.append('enonce_id', this.correc.id)
         fd.append('file', this.correction_file)
-        console.log(this.correction_file)
         this.$store.dispatch('corrections/postCorrection', fd)
           .then(data => {
             this.modal_correction = false

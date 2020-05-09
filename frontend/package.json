@@ -15,7 +15,7 @@
     "core-js": "^2.6.11",
     "moment": "^2.24.0",
     "stripe": "^8.41.0",
-    "vee-validate": "^2.2.15",
+    "vee-validate": "^3.3.0",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.5.3",
     "vue-pdf": "^4.0.8",

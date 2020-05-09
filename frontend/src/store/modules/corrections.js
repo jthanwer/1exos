@@ -24,21 +24,16 @@ const actions = {
         let myCorrections = data.results
         commit('SET_MY_CORRECTIONS', myCorrections)
       })
-      .catch(error => {
-        console.log(error)
-      })
+      .catch(error => {})
   },
   postCorrection({ dispatch, commit }, newCorrection) {
     return new Promise((resolve, reject) => {
-      console.log(newCorrection)
       correctionsService.postCorrection(newCorrection)
         .then(data => {
           commit('POST_CORRECTION', data)
           resolve(data)
         })
-        .catch(error => {
-          console.log(error);
-        })
+        .catch(error => {})
     });
   },
   deleteCorrection({ dispatch, commit }, payload) {
@@ -46,9 +41,7 @@ const actions = {
       .then(data => {
         commit('DELETE_CORRECTION', payload.data_index)
       })
-      .catch(error => {
-        console.log(error)
-      })
+      .catch(error => {})
   },
   downloadFile({ dispatch }, exo) {
     correctionsService.downloadFile(exo.id)

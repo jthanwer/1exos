@@ -8,9 +8,8 @@
             Bienvenue sur 1Exo !
           </h1>
           <h2 class="mt-8 mb-15 subtitle">
-            1Exo est une base de données communautaire d'énoncés et
-            de corrections d'exercices de mathématiques accessibles par tous les élèves
-            du secondaire de France.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
+            aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
           </h2>
 
           <div class="columns">
@@ -27,7 +26,7 @@
             <div class="column is-6">
               <b-button v-if="!isAuthenticated"
                         tag="router-link"
-                        type="is-warning"
+                        type="is-info"
                         expanded
                         class="m-3"
                         size="is-large"

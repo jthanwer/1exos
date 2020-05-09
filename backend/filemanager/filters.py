@@ -4,10 +4,10 @@ from .models import Exercice
 
 
 class ExerciceFilter(filters.FilterSet):
-    posteur__prof = filters.CharFilter(lookup_expr='icontains')
+    posteur__nom_prof = filters.CharFilter(lookup_expr='icontains')
 
     class Meta:
         model = Exercice
-        fields = ['posteur__classe', 'posteur__prof', 'posteur__etablissement',
+        fields = ['posteur__classe', 'posteur__nom_prof', 'posteur__etablissement',
                   'category', 'livre', 'num_page', 'num_exo']
 

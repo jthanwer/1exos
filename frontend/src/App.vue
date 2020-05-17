@@ -41,7 +41,7 @@ html {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   /* text-align: center; */
   font-size: 1em;
-  background-color: #fdf8ef !important;
+  /* background-color: #fdf8ef !important; */
 }
 
 .app-container {

@@ -1,0 +1,13 @@
+{% autoescape off %}
+Salut {{ user.get_username }},
+
+Clique sur ce lien pour activer ton compte:
+http://localhost:8080{% url 'activate' uidb64=uid token=token %}
+
+Si tu n'as pas essayé de t'enregistrer sur le site 1Exo.com, ne tiens pas compte de cet e-mail.
+
+Merci d'utiliser notre site!
+
+L'équipe d'1Exo
+
+{% endautoescape %}

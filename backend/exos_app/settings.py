@@ -83,8 +83,6 @@ TEMPLATES = [
     },
 ]
 
-print(os.path.join(BASE_DIR, 'templates'))
-
 WSGI_APPLICATION = 'exos_app.wsgi.application'
 
 # Database
@@ -134,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 
@@ -149,13 +147,9 @@ USE_TZ = True
 
 # This line tells Django to append static
 # to the base url when searching for static files.
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../frontend/dist'),
-]
-
+STATIC_URL = '/api/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = []
 
 # Media files
 MEDIA_URL = '/media/'

@@ -48,12 +48,12 @@ extend("min", {
 
 extend('unique_user', {
   validate: isUnique('username'),
-  message: 'Ce pseudo est déjà utilisé'
+  message: 'Ce pseudo est déjà pris par un autre utilisateur'
 });
 
 extend('unique_email', {
   validate: isUnique('email'),
-  message: 'Cette adresse e-mail est déjà utilisée'
+  message: 'Cette adresse e-mail est déjà prise par un autre utilisateur'
 });
 
 extend('same_password', {

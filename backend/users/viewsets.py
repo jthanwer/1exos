@@ -1,17 +1,22 @@
 from rest_framework import generics, status, viewsets, filters
 from rest_framework.response import Response
 
-from rest_framework.permissions import AllowAny, IsAuthenticated, \
-    IsAdminUser
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, action
 
-from core.payment import stripe_validate_payment, \
-    stripe_create_payment
+from core.payment import stripe_validate_payment, stripe_create_payment
 
 from .models import CustomUser
 from .permissions import IsAdminOrIsSelf
 from .serializers import RegistrationSerializer, UserSerializer, \
-    PasswordChangeSerializer, UpdateUserSerializer
+    PasswordChangeSerializer, UpdateUserSerializer, PasswordResetSerializer
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.contrib.auth.tokens import default_token_generator
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -24,7 +29,9 @@ class UserViewSet(viewsets.ModelViewSet):
             return RegistrationSerializer
         elif self.action == 'update':
             return UpdateUserSerializer
-        elif self.action == 'set_password':
+        elif self.action == 'reset_password':
+            return PasswordResetSerializer
+        elif self.action == 'change_password':
             return PasswordChangeSerializer
         elif self.action == 'client_secret':
             return PaymentIntentSerializer
@@ -46,9 +53,20 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,
+            user = serializer.save(is_active=False)
+            current_site = get_current_site(request)
+            mail_subject = 'Active ton compte 1Exo'
+            message = render_to_string('registration/acc_active_email.html', {
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.id)),
+                'user': user,
+                'token': default_token_generator.make_token(user),
+            })
+            email = EmailMessage(mail_subject, message, to=[user.email])
+            email.send()
+            return Response(serializer.validated_data,
                             status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -63,7 +81,7 @@ class UserViewSet(viewsets.ModelViewSet):
                         status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
-    def set_password(self, request, pk=None):
+    def change_password(self, request, pk=None):
         user = self.get_object()
         serializer = PasswordChangeSerializer(data=request.data)
         if serializer.is_valid():
@@ -93,18 +111,15 @@ class UserViewSet(viewsets.ModelViewSet):
         data = request.data
         if 'email' in data:
             email = data['email']
-            print(email)
-            exists = CustomUser.objects.filter(email=email).exists()
-        elif 'username' in data:
-            username = data['username']
-            print(username)
-            exists = CustomUser.objects.filter(username=username).exists()
+            qs = CustomUser.objects.filter(email=email)
+            exists = qs.exists()
         else:
-            exists = True
-        if exists:
-            return Response({'unique': False},
-                            status=status.HTTP_200_OK)
-        return Response({'unique': True},
+            username = data['username']
+            qs = CustomUser.objects.filter(username=username)
+            exists = qs.exists()
+        is_active = qs[0].is_active if exists else True
+        return Response({'unique': not exists,
+                         'is_active': is_active},
                         status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])

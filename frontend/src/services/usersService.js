@@ -23,5 +23,8 @@ export default {
   check_credentials(payload) {
     return api.post("users/check_credentials/", payload)
       .then(response => response.data)
+  },
+  reset_password(payload) {
+    return api.post("accounts/password/reset/", payload)
   }
 };

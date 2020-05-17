@@ -38,7 +38,6 @@
                       </b-button>
                     </div>
                   </b-field>
-
                 </ValidationProvider>
               </b-field>
 
@@ -200,7 +199,6 @@
       </div>
     </div>
   </ValidationObserver>
-
 </div>
 </template>
 
@@ -224,16 +222,28 @@ export default {
 
       activeStep: null,
 
+      // form: {
+      //   username: null,
+      //   email1: null,
+      //   email2: null,
+      //   password1: null,
+      //   password2: null,
+      //   classe: null,
+      //   etablissement: null,
+      //   sexe_prof: null,
+      //   nom_prof: null,
+      // },
+
       form: {
-        username: null,
-        email1: null,
-        email2: null,
-        password1: null,
-        password2: null,
-        classe: null,
+        username: 'cassosdu34',
+        email1: 'cassosdu34@gmail.com',
+        email2: 'cassosdu34@gmail.com',
+        password1: 'Zdv:89??',
+        password2: 'Zdv:89??',
+        classe: 0,
         etablissement: null,
-        sexe_prof: null,
-        nom_prof: null,
+        sexe_prof: 0,
+        nom_prof: 'Dupont',
       },
 
       etablissements: etablissements,
@@ -265,6 +275,7 @@ export default {
       })
     },
     submit() {
+      this.form.etablissement = this.etablissement_input;
       let email = this.form.email1.toLowerCase();
       const fd = new FormData()
       fd.append('username', this.form.username)
@@ -276,7 +287,16 @@ export default {
       fd.append('sexe_prof', this.form.sexe_prof)
       this.$store.dispatch("authentication/registerUser", fd)
         .then(res => {
-          this.$router.push('/')
+          this.$buefy.dialog.alert({
+            title: 'Confirme ton adresse e-mail',
+            type: 'is-success',
+            message: `Merci d'avoir créé ton compte! <br>
+            <b>Un lien de confirmation</b> a été envoyé à l\'adresse e-mail
+            indiquée. <b>Clique sur ce lien</b> pour activer ton compte.<br>
+            Tu ne pourras pas te connecter avant d'avoir fait cela.`,
+            confirmText: 'OK',
+            onConfirm: () => this.$router.push('/')
+          })
         }).catch(err => {
           this.error = true;
         })

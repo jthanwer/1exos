@@ -37,7 +37,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       usersService.register(user)
         .then(data => {
-          dispatch("authRequest", user)
           resolve(data)
         })
         .catch(err => {

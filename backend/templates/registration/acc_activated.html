@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% if validlink %}
+Ton compte a été activé
+{% else %}
+Le lien est invalide
+{% endif %}
+
+{% endblock %}
+
+{% block subtitle %}
+{% if validlink %}
+Tu peux maintenant te connecter sur la page
+<a href="http://localhost:8080/se-connecter/">http://localhost:8080/se-connecter/</a>
+{% endif %}
+{% endblock %}

@@ -4,19 +4,40 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, action
 
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_text
 from django.views.decorators.debug import sensitive_post_parameters
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_decode
+from django.shortcuts import render
 
 from .models import CustomUser
 from .permissions import IsAdminOrIsSelf
 from .serializers import PasswordResetSerializer, PasswordResetConfirmSerializer
-
 
 sensitive_post_parameters_m = method_decorator(
     sensitive_post_parameters(
         'password', 'old_password', 'new_password1', 'new_password2'
     )
 )
+
+
+def activate(request, uidb64, token):
+    validlink = False
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(id=uid)
+    except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        validlink = True
+        user.is_active = True
+        user.save()
+    return render(request,
+                  'registration/acc_activated.html',
+                  {'validlink': validlink})
 
 
 class PasswordResetView(generics.GenericAPIView):
@@ -29,12 +50,9 @@ class PasswordResetView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
-        # Create a serializer with request.data
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         serializer.save()
-        # Return the success message with OK HTTP status
         return Response(
             {"detail": "L'email a été envoyé."},
             status=status.HTTP_200_OK

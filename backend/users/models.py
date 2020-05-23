@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from filemanager.models import Correction
+import core.constants as cst
 
 
 class CustomUser(AbstractUser):
-    tirelire = models.DecimalField(max_digits=5, decimal_places=2, default=3, blank=True)
+    tirelire = models.IntegerField(default=cst.START_POINTS, blank=True)
     classe = models.IntegerField(default=0)
     sexe_prof = models.BooleanField(default=True)
     nom_prof = models.CharField(max_length=100, default="Admin")

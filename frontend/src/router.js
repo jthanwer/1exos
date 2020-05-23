@@ -4,14 +4,15 @@ import axios from "axios";
 
 import Home from "@/views/Home.vue";
 import Search from "@/views/Search.vue";
-import Submit from "@/views/Submit.vue";
+import PostExo from "@/views/PostExo.vue";
+import PostExoWithCorrec from "@/views/PostExoWithCorrec.vue";
 import ExerciceDetail from "@/views/ExerciceDetail.vue";
 import CorrectionDetail from "@/views/CorrectionDetail.vue";
 import ExerciceCorrections from "@/views/ExerciceCorrections.vue";
 
 import Profile from "@/views/Profile.vue";
 import MoneyBox from "@/views/MoneyBox.vue";
-// import Recharge from "@/views/Recharge.vue";
+import Recharge from "@/views/Recharge.vue";
 import MyExercices from "@/views/MyExercices.vue";
 import MyCorrections from "@/views/MyCorrections.vue";
 
@@ -78,8 +79,14 @@ export default new Router({
     },
     {
       path: "/poster-un-enonce/",
-      name: "submit",
-      component: Submit,
+      name: "post-exo",
+      component: PostExo,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: "/poster-un-enonce-et-sa-correction/",
+      name: "post-exo-with-correc",
+      component: PostExoWithCorrec,
       beforeEnter: ifAuthenticated
     },
     {
@@ -94,12 +101,12 @@ export default new Router({
       component: MoneyBox,
       beforeEnter: ifAuthenticated
     },
-    // {
-    //   path: "/mon-compte/ma-tirelire/recharger/",
-    //   name: "recharge",
-    //   component: Recharge,
-    //   beforeEnter: ifAuthenticated
-    // },
+    {
+      path: "/mon-compte/ma-tirelire/recharger/",
+      name: "recharge",
+      component: Recharge,
+      beforeEnter: ifAuthenticated
+    },
     {
       path: "/mon-compte/mes-exercices/",
       name: "mes-exercices",

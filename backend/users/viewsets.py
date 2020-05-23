@@ -117,7 +117,7 @@ class UserViewSet(viewsets.ModelViewSet):
             username = data['username']
             qs = CustomUser.objects.filter(username=username)
             exists = qs.exists()
-        is_active = qs[0].is_active if exists else True
+        is_active = qs[0].is_active if exists else False
         return Response({'unique': not exists,
                          'is_active': is_active},
                         status=status.HTTP_200_OK)

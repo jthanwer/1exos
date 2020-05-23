@@ -105,12 +105,25 @@
                 <b-input v-model="form.posteur__etablissement"></b-input>
               </b-field>
               <b-field>
-                <b-checkbox v-model="filter.posteur__prof">
+                <b-checkbox v-model="filter.posteur__nom_prof">
                   Nom du prof
                 </b-checkbox>
               </b-field>
-              <b-field v-if="filter.posteur__prof">
-                <b-input v-model="form.posteur__prof"></b-input>
+              <b-field v-if="filter.posteur__nom_prof">
+                <b-input v-model="form.posteur__nom_prof"></b-input>
+              </b-field>
+            </b-menu-list>
+
+            <b-menu-list label="Corrections">
+              <b-field>
+                <b-checkbox v-model="filter.is_corrected">
+                  Exo corrigé/non-corrigé
+                </b-checkbox>
+              </b-field>
+              <b-field v-if="filter.is_corrected">
+                <b-switch v-model="form.is_corrected">
+                  {{ form.is_corrected ? 'Corrigé' : 'Non-Corrigé' }}
+                </b-switch>
               </b-field>
             </b-menu-list>
 
@@ -143,7 +156,7 @@
                         class="mt-5"
                         size="is-large"
                         icon-left="upload"
-                        :to="{name: 'submit'}">
+                        :to="{name: 'post-exo'}">
                 Poster un énoncé
               </b-button>
             </div>
@@ -194,7 +207,8 @@ export default {
         posteur_page: null,
         posteur_exo: null,
         posteur__etablissement: null,
-        posteur__prof: null,
+        posteur__nom_prof: null,
+        is_corrected: null
       },
 
       form: {
@@ -205,7 +219,8 @@ export default {
         num_page: null,
         num_exo: null,
         posteur__etablissement: null,
-        posteur__prof: null
+        posteur__nom_prof: null,
+        is_corrected: true
       }
     }
   },
@@ -213,7 +228,12 @@ export default {
     text_query: function() {
       let text = '?'
       for (let [key, value] of Object.entries(this.form)) {
-        if (value && this.filter[key]) {
+        if (value === '') {
+          this.form[key] = null
+        }
+      }
+      for (let [key, value] of Object.entries(this.form)) {
+        if (value !== null && this.filter[key]) {
           let encoded_value = encodeURI(value)
           text += `${key}=${encoded_value}&`
         }

@@ -195,7 +195,8 @@
               <p class="modal-card-title">Soumettre une correction</p>
             </header>
             <div class="modal-card-body">
-              <Upload v-model="correction_file" />
+              <Upload v-model="correction_file"
+                      :exo="false" />
               <b-button class="my-2"
                         expanded
                         type="is-primary"

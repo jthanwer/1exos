@@ -100,7 +100,7 @@ export default {
         },
         {
           title: 'Poster un énoncé',
-          path: 'submit',
+          path: 'post-exo',
           icon: 'upload'
         },
       ],

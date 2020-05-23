@@ -27,27 +27,43 @@
         </div>
       </div>
       <div class="media-right">
-        <b-tag v-if="exo.corrections.length === 0"
+        <b-tag v-if="exo.corrections.length === 0 && !delai_depasse"
                type="is-success"
-               size="is-medium">{{exo.prix}} pts</b-tag>
+               size="is-medium">
+          + {{exo.prix}} pts
+        </b-tag>
+        <b-tag v-else-if="exo.corrections.length === 0 && delai_depasse"
+               type="is-success"
+               size="is-medium">
+          + 1 pts
+        </b-tag>
       </div>
     </div>
     <div class="level">
       <div class="level-left">
         <div class="level-item">
-          <b-tag v-if="exo.corrections.length === 0"
+          <b-tag v-if="exo.corrections.length === 0 && !delai_depasse"
                  type="is-danger"
-                 size="is-medium">À corriger : il reste
-            <strong class="has-text-white">{{delai}}</strong> </b-tag>
+                 size="is-medium">
+            À corriger : il reste
+            <strong class="has-text-white">{{delai}}</strong>
+          </b-tag>
+          <b-tag v-else-if="exo.corrections.length === 0 && delai_depasse"
+                 type="is-danger"
+                 size="is-medium">
+            Le délai est dépassé
+          </b-tag>
           <b-tag v-else
                  type="is-success"
-                 size="is-medium">Corrigé</b-tag>
+                 size="is-medium">
+            Corrigé
+          </b-tag>
         </div>
       </div>
 
       <div class="level-right">
         <b-button type="is-info"
-                  :disabled="activated"
+                  :disabled="!activated"
                   size="is-medium"
                   icon-left="arrow-right"
                   @click="$router.push({name: 'exercice', params: {id: exo.id}})">
@@ -68,12 +84,13 @@ export default {
     exo: Object,
     activated: {
       type: Boolean,
-      default: false
+      default: true
     },
   },
   data() {
     return {
-      classes: classes
+      classes: classes,
+      delai_depasse: false,
     }
   },
   computed: {
@@ -81,7 +98,10 @@ export default {
       let date1 = moment()
       let date2 = moment(this.exo.date_limite)
       let diffHours = date2.diff(date1, 'hours');
-      if (diffHours < 24) {
+      if (diffHours < 0) {
+        this.delai_depasse = true
+      }
+      if (0 < diffHours < 24) {
         return diffHours.toString() + ' heures'
       } else {
         let diffDays = date2.diff(date1, 'days');

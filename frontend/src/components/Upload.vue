@@ -2,18 +2,29 @@
 <section>
   <b-field expanded>
     <b-upload :value="value"
+              expanded
               @input="$emit('input', $event)"
+              :type="{'is-danger': !value && error,
+              'is-success': value,
+              'is-primary': !value && !error}"
               drag-drop>
       <section class="section">
         <div class="content has-text-centered">
           <p>
-            <b-icon v-if="!value"
+            <b-icon v-if="!value && !error"
                     icon="upload"
                     size="is-large">
             </b-icon>
-            <b-icon v-else
+            <b-icon v-else-if="value"
                     icon="check"
                     class="has-background-success"
+                    style="border-radius: 50%;"
+                    type="is-white"
+                    size="is-large">
+            </b-icon>
+            <b-icon v-else
+                    icon="close"
+                    class="has-background-danger"
                     style="border-radius: 50%;"
                     type="is-white"
                     size="is-large">
@@ -21,22 +32,37 @@
           </p>
           <div v-if="!value">
             <p>
-              <strong>Glisse ton fichier (.pdf, .jpg, .png) </strong> dans cette zone <br>
+              <strong :class="{'has-text-danger': error}">
+                Glisse
+                <span v-if="exo">ton énoncé</span>
+                <span v-else>ta correction</span>
+                (.pdf, .jpg, .png) </strong> dans cette zone <br>
               ou <br>
-              <strong>Clique dessus</strong> pour choisir le fichier à importer
+              <strong :class="{'has-text-danger': error}">Clique dessus</strong> pour choisir le fichier à importer
             </p>
 
-            <p>
-              Si ton énoncé ou ta correction est composé de plusieurs fichiers, groupe-les d'abord
-              <strong>sous un même pdf</strong>. <br>
-              Nous n'acceptons que les fichiers uniques.
-            </p>
+            <div class="has-text-grey is-size-7">
+              <p>
+                Si
+                <span v-if="exo">
+                  <strong :class="{'has-text-danger': error}">ton énoncé</strong>
+                  est composé
+                </span>
+                <span v-else>
+                  <strong :class="{'has-text-danger': error}">ta correction</strong>
+                  est composée
+                </span>
+                de plusieurs fichiers, groupe-les d'abord
+                <strong>sous un même pdf</strong>. <br>
+                Nous n'acceptons que les fichiers uniques.
+              </p>
 
-            <p>
-              Dans le cas d'une photo, elle doit être <strong>bien cadrée</strong>
-              et le <strong>texte parfaitement lisible.</strong> <br>
-              Sinon, ton exo risque de ne pas être corrigé. Merci !
-            </p>
+              <p>
+                Dans le cas d'une photo, elle doit être <strong>bien cadrée</strong>
+                et le <strong>texte parfaitement lisible.</strong> <br>
+                Sinon, ton exo risque de ne pas être corrigé. Merci !
+              </p>
+            </div>
           </div>
 
           <b-tag v-else
@@ -61,7 +87,19 @@
 <script>
 export default {
   name: 'Upload',
-  props: ['value'],
+  props: {
+    'value': {
+      type: File
+    },
+    'error': {
+      type: Boolean,
+      default: false
+    },
+    'exo': {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
     return {}
   },
@@ -70,8 +108,7 @@ export default {
 </script>
 
 <style>
-.upload,
-.upload-draggable {
-  width: 100%;
+.help-box {
+  border: 1px dashed grey;
 }
 </style>

@@ -13,8 +13,8 @@ class Exercice(models.Model):
     livre = models.CharField(null=True, blank=True, max_length=100)
     num_page = models.IntegerField(null=True, blank=True)
     num_exo = models.IntegerField(null=True, blank=True)
-    prix = models.DecimalField(max_digits=5, decimal_places=2, default=1)
-    date_limite = models.DateTimeField()
+    prix = models.IntegerField(default=1)
+    date_limite = models.DateTimeField(default=timezone.now)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -29,7 +29,7 @@ class Correction(models.Model):
                                on_delete=models.CASCADE,
                                related_name='corrections')
     file = models.FileField(null=True, max_length=255)
-    prix = models.DecimalField(max_digits=5, decimal_places=2, default=1)
+    prix = models.IntegerField(default=1)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

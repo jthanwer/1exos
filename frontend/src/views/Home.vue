@@ -2,7 +2,7 @@
 <div>
   <div class="container">
     <div class="columns is-centered">
-      <div class="column is-8">
+      <div class="column is-10">
         <section class="is-bold">
           <h1 class="title is-1 has-text-centered">
             Bienvenue sur 1Exo !
@@ -16,7 +16,7 @@
             <div class="column is-6">
               <b-button v-if="!isAuthenticated"
                         tag="router-link"
-                        type="is-success"
+                        type="is-warning"
                         expanded
                         class="m-3"
                         size="is-large"
@@ -26,7 +26,7 @@
             <div class="column is-6">
               <b-button v-if="!isAuthenticated"
                         tag="router-link"
-                        type="is-info"
+                        type="is-warning"
                         expanded
                         class="m-3"
                         size="is-large"
@@ -35,24 +35,40 @@
             </div>
           </div>
 
-          <div class="columns is-centered">
+          <div class="columns is-centered is-multiline">
             <div class="column is-6">
               <b-button tag="router-link"
-                        type="is-primary"
+                        type="is-success"
                         class="m-3"
                         expanded
                         size="is-large"
                         icon-left="magnify"
-                        :to="{name: 'search'}">Rechercher un exo</b-button>
+                        :to="{name: 'search'}">
+                Rechercher un exo
+              </b-button>
             </div>
+          </div>
+          <div class="columns is-centered is-multiline">
             <div class="column is-6">
               <b-button tag="router-link"
-                        type="is-secondary"
+                        type="is-primary"
                         expanded
                         class="m-3"
                         size="is-large"
                         icon-left="upload"
-                        :to="{name: 'submit'}">Poster un exo</b-button>
+                        :to="{name: 'post-exo'}">Poster un exo
+              </b-button>
+            </div>
+            <div class="column is-6">
+              <b-button tag="router-link"
+                        type="is-primary"
+                        expanded
+                        class="m-3"
+                        size="is-large"
+                        icon-left="upload"
+                        :to="{name: 'post-exo-with-correc'}">
+                Poster un exo et sa correction
+              </b-button>
             </div>
           </div>
 

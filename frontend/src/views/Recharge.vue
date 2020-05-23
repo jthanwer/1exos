@@ -12,106 +12,205 @@
           <b-step-item label="Montant"
                        :style="{'min-height': height}"
                        clickable>
-            <hr>
-            <h1 class="title has-text-centered">Montant</h1>
-            <hr class="mb-10">
-            <b-field position="is-centered">
-              <b-radio-button v-model="amount"
-                              native-value="5"
-                              :disabled="specific_amount"
-                              size='is-large'
-                              type="is-info">
-                <span>5 pts</span>
-              </b-radio-button>
-              <b-radio-button v-model="amount"
-                              native-value="10"
-                              :disabled="specific_amount"
-                              size='is-large'
-                              type="is-info">
-                <span>10 pts</span>
-              </b-radio-button>
-              <b-radio-button v-model="amount"
-                              native-value="15"
-                              :disabled="specific_amount"
-                              size='is-large'
-                              type="is-info">
-                <span>15 pts</span>
-              </b-radio-button>
-              <b-radio-button v-model="amount"
-                              native-value="20"
-                              :disabled="specific_amount"
-                              size='is-large'
-                              type="is-info">
-                <span>20 pts</span>
-              </b-radio-button>
-              <b-button @click="specific_amount = !specific_amount"
-                        class="ml-2"
-                        size='is-large'
-                        :type="{'is-info': specific_amount}">
-                <span>Autre montant</span>
-              </b-button>
-            </b-field>
+            <ValidationObserver ref="firstStep">
+              <hr>
+              <h1 class="title has-text-centered">Montant</h1>
+              <hr class="mb-5">
 
-            <b-field v-if="specific_amount"
-                     position="is-centered">
-              <b-input size="is-large"
-                       v-model="amount"
-                       placeholder="Entrez le montant voulu">
-              </b-input>
-              <p class="control">
-                <span class="button is-large is-static">pts</span>
-              </p>
-            </b-field>
+              <div class="columns is-vcentered">
+                <div class="column is-4">
+                  <div class="has-text-centered">
+                    <div class="box has-background-primary has-text-centered"
+                         style="display: inline-block;">
+                      <span class="has-text-centered title is-5 my-4 has-text-white">
+                        1 € = 4 pts
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column is-8">
+                  <div class="primary-border">
+                    <b-field position="is-centered">
+                      <b-radio-button v-model="amount"
+                                      :native-value="5"
+                                      :disabled="specific_amount"
+                                      size='is-large'
+                                      type="is-info">
+                        <span>5 €</span>
+                      </b-radio-button>
+                      <b-radio-button v-model="amount"
+                                      :native-value="10"
+                                      :disabled="specific_amount"
+                                      size='is-large'
+                                      type="is-info">
+                        <span>10 €</span>
+                      </b-radio-button>
+                      <b-radio-button v-model="amount"
+                                      :native-value="20"
+                                      :disabled="specific_amount"
+                                      size='is-large'
+                                      type="is-info">
+                        <span>20 €</span>
+                      </b-radio-button>
+                      <b-radio-button v-model="amount"
+                                      :native-value="50"
+                                      :disabled="specific_amount"
+                                      size='is-large'
+                                      type="is-info">
+                        <span>50 €</span>
+                      </b-radio-button>
+                      <b-radio-button v-model="amount"
+                                      :native-value="100"
+                                      :disabled="specific_amount"
+                                      size='is-large'
+                                      type="is-info">
+                        <span>100 €</span>
+                      </b-radio-button>
+                    </b-field>
+                    <p class=" mb-1 mt-4 has-text-centered subtitle">
+                      <span class="has-text-weight-bold">
+                        {{amount}} €
+                      </span>
+                      = {{gross_amount_points}} pts + {{bonus_points}} pts bonus
+                      =
+                      <span class="has-text-weight-bold has-text-danger">
+                        {{net_amount_points}} pts
+                      </span>
+                    </p>
+                  </div>
+
+                  <div class="primary-border mt-5">
+                    <b-field class="has-text-centered">
+                      <b-button @click="specific_amount = !specific_amount"
+                                class="ml-2"
+                                size='is-large'
+                                :type="{'is-info': specific_amount}">
+                        <span class="has-text-weight-bold">Autre montant ?</span>
+                      </b-button>
+                    </b-field>
+
+
+                    <ValidationProvider rules="integer"
+                                        v-slot="{ errors }">
+                      <b-field position="is-centered"
+                               grouped>
+
+                        <b-field :message="errors"
+                                 :type="{ 'is-danger': errors[0] }">
+                          <b-input size="is-medium"
+                                   :disabled="!specific_amount"
+                                   v-model="amount"
+                                   placeholder="Entrez le montant voulu">
+                          </b-input>
+                        </b-field>
+                        <p class="control">
+                          <span class="button is-medium is-static">€</span>
+                        </p>
+                      </b-field>
+                    </ValidationProvider>
+
+                  </div>
+                </div>
+              </div>
+              <hr>
+            </ValidationObserver>
           </b-step-item>
 
           <b-step-item :style="{'min-height': height}"
                        label="Informations bancaires"
                        clickable>
-            <hr>
-            <h1 class="title has-text-centered"> Informations bancaires</h1>
-            <hr>
-            <b-field label="Numéro de carte">
-              <div v-model="card_number"
-                   class="m-3"
-                   ref="card-number"></div>
-            </b-field>
+            <ValidationObserver ref="secondStep">
+              <hr>
+              <h1 class="title has-text-centered">Informations bancaires</h1>
+              <hr>
+              <div class="columns is-vcentered">
 
-            <b-field grouped>
-              <b-field label="Nom (sur la carte bancaire)">
-                <b-input v-model="last_name"></b-input>
-              </b-field>
-              <b-field label="Prénom">
-                <b-input v-model="first_name"></b-input>
-              </b-field>
-              <b-field label="Code postal">
-                <b-input v-model="postal_code"></b-input>
-              </b-field>
-            </b-field>
+                <div class="column is-4">
+                  <div class="has-text-centered mb-5">
+                    <div class="box has-background-primary has-text-centered"
+                         style="display: inline-block;">
+                      <span class="has-text-centered title is-5 my-4 has-text-white">
+                        {{amount}} € = {{net_amount_points}} pts
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-            <b-field label="Date d'expiration">
-              <div v-model="card_expiry"
-                   class="m-3"
-                   ref="card-expiry"></div>
-            </b-field>
+                <div class="column is-8">
+                  <b-field label="Numéro de carte bancaire"
+                           :type="{ 'is-danger': stripeErrors.card_number}"
+                           :message="stripeErrors.card_number">
+                    <div ref="card-number"></div>
+                  </b-field>
 
-            <b-field label="CVC">
-              <div v-model="card_cvc"
-                   class="m-3"
-                   ref="card-cvc"></div>
-            </b-field>
+                  <b-field grouped>
+                    <ValidationProvider rules="required"
+                                        v-slot="{ errors, valid }">
+                      <b-field label="Nom (sur la carte bancaire)"
+                               :message="errors"
+                               :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                        <b-input v-model="last_name"></b-input>
+                      </b-field>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required"
+                                        v-slot="{ errors, valid }">
+                      <b-field label="Prénom"
+                               :message="errors"
+                               :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                        <b-input v-model="first_name"></b-input>
+                      </b-field>
+                    </ValidationProvider>
+                    <ValidationProvider rules="required"
+                                        v-slot="{ errors, valid }">
+                      <b-field label="Code postal"
+                               :message="errors"
+                               :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                        <b-input v-model="postal_code"></b-input>
+                      </b-field>
+                    </ValidationProvider>
+                  </b-field>
+
+                  <b-field label="Date d'expiration"
+                           :message="stripeErrors.card_expiry"
+                           :type="{ 'is-danger': stripeErrors.card_expiry}">
+                    <div ref="card-expiry"></div>
+                  </b-field>
+
+                  <b-field label="CVC (3 ou 4 chiffres)"
+                           :message="stripeErrors.card_cvc"
+                           :type="{ 'is-danger': stripeErrors.card_cvc}">
+                    <div ref="card-cvc"></div>
+                  </b-field>
+
+                </div>
+              </div>
+              <hr>
+            </ValidationObserver>
           </b-step-item>
 
-          <b-step-item label="Confirmation"
+          <b-step-item label="Résumé"
                        :style="{'min-height': height}">
             <hr>
-            <h1 class="title has-text-centered">Confirmation</h1>
+            <h1 class="title has-text-centered">Résumé</h1>
             <hr>
-            <div class="columns is-centered">
-              <div class="column is-6">
-                <p v-if="user"
-                   class="subtitle">Utilisateur : <span class="is-pulled-right">{{user.username}}</span></p>
-                <p class="subtitle">Montant : <span class="is-pulled-right">{{amount}} pts</span></p>
-              </div>
+            <div class="has-text-centered">
+              <b-icon class="my-5 has-background-success has-text-white icon-rounded"
+                      size="is-large"
+                      icon="check"></b-icon>
+              <p v-if="user"
+                 class="subtitle">
+                <span class="has-text-weight-bold">{{user.username}}</span>,
+                ta cagnotte a été créditée de {{net_amount_points}} pts !
+              </p>
+              <p>Merci pour ton achat !</p>
+              <b-button tag="router-link"
+                        type="is-success"
+                        class="m-3"
+                        icon-left="home"
+                        :to="{name: 'home'}">
+                Revenir à l'accueil
+              </b-button>
             </div>
 
           </b-step-item>
@@ -119,8 +218,9 @@
           <template slot="navigation"
                     slot-scope="{previous, next}">
             <div class="has-text-centered">
-              <a role="button"
-                 class="pagination-previous"
+              <a v-if="activeStep != 2"
+                 role="button"
+                 class="button pagination-previous is-medium"
                  :disabled="previous.disabled"
                  @click.prevent="previous.action">
                 <b-icon icon="chevron-left" />
@@ -128,22 +228,16 @@
               <a v-if="activeStep == 0"
                  role="button"
                  :disabled="!amount"
-                 class="pagination-next has-background-info has-text-white"
-                 @click.prevent="confirmAmount(next)">
-                Valider le montant
+                 class="button pagination-next is-medium has-background-success has-text-white"
+                 @click.prevent="goNext(next, activeStep)">
+                Valider le montant de {{amount}} €
               </a>
               <a v-else-if="activeStep == 1"
                  role="button"
-                 class="pagination-next has-background-info has-text-white"
+                 class="button pagination-next is-medium has-background-success has-text-white"
                  :disabled="next.disabled"
-                 @click.prevent="next.action">
-                Voir le résumé
-              </a>
-              <a v-else
-                 role="button"
-                 class="pagination-next has-background-success has-text-white"
-                 @click.prevent="confirmPayment()">
-                Valider le paiement
+                 @click.prevent="goNext(next, activeStep)">
+                Payer {{amount}} €
               </a>
             </div>
           </template>
@@ -155,6 +249,7 @@
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { mapState } from 'vuex';
 import usersService from '@/services/usersService';
 let stripe = Stripe('pk_test_IXadVylpLM9tE8ENmliIkZHB00vhacO7Tu')
@@ -163,7 +258,6 @@ var styles = {
   base: {
     iconColor: '#F99A52',
     color: '#32315E',
-    lineHeight: '48px',
     fontWeight: 400,
     fontFamily: '"Open Sans", "Helvetica Neue", "Helvetica", sans-serif',
     fontSize: '15px',
@@ -176,15 +270,19 @@ var styles = {
 
 export default {
   name: "Recharge",
+  components: {
+    ValidationObserver,
+    ValidationProvider
+  },
   data() {
     return {
       height: '300px',
       activeStep: 0,
 
       specific_amount: false,
-      amount: null,
+      amount: 5,
       last_name: 'Thanwerdas',
-      first_name: 'Joel',
+      first_name: '',
       postal_code: 92160,
 
       is_loading: false,
@@ -194,26 +292,82 @@ export default {
 
       card_number: null,
       card_expiry: null,
-      card_cvc: null
+      card_cvc: null,
+
+      stripeErrors: {
+        card_number: 'Ce champ est requis',
+        card_expiry: 'Ce champ est requis',
+        card_cvc: 'Ce champ est requis',
+      }
     }
   },
   mounted() {
     var elements = stripe.elements()
     this.card_number = elements.create('cardNumber', { style: styles })
-    this.card_expiry = elements.create('cardExpiry')
-    this.card_cvc = elements.create('cardCvc')
+    this.card_expiry = elements.create('cardExpiry', { style: styles })
+    this.card_cvc = elements.create('cardCvc', { style: styles })
     this.card_number.mount(this.$refs['card-number']);
     this.card_expiry.mount(this.$refs['card-expiry']);
     this.card_cvc.mount(this.$refs['card-cvc']);
+    this.listenForErrors();
   },
   computed: {
-    ...mapState('authentication', ['user'])
+    ...mapState('authentication', ['user']),
+    gross_amount_points() {
+      return this.amount * 4
+    },
+    bonus_points() {
+      return Math.floor(this.amount * 4 * 0.2)
+    },
+    net_amount_points() {
+      return Math.floor(this.amount * 4 * 1.2)
+    }
   },
   methods: {
+    listenForErrors() {
+      const vm = this
+      this.card_number.addEventListener('change', function(event) {
+        vm.toggleError('card_number', event);
+      })
+      this.card_expiry.addEventListener('change', function(event) {
+        vm.toggleError('card_expiry', event);
+      })
+      this.card_cvc.addEventListener('change', function(event) {
+        vm.toggleError('card_cvc', event);
+      })
+    },
+    toggleError(type, event) {
+      if (event.error) {
+        this.stripeErrors[type] = event.error.message;
+      } else {
+        this.stripeErrors[type] = '';
+      }
+    },
+    goNext(next, activeStep) {
+      switch (activeStep) {
+        case 0:
+          this.$refs.firstStep.validate()
+            .then(success => {
+              if (success) {
+                this.confirmAmount(next)
+              }
+            })
+          break
+        case 1:
+          this.$refs.secondStep.validate()
+            .then(success => {
+              let se = this.stripeErrors
+              let cond = !se['card_number'] && !se['card_expiry'] && !se['card_cvc']
+              if (success && cond) {
+                this.confirmPayment(next)
+              }
+            })
+      }
+    },
     confirmAmount(next) {
       next.action()
       let payload = {
-        amount: parseFloat(this.amount),
+        amount: parseInt(this.amount),
         currency: 'eur',
       }
       usersService.stripe_createPaymentIntent(payload)
@@ -221,7 +375,19 @@ export default {
           this.payment_id = data.id;
         })
     },
-    confirmPayment() {
+    confirmPayment(next) {
+      this.$buefy.dialog.confirm({
+        title: 'Confirmer le paiement',
+        message: `Es-tu sûr de vouloir payer <strong>${this.amount} €</strong> ? <br>
+        Ta cagnotte sera créditée de <strong>${this.net_amount_points} pts.</strong> `,
+        cancelText: 'Annuler',
+        confirmText: 'Confirmer',
+        type: 'is-warning',
+        hasIcon: true,
+        onConfirm: () => this.Pay(next)
+      })
+    },
+    Pay(next) {
       this.is_loading = true
       let data = {
         type: 'card',
@@ -242,8 +408,20 @@ export default {
           usersService.stripe_validatePayment(payload)
             .then(response => {
               this.handleServerResponse(response)
+              next.action()
             })
         })
+        .catch((err) => {
+          this.is_loading = false
+          this.$buefy.toast.open({
+            duration: 5000,
+            message: `Le paiment n'a pas abouti !
+                    Ta carte n'a pas été débitée. <br>
+                    Vérifie les informations données.`,
+            type: 'is-danger'
+          })
+        })
+
     },
     handleServerResponse(response) {
       if (response.data.requires_action) {
@@ -256,11 +434,9 @@ export default {
             this.$buefy.toast.open({
               duration: 3000,
               message: `Le paiment a bien été effectué !
-                      Ta tirelire a été créditée. <br>
-                      Tu es maintenant redirigé.`,
+                      Ta tirelire a été créditée. <br>`,
               type: 'is-success'
             })
-            setTimeout(() => this.$router.push({ name: 'tirelire' }), 1000);
           })
       }
     },
@@ -275,7 +451,7 @@ export default {
           this.$buefy.toast.open({
             duration: 5000,
             message: `Le paiment n'a pas abouti !
-                    Ta carte n'a pas été créditée. <br>
+                    Ta carte n'a pas été débitée. <br>
                     Vérifie les informations données.`,
             type: 'is-danger'
           })
@@ -285,11 +461,15 @@ export default {
 }
 </script>
 
-<style>
-div.StripeElement {
-  border-radius: 4px;
-  border: 1px solid #dbdbdb !important;
-  -webkit-box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
-  height: 40px;
+<style lang="scss">
+.StripeElement {
+    padding: calc(0.6em - 1px) calc(0.625em - 1px);
+    border-radius: 4px;
+    border: 1px solid #dbdbdb !important;
+    -webkit-box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1) !important;
+}
+
+.field.is-grouped .field {
+    margin-right: 0.75rem;
 }
 </style>

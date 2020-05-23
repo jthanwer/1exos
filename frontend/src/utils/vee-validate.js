@@ -1,4 +1,4 @@
-import { required, min, email } from "vee-validate/dist/rules";
+import { required, min, email, integer } from "vee-validate/dist/rules";
 import { extend } from "vee-validate";
 import { setInteractionMode } from 'vee-validate';
 import { localize } from 'vee-validate';
@@ -35,6 +35,12 @@ extend("required", {
   ...required,
   message: "Ce champ est requis"
 });
+
+extend("integer", {
+  ...integer,
+  message: "Le nombre doit être un entier"
+});
+
 
 extend("email", {
   ...email,

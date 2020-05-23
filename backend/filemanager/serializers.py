@@ -57,7 +57,7 @@ class CorrectionSerializer(serializers.ModelSerializer):
 
 
 class UnlockCorrectionSerializer(serializers.Serializer):
-    prix = serializers.DecimalField(max_digits=5, decimal_places=2)
+    prix = serializers.IntegerField()
 
     def validate_prix(self, value):
         return value

@@ -4,6 +4,8 @@ Main SCSS file / Fresh
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
 
+$body-family: "Balsamiq Sans";
+
 // Colors
 $primary: #0D47A1;
 $primary-invert: findColorInvert($primary);
@@ -32,11 +34,9 @@ $link-focus-border: $primary;
 // Partials scss
 @import 'partials/navbar';
 @import 'partials/modals';
-@import 'partials/forms';
 @import 'partials/cards';
 
-@import 'partials/profile';
-@import 'partials/contents';
+@import 'partials/icons';
 
 @import 'partials/helpers';
 @import 'partials/transitions';

@@ -1,9 +1,15 @@
 from rest_framework.response import Response
 from rest_framework import status
 from users.serializers import PaymentIntentSerializer
+import core.constants as cst
 
 import stripe
 import decimal
+
+
+def euros2points(amount_euros):
+    amount_points = amount_euros * cst.CHANGE * (1 + cst.BONUS)
+    return amount_points
 
 
 def stripe_create_payment(request):
@@ -35,7 +41,9 @@ def stripe_validate_payment(request):
         )
 
     if intent.status == 'succeeded':
-        user.tirelire += decimal.Decimal(intent.amount) / decimal.Decimal(100)
+        amount_euros = int(intent.amount / 100)
+        amount_points = euros2points(amount_euros)
+        user.tirelire += amount_points
         user.save()
         return Response(status=status.HTTP_200_OK)
 

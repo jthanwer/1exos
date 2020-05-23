@@ -15,7 +15,7 @@ from .serializers import ExerciceSerializer, CorrectionSerializer, \
 from .models import Exercice, Correction
 from .filters import ExerciceFilter
 
-from datetime import datetime, timezone
+import core.fluxes as fluxes
 
 
 class PassthroughRenderer(renderers.BaseRenderer):
@@ -116,22 +116,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
             serializer.validated_data['file'].name = 'Correction.' + extension
         correction = serializer.save(correcteur=correcteur)
 
-        exercice = correction.enonce
-        posteur = exercice.posteur
-
-        now = datetime.now(timezone.utc)
-        condition = posteur != correcteur and \
-                    now < exercice.date_limite and \
-                    len(exercice.corrections.all()) == 1
-        if condition:
-            posteur.tirelire -= exercice.prix
-            correcteur.tirelire += exercice.prix
-        else:
-            correcteur.tirelire += 3
-        correcteur.correc.add(correction)
-        posteur.correc.add(correction)
-        posteur.save()
-        correcteur.save()
+        fluxes.submit_correction(correction)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

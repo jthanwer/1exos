@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.utils.translation import gettext_lazy as _
 from filemanager.models import Correction
 import core.constants as cst
 
 
 class CustomUser(AbstractUser):
+    email = models.EmailField('email', max_length=150, unique=True,
+                              error_messages={
+                                  'unique': _("A user with that email already exists.")
+                              })
     tirelire = models.IntegerField(default=cst.START_POINTS, blank=True)
     classe = models.IntegerField(default=0)
     sexe_prof = models.BooleanField(default=True)

@@ -16,7 +16,7 @@
               <b-field grouped>
                 <ValidationProvider class="is-flex"
                                     ref="username_validator"
-                                    rules="required|unique_user"
+                                    rules="required|unique_username"
                                     v-slot="{ errors, valid, failed, pending, failedRules }">
                   <b-field label="Ton pseudo"
                            :message="errors"
@@ -28,7 +28,7 @@
                              placeholder="xxXLeMatheuxXxx">
                     </b-input>
                   </b-field>
-                  <b-field v-if="failedRules.hasOwnProperty('unique_user')"
+                  <b-field v-if="failedRules.hasOwnProperty('unique_username')"
                            :label="'Tu es ' +  input_username + ' ?'"
                            addons>
                     <div class="control">

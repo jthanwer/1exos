@@ -16,11 +16,12 @@ const api = axios.create({
 
 api.interceptors.response.use(undefined, err => {
   let res = err.response;
-  console.log(res)
   if (res.status === 401 && res.config) {
     store.dispatch('authentication/authLogout');
   } else {
-    reject(error);
+    return new Promise((resolve, reject) => {
+      reject(err);
+    })
   }
 })
 

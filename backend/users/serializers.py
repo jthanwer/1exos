@@ -28,6 +28,14 @@ class UserSerializer(serializers.ModelSerializer):
                   'tirelire', 'correc')
 
 
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email',
+                  'classe', 'etablissement',
+                  'nom_prof', 'sexe_prof')
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     is_active = serializers.BooleanField(read_only=True)
@@ -55,34 +63,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True)
-
-
-class UpdateUserSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150, allow_blank=True)
-    email = serializers.EmailField(max_length=254, allow_blank=True)
-
-    def update(self, instance, validated_data):
-        username = validated_data.get('username', '')
-        email = validated_data.get('email', '')
-        self.check_unicity_username(instance, username)
-        self.check_unicity_email(instance, email)
-
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        return instance
-
-    def check_unicity_username(self, instance, value):
-        if CustomUser.objects.filter(username=value).exists() and not \
-                instance.username == value:
-            error = 'Ce pseudo est déjà pris par un autre utilisateur'
-            raise serializers.ValidationError(error)
-
-    def check_unicity_email(self, instance, value):
-        if CustomUser.objects.filter(email=value).exists() and not \
-                instance.email == value:
-            error = 'Cette adresse e-mail est déjà prise par un autre utilisateur'
-            raise serializers.ValidationError(error)
 
 
 class PaymentIntentSerializer(serializers.Serializer):

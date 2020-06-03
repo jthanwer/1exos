@@ -65,8 +65,7 @@
 
           <b-step-item id="secondStep"
                        label="Prix et Délai"
-                       :style="{'min-height': height}"
-                       clickable>
+                       :style="{'min-height': height}">
             <ValidationObserver ref="secondStep">
               <hr>
               <h1 class="title has-text-centered">Prix et Délai</h1>
@@ -95,14 +94,13 @@
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-datetimepicker v-model="form.date_limite"
                                       placeholder="Choisir une date limite"
-                                      :month-names="month_names"
                                       :min-datetime="minDatetime"
                                       icon="calendar-today"
                                       horizontal-time-picker>
                     </b-datetimepicker>
                   </b-field>
                   <div class="is-size-7">
-                    <p>Combien de temps es-tu prêt à laisser pour que la correction soit postée ?</p>
+                    <p>Jusqu'à quand es-tu prêt à attendre pour obtenir la correction ?</p>
                     <p>Renseigne une date et une heure limites.</p>
                   </div>
                 </ValidationProvider>
@@ -113,8 +111,7 @@
           <b-step-item id="thirdStep1"
                        v-if="!form.is_from_livre"
                        :style="{'min-height': height}"
-                       label="Énoncé"
-                       clickable>
+                       label="Énoncé">
             <ValidationObserver ref="thirdStep">
               <hr>
               <h1 class="title has-text-centered">Énoncé</h1>
@@ -130,8 +127,7 @@
           <b-step-item id="thirdStep2"
                        v-else
                        :style="{'min-height': height}"
-                       label="Manuel"
-                       clickable>
+                       label="Manuel">
             <ValidationObserver ref="thirdStep">
               <hr>
               <h1 class="title has-text-centered">Manuel</h1>
@@ -275,7 +271,7 @@ export default {
         num_page: this.form.livre.num_page,
         num_exo: this.form.livre.num_exo,
         prix: this.form.prix,
-        date_limite: this.date_limite,
+        date_limite: moment(this.form.date_limite).toISOString(true),
         date_created: moment(),
         corrections: [],
       }

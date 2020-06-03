@@ -11,11 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import dj_database_url
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -24,12 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', '0j(tt(%#edg&@11_#*0svn5s@710q781t)g&$@74o4q2cf-(7)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ.get('ENV') == 'PRODUCTION':
-    DEBUG = False
-    ALLOWED_HOSTS = ['161.35.84.142', 'localhost', '0.0.0.0']
-else:
-    DEBUG = True
-    ALLOWED_HOSTS = ['192.168.0.16', '161.35.84.142', '0.0.0.0', 'localhost']
+DEBUG = True
+ALLOWED_HOSTS = ['192.168.0.16', '161.35.84.142', '0.0.0.0', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -88,28 +84,16 @@ WSGI_APPLICATION = 'exos_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-if os.environ.get('ENV') == 'PRODUCTION':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'db_exos',
-            'USER': 'jthanwer',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '5432',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'db_exos',
+        'USER': 'jthanwer',
+        'PASSWORD': 'Zdv:45??',
+        'HOST': '',
+        'PORT': '5432',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'db_exos',
-            'USER': 'jthanwer',
-            'PASSWORD': 'Zdv:45??',
-            'HOST': '',
-            'PORT': '5432',
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -186,14 +170,6 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# Webpack-loader
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'dist/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json')
-    }
-}
 
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
-

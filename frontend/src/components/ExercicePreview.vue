@@ -21,7 +21,8 @@
           <span class="title is-3 has-text-grey">{{exo.id}}.
           </span> {{exo.type}} (enoncé sur feuille)
         </p>
-        <div class="subtitle is-size-6">
+        <div v-if="exo.posteur"
+             class="subtitle is-size-6">
           <p>Posté par <strong>{{exo.posteur.username}}</strong> le {{exo.date_created | dateFormatter}}</p>
           <p>Niveau : {{classes[exo.posteur.classe]}}</p>
         </div>
@@ -62,13 +63,15 @@
       </div>
 
       <div class="level-right">
-        <b-button type="is-info"
-                  :disabled="!activated"
-                  size="is-medium"
-                  icon-left="arrow-right"
-                  @click="$router.push({name: 'exercice', params: {id: exo.id}})">
-          Voir
-        </b-button>
+        <div class="level-item">
+          <b-button type="is-info"
+                    :disabled="!activated"
+                    size="is-medium"
+                    icon-left="arrow-right"
+                    @click="$router.push({name: 'exercice', params: {id: exo.id}})">
+            Voir
+          </b-button>
+        </div>
       </div>
     </div>
   </div>
@@ -100,8 +103,10 @@ export default {
       let diffHours = date2.diff(date1, 'hours');
       if (diffHours < 0) {
         this.delai_depasse = true
-      }
-      if (0 < diffHours < 24) {
+      } else if (diffHours < 1) {
+        let diffMinutes = date2.diff(date1, 'minutes');
+        return diffMinutes.toString() + ' minutes'
+      } else if (diffHours < 48) {
         return diffHours.toString() + ' heures'
       } else {
         let diffDays = date2.diff(date1, 'days');

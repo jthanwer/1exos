@@ -52,7 +52,7 @@ extend("min", {
   message: "Ce champ doit contenir au moins {length} caractères"
 });
 
-extend('unique_user', {
+extend('unique_username', {
   validate: isUnique('username'),
   message: 'Ce pseudo est déjà pris par un autre utilisateur'
 });

@@ -73,14 +73,17 @@ const actions = {
   getProfileUser({ commit, getters }) {
     if (getters.isAuthenticated) {
       return new Promise((resolve, reject) => {
-        usersService.getProfileUser()
+        usersService.get_profile()
           .then(data => {
             commit("SET_USER", data);
             resolve(data);
           })
       })
     }
-  }
+  },
+  updateProfileUser({ commit, getters }, updated_user) {
+    commit("SET_USER", updated_user);
+  },
 }
 export default {
   namespaced: true,

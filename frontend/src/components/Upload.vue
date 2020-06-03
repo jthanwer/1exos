@@ -4,9 +4,7 @@
     <b-upload :value="value"
               expanded
               @input="$emit('input', $event)"
-              :type="{'is-danger': !value && error,
-              'is-success': value,
-              'is-primary': !value && !error}"
+              :type="type_upload"
               drag-drop>
       <section class="section">
         <div class="content has-text-centered">
@@ -102,6 +100,17 @@ export default {
   },
   data() {
     return {}
+  },
+  computed: {
+    type_upload() {
+      if (!this.value && this.error) {
+        return 'is-danger'
+      } else if (this.value) {
+        return 'is-success'
+      } else {
+        return 'is-primary'
+      }
+    }
   },
   methods: {},
 }

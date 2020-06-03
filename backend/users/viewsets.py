@@ -27,7 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'create':
             return RegistrationSerializer
-        elif self.action == 'update':
+        elif self.action in ['update', 'partial_update']:
             return UpdateUserSerializer
         elif self.action == 'reset_password':
             return PasswordResetSerializer
@@ -70,41 +70,49 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, pk=None):
-        user = self.get_object()
-        serializer = UpdateUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.update(user, serializer.validated_data)
-            return Response(serializer.data,
-                            status=status.HTTP_205_RESET_CONTENT)
-        return Response(serializer.errors,
-                        status=status.HTTP_400_BAD_REQUEST)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        user = request.user
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        instance = self.get_object()
+        password = request.data.pop('password', '')
+        for key in request.data:
+            if key in ['username', 'email']:
+                if not user.check_password(password):
+                    return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-    @action(detail=True, methods=['post'])
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+    @action(detail=False, methods=['post'])
     def change_password(self, request, pk=None):
-        user = self.get_object()
+        user = request.user
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         serializer = PasswordChangeSerializer(data=request.data)
-        if serializer.is_valid():
-            old_pw = serializer.validated_data.get('old_password', '')
-            if user.check_password(old_pw):
-                new_pw = serializer.validated_data['new_password']
-                user.set_password(new_pw)
-                user.save()
-                return Response(status=status.HTTP_205_RESET_CONTENT)
-            else:
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        old_pw = serializer.validated_data.get('old_password', '')
+        if not user.check_password(old_pw):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        new_pw = serializer.validated_data['new_password']
+        user.set_password(new_pw)
+        user.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
 
     @action(detail=False)
     def my_profile(self, request):
         user = request.user
-        if user.is_authenticated:
-            serializer = UserSerializer(request.user)
-            return Response(serializer.data,
-                            status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data,
+                        status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def check_credentials(self, request):

@@ -9,8 +9,12 @@ export default {
     return api.post("users/", user)
       .then(response => response.data);
   },
-  getProfileUser(username) {
+  get_profile() {
     return api.get("users/my_profile/")
+      .then(response => response.data);
+  },
+  update_profile(id, payload) {
+    return api.patch(`users/${id}/`, payload)
       .then(response => response.data);
   },
   stripe_createPaymentIntent(payload) {
@@ -23,6 +27,9 @@ export default {
   check_credentials(payload) {
     return api.post("users/check_credentials/", payload)
       .then(response => response.data)
+  },
+  change_password(payload) {
+    return api.post("users/change_password/", payload)
   },
   reset_password(payload) {
     return api.post("accounts/password/reset/", payload)

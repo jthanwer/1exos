@@ -1,5 +1,7 @@
 <template>
 <div class="container is-fluid">
+  <b-loading is-full-page
+             :active.sync="is_loading"></b-loading>
   <ValidationObserver ref="form"
                       v-slot="{ handleSubmit }">
 
@@ -219,6 +221,7 @@ export default {
       classes: classes,
       height: "400px",
       input_username: null,
+      is_loading: false,
 
       activeStep: null,
 
@@ -263,6 +266,7 @@ export default {
       })
     },
     submit() {
+      this.is_loading = true;
       this.form.etablissement = this.etablissement_input;
       let email = this.form.email1.toLowerCase();
       const fd = new FormData()
@@ -275,6 +279,7 @@ export default {
       fd.append('sexe_prof', this.form.sexe_prof)
       this.$store.dispatch("authentication/registerUser", fd)
         .then(res => {
+          this.is_loading = false;
           this.$buefy.dialog.alert({
             title: 'Confirme ton adresse e-mail',
             type: 'is-success',

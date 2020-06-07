@@ -14,8 +14,6 @@ import os
 from datetime import timedelta
 from . import *
 
-print('PRODUCTION')
-
 DEBUG = False
 ALLOWED_HOSTS = ['161.35.84.142', 'localhost', '0.0.0.0']
 

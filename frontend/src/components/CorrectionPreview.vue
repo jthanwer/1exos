@@ -11,12 +11,8 @@
         <b-icon icon="lock-open"></b-icon>
       </div>
       <div class="media-content">
-        <p class="title is-4">
-          n° {{correc.enonce.num_page}} p. {{correc.enonce.num_exo}} - {{correc.enonce.livre}}
-        </p>
         <div class="subtitle is-size-6">
           <p>Posté par <strong>{{correc.enonce.posteur.username}}</strong> le {{correc.date_created | dateFormatter}}</p>
-          <p>Niveau : {{classes[correc.enonce.posteur.classe]}}</p>
         </div>
       </div>
       <div class="media-right">

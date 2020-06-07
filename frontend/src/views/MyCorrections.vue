@@ -22,7 +22,7 @@
            :key="correc.id">
         <CorrectionPreview :correc="correc"
                            :user="user"
-                           :unlocked="true"></CorrectionPreview>
+                           :unlocked="false"></CorrectionPreview>
       </div>
     </div>
   </div>

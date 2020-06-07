@@ -11,36 +11,36 @@ os.system('python manage.py reset_db')
 os.system('python manage.py makemigrations')
 os.system('python manage.py migrate')
 
-user1 = CustomUser.objects.create_user(username="cassosdu46",
-                                       email="joel.thanwerdas@gmail.com",
-                                       password="Zdv:89??",
-                                       classe=1,
-                                       sexe_prof=0,
-                                       nom_prof="Durant",
-                                       etablissement="Lycée Clément Marot",
-                                       is_active=True)
-
-user2 = CustomUser.objects.create_user(username="cassosdu45",
-                                       email="cassosdu45@gmail.com",
-                                       password="Zdv:89??",
-                                       classe=1,
-                                       sexe_prof=1,
-                                       nom_prof="Durant",
-                                       etablissement="Lycée Clément Marot",
-                                       is_active=True)
-
-
-for i in range(10):
-    Exercice.objects.create(posteur=user1,
-                            niveau=user1.classe,
-                            category='Test',
-                            type='Exo simple',
-                            livre='Sesameth',
-                            num_page=2 * i,
-                            num_exo=i,
-                            prix=4 * i,
-                            date_limite=dt.datetime(2021, 5, 31),
-                            )
+# user1 = CustomUser.objects.create_user(username="cassosdu46",
+#                                        email="joel.thanwerdas@gmail.com",
+#                                        password="Zdv:89??",
+#                                        classe=1,
+#                                        sexe_prof=0,
+#                                        nom_prof="Durant",
+#                                        etablissement="Lycée Clément Marot",
+#                                        is_active=True)
+#
+# user2 = CustomUser.objects.create_user(username="cassosdu45",
+#                                        email="cassosdu45@gmail.com",
+#                                        password="Zdv:89??",
+#                                        classe=1,
+#                                        sexe_prof=1,
+#                                        nom_prof="Durant",
+#                                        etablissement="Lycée Clément Marot",
+#                                        is_active=True)
+#
+#
+# for i in range(10):
+#     Exercice.objects.create(posteur=user1,
+#                             niveau=user1.classe,
+#                             category='Test',
+#                             type='Exo simple',
+#                             livre='Sesameth',
+#                             num_page=2 * i,
+#                             num_exo=i,
+#                             prix=4 * i,
+#                             date_limite=dt.datetime(2021, 5, 31),
+#                             )
 
 # data_user1= dict(username="cassosdu46",
 #                   email="joel.thanwerdas@gmail.com",

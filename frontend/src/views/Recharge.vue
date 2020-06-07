@@ -281,9 +281,9 @@ export default {
 
       specific_amount: false,
       amount: 5,
-      last_name: 'Thanwerdas',
-      first_name: '',
-      postal_code: 92160,
+      last_name: null,
+      first_name: null,
+      postal_code: null,
 
       is_loading: false,
 

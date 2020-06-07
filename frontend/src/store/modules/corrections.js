@@ -2,27 +2,40 @@ import api from "@/services/api";
 import correctionsService from "@/services/correctionsService";
 
 const state = {
-  myCorrections: []
+  postedCorrections: [],
+  unlockedCorrections: []
 };
 
 const mutations = {
-  SET_MY_CORRECTIONS(state, exercices) {
-    state.myCorrections = exercices
+  SET_POSTED_CORRECTIONS(state, corrections) {
+    state.postedCorrections = corrections
   },
   POST_CORRECTION(state, newCorrection) {
-    state.myCorrections.push(newCorrection)
+    state.postedCorrections.push(newCorrection)
   },
   DELETE_CORRECTION(state, data_index) {
-    state.myCorrections.splice(data_index, 1)
+    state.postedCorrections.splice(data_index, 1)
+  },
+  SET_UNLOCKED_CORRECTIONS(state, corrections) {
+    state.unlockedCorrections = corrections
+  },
+  UNLOCK_CORRECTION(state, correction) {
+    state.unlockedCorrections.push(correction)
   }
 };
 
 const actions = {
-  loadMyCorrections({ commit }) {
-    correctionsService.getMyCorrections()
+  loadPostedCorrections({ commit }) {
+    correctionsService.getMyPostedCorrections()
       .then(data => {
-        let myCorrections = data.results
-        commit('SET_MY_CORRECTIONS', myCorrections)
+        commit('SET_POSTED_CORRECTIONS', data.results)
+      })
+      .catch(error => {})
+  },
+  loadUnlockedCorrections({ commit }) {
+    correctionsService.getMyUnlockedCorrections()
+      .then(data => {
+        commit('SET_UNLOCKED_CORRECTIONS', data.results)
       })
       .catch(error => {})
   },

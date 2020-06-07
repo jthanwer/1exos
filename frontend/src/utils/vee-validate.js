@@ -1,4 +1,4 @@
-import { required, min, email, integer } from "vee-validate/dist/rules";
+import { required, min, min_value, max_value, email, integer } from "vee-validate/dist/rules";
 import { extend } from "vee-validate";
 import { setInteractionMode } from 'vee-validate';
 import { localize } from 'vee-validate';
@@ -50,6 +50,16 @@ extend("email", {
 extend("min", {
   ...min,
   message: "Ce champ doit contenir au moins {length} caractères"
+});
+
+extend("min_value", {
+  ...min_value,
+  message: "Le nombre entré doit être supérieur ou égal à {min}"
+});
+
+extend("max_value", {
+  ...max_value,
+  message: "Le nombre entré doit être inférieur ou égal à {max}"
 });
 
 extend('unique_username', {

@@ -70,19 +70,19 @@
               <hr>
               <h1 class="title has-text-centered">Prix et Délai</h1>
               <hr>
-              <b-field grouped>
-                <ValidationProvider rules="required"
+              <b-field v-if="user"
+                       grouped>
+                <ValidationProvider :rules="{'required': true, 'min_value': 1, 'max_value': user.tirelire, 'integer': true}"
                                     v-slot="{ errors, valid }">
                   <b-field label="Prix"
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-numberinput v-model="form.prix"
-                                   :min="1">
+                                   :min="1"
+                                   :max="user.tirelire"
+                                   placeholder="Choisir un prix">
                     </b-numberinput>
                   </b-field>
-                  <div class="is-size-7">
-                    Combien de points es-tu prêt à donner pour obtenir la correction de ton exo ?
-                  </div>
                 </ValidationProvider>
               </b-field>
 
@@ -99,10 +99,6 @@
                                       horizontal-time-picker>
                     </b-datetimepicker>
                   </b-field>
-                  <div class="is-size-7">
-                    <p>Jusqu'à quand es-tu prêt à attendre pour obtenir la correction ?</p>
-                    <p>Renseigne une date et une heure limites.</p>
-                  </div>
                 </ValidationProvider>
               </b-field>
             </ValidationObserver>
@@ -153,7 +149,8 @@
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-numberinput v-model="form.livre.num_page"
-                                   :min="1"></b-numberinput>
+                                   :min="1"
+                                   placeholder="Choisir un numéro de page"></b-numberinput>
                   </b-field>
                 </ValidationProvider>
               </b-field>
@@ -164,7 +161,8 @@
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-numberinput v-model="form.livre.num_exo"
-                                   :min="1"></b-numberinput>
+                                   :min="1"
+                                   placeholder="Choisir un numéro d'exo"></b-numberinput>
                   </b-field>
                 </ValidationProvider>
               </b-field>
@@ -250,11 +248,11 @@ export default {
         is_from_livre: false,
         livre: {
           name: null,
-          num_page: 1,
-          num_exo: 1
+          num_page: null,
+          num_exo: null
         },
-        date_limite: new Date(),
-        prix: 2,
+        date_limite: null,
+        prix: null,
       }
     }
   },

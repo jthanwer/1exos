@@ -140,8 +140,25 @@
 
     <div class="column is-9">
       <div class="container is-fluid">
-        <div class="columns is-multiline">
+        <div v-if="(result_files.length > 0)"
+             class="column is-12">
+          <b-pagination :total="count_elements"
+                        :current.sync="current_page"
+                        range-before="1"
+                        range-after="1"
+                        order="is-right"
+                        size="is-medium"
+                        per-page="5"
+                        icon-prev="chevron-left"
+                        icon-next="chevron-right"
+                        aria-next-label="Next page"
+                        aria-previous-label="Previous page"
+                        aria-page-label="Page"
+                        aria-current-label="Current page">
+          </b-pagination>
+        </div>
 
+        <div class="columns is-multiline">
           <div v-if="(result_files.length == 0) && (used_search)"
                class="column is-12">
             <div class="box has-text-centered">
@@ -170,8 +187,29 @@
             <ExercicePreview :exo="exo"></ExercicePreview>
           </div>
 
+          <div v-if="(result_files.length > 0)"
+               class="column is-12">
+            <b-pagination :total="count_elements"
+                          :current.sync="current_page"
+                          range-before="1"
+                          range-after="1"
+                          order="is-right"
+                          size="is-medium"
+                          per-page="5"
+                          icon-prev="chevron-left"
+                          icon-next="chevron-right"
+                          aria-next-label="Next page"
+                          aria-previous-label="Previous page"
+                          aria-page-label="Page"
+                          aria-current-label="Current page">
+            </b-pagination>
+          </div>
         </div>
+
+
       </div>
+
+
     </div>
 
 
@@ -221,7 +259,10 @@ export default {
         posteur__etablissement: null,
         posteur__nom_prof: null,
         is_corrected: true
-      }
+      },
+
+      count_elements: 0,
+      current_page: 1,
     }
   },
   computed: {
@@ -238,7 +279,8 @@ export default {
           text += `${key}=${encoded_value}&`
         }
       }
-      return text.slice(0, -1)
+      text += `page=${this.current_page}`
+      return text
     }
   },
   methods: {
@@ -246,12 +288,18 @@ export default {
       this.used_search = true
       exercicesService.searchExercices(this.text_query)
         .then((data) => {
+          this.count_elements = data.count
           this.result_files = []
           this.result_files.push(...data.results)
           this.used_search = true
         })
     },
   },
+  watch: {
+    current_page(val) {
+      this.searchExercices()
+    }
+  }
 }
 </script>
 

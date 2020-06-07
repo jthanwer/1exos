@@ -125,56 +125,24 @@
         </div>
       </div>
       <div>
-        <div v-if="exo">
-          <b-button v-if="!correc_id"
-                    class="mt-6"
-                    expanded
-                    size="is-large"
-                    type="is-danger">
-            Aucune correction disponible
-          </b-button>
-          <b-button v-else-if="user && correc_id && user.correc.includes(correc_id)"
-                    class="mt-6"
-                    expanded
-                    size="is-large"
-                    type="is-info"
-                    icon-left="arrow-right"
-                    @click="$router.push({name: 'correction', params: {id: correc_id}})">
-            Voir la correction
-          </b-button>
-          <b-button v-else
-                    class="mt-6"
-                    expanded
-                    size="is-large"
-                    type="is-warning"
-                    icon-left="lock"
-                    @click="confirm_unlock_modal = true">
-            Débloquer la correction ({{correc_prix}} pts)
-          </b-button>
-          <b-modal :active.sync="confirm_unlock_modal"
-                   has-modal-card
-                   trap-focus
-                   aria-role="dialog"
-                   aria-modal>
-            <div class="modal-card"
-                 style="width: auto">
-              <header class="modal-card-head">
-                <p class="modal-card-title">Confirmer le prélèvement</p>
-              </header>
-              <div class="modal-card-body">
-                Es-tu sûr de vouloir prélever le montant de {{correc_prix}} pts sur
-                ta tirelire ? <br> Il te restera {{user.tirelire - correc_prix}} pts.
-              </div>
-              <footer class="modal-card-foot">
-                <b-button @click="confirm_modal = false">Annuler</b-button>
-                <b-button @click="collectAndUnlock()"
-                          type="is-success">Confirmer</b-button>
-              </footer>
-            </div>
-          </b-modal>
+        <div class="card mt-6"
+             v-if="exo">
+          <header class="card-header">
+            <p v-if="correc"
+               class="card-header-title has-background-success has-text-white">
+              Une correction disponible
+            </p>
+            <p v-else
+               class="card-header-title has-background-danger has-text-white">
+              Aucune correction disponible
+            </p>
+          </header>
+          <CorrectionPreview v-if="correc"
+                             :correc="correc"
+                             :user="user"
+                             :unlocked="user && correc.id && user.correc.includes(correc.id)" />
         </div>
-        <b-button class="
-                    mt-6"
+        <b-button class="mt-6"
                   expanded
                   type="is-primary"
                   size="is-large"
@@ -216,6 +184,7 @@
 <script>
 import pdf from 'vue-pdf'
 import Upload from '@/components/Upload.vue'
+import CorrectionPreview from '@/components/CorrectionPreview.vue'
 import classes from '@/data/classes.json'
 import correctionsService from '@/services/correctionsService'
 import exercicesService from "@/services/exercicesService"
@@ -224,7 +193,8 @@ export default {
   name: "ExerciceDetail",
   components: {
     pdf,
-    Upload
+    Upload,
+    CorrectionPreview
   },
   props: {
     id: [Number, String]
@@ -236,7 +206,8 @@ export default {
       modal_correction: false,
       correction_file: null,
 
-      confirm_unlock_modal: false,
+      correc: null,
+
       correc_id: null,
       correc_prix: null,
 
@@ -256,11 +227,13 @@ export default {
   methods: {
     updateExo() {
       exercicesService.getExercice(this.id)
-        .then(data => {
-          this.exo = data
-          if (data.corrections.length > 0) {
-            this.correc_id = data.corrections[0]['id']
-            this.correc_prix = data.corrections[0]['prix']
+        .then(exo => {
+          this.exo = exo
+          if (exo.corrections.length > 0) {
+            correctionsService.getCorrection(exo.corrections[0]['id'])
+              .then(correc => {
+                this.correc = correc
+              })
           }
         })
     },
@@ -279,14 +252,6 @@ export default {
       } else {
         alert("Aucun fichier sélectionné")
       }
-    },
-    collectAndUnlock() {
-      this.confirm_unlock_modal = false
-      let payload = { 'prix': this.correc_prix }
-      correctionsService.collectAndUnlock(this.correc_id, payload)
-        .then(data => {
-          this.$store.dispatch('authentication/getProfileUser')
-        })
     },
     downloadFile() {
       this.$store.dispatch('exercices/downloadFile', this.exo)

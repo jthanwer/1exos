@@ -222,28 +222,16 @@ export default {
 
       activeStep: null,
 
-      // form: {
-      //   username: null,
-      //   email1: null,
-      //   email2: null,
-      //   password1: null,
-      //   password2: null,
-      //   classe: null,
-      //   etablissement: null,
-      //   sexe_prof: null,
-      //   nom_prof: null,
-      // },
-
       form: {
-        username: 'cassosdu34',
-        email1: 'cassosdu34@gmail.com',
-        email2: 'cassosdu34@gmail.com',
-        password1: 'Zdv:89??',
-        password2: 'Zdv:89??',
-        classe: 0,
+        username: null,
+        email1: null,
+        email2: null,
+        password1: null,
+        password2: null,
+        classe: null,
         etablissement: null,
-        sexe_prof: 0,
-        nom_prof: 'Dupont',
+        sexe_prof: null,
+        nom_prof: null,
       },
 
       etablissements: etablissements,

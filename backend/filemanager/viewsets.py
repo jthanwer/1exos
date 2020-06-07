@@ -11,7 +11,7 @@ from django.http import Http404, FileResponse
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .serializers import ExerciceSerializer, CorrectionSerializer, \
-    UnlockCorrectionSerializer, PreviewCorrectionSerializer
+    PreviewCorrectionSerializer
 from .models import Exercice, Correction
 from .filters import ExerciceFilter
 
@@ -46,7 +46,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
             name_file = serializer.validated_data['file'].name
             extension = name_file.split('.')[-1]
             serializer.validated_data['file'].name = 'Exercice.' + extension
-        serializer.save(posteur=user)
+        serializer.save(posteur=user, niveau=user.classe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
@@ -137,7 +137,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         return response
 
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
-    def my_corrections(self, request):
+    def my_posted_corrections(self, request):
         user = request.user
         queryset = Correction.objects.filter(correcteur=user)
 
@@ -149,15 +149,26 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=False, permission_classes=[AllowAny])
+    def my_unlocked_corrections(self, request):
+        user = request.user
+        queryset = Correction.objects.filter(buyers=user).exclude(correcteur=user)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     @action(methods=['post'], detail=True, permission_classes=[AllowAny],
-            serializer_class=UnlockCorrectionSerializer, parser_classes=[JSONParser])
+            parser_classes=[JSONParser])
     def collect_unlock(self, request, pk=None):
         correction = self.get_object()
         user = request.user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        prix = serializer.validated_data.get('prix', 0)
-        user.correc.add(correction)
-        user.tirelire -= prix
-        user.save()
-        return Response(status.HTTP_200_OK)
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        if not fluxes.buy_correction(user, correction):
+            return Response(status=status.HTTP_402_PAYMENT_REQUIRED)
+        return Response(status=status.HTTP_200_OK)

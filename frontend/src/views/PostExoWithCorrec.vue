@@ -225,8 +225,8 @@ export default {
         is_from_livre: false,
         livre: {
           name: null,
-          num_page: 1,
-          num_exo: 1
+          num_page: null,
+          num_exo: null
         },
       }
     }

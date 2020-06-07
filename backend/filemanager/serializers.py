@@ -12,7 +12,7 @@ class PreviewCorrectionSerializer(serializers.ModelSerializer):
 
 class ExerciceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
-    # size = serializers.SerializerMethodField()
+    niveau = serializers.IntegerField(read_only=True)
     corrections = PreviewCorrectionSerializer(many=True, read_only=True)
     name = serializers.SerializerMethodField()
     filetype = serializers.SerializerMethodField()
@@ -54,10 +54,3 @@ class CorrectionSerializer(serializers.ModelSerializer):
             filename = obj.file.name
             return filename.split('.')[-1]
         return None
-
-
-class UnlockCorrectionSerializer(serializers.Serializer):
-    prix = serializers.IntegerField()
-
-    def validate_prix(self, value):
-        return value

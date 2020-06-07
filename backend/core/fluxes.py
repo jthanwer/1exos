@@ -20,3 +20,14 @@ def submit_correction(correction):
     posteur.save()
     correcteur.save()
 
+
+def buy_correction(user, correction):
+    prix = correction.prix
+    if user.tirelire >= prix:
+        user.correc.add(correction)
+        user.tirelire -= prix
+        user.save()
+        return True
+    else:
+        return False
+

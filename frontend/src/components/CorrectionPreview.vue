@@ -20,16 +20,6 @@
         </div>
       </div>
       <div class="media-right">
-        <b-tag v-if="!unlocked"
-               type="is-info"
-               size="is-medium">Prix : {{correc.prix}} pts</b-tag>
-      </div>
-    </div>
-    <div class="level">
-      <div class="level-left">
-      </div>
-
-      <div class="level-right">
         <b-button v-if="unlocked"
                   type="is-success"
                   size="is-medium"
@@ -40,30 +30,9 @@
         <b-button v-else
                   type="is-warning"
                   icon-left="lock-open"
-                  @click="confirm_modal = true">
-          Débloquer
+                  @click="confirmUnlock()">
+          Débloquer ({{correc.prix}} pts)
         </b-button>
-        <b-modal :active.sync="confirm_modal"
-                 has-modal-card
-                 trap-focus
-                 aria-role="dialog"
-                 aria-modal>
-          <div class="modal-card"
-               style="width: auto">
-            <header class="modal-card-head">
-              <p class="modal-card-title">Confirmer le prélèvement</p>
-            </header>
-            <div class="modal-card-body">
-              Es-tu sûr de vouloir prélever le montant de {{correc.prix}} pts sur
-              ta tirelire ? <br> Il te restera {{user.tirelire - correc.prix}} pts.
-            </div>
-            <footer class="modal-card-foot">
-              <b-button @click="confirm_modal = false">Annuler</b-button>
-              <b-button @click="confirmUnlock(correc.id, correc.prix)"
-                        type="is-success">Confirmer</b-button>
-            </footer>
-          </div>
-        </b-modal>
       </div>
     </div>
   </div>
@@ -87,21 +56,41 @@ export default {
   data() {
     return {
       classes: classes,
-      confirm_modal: false
     }
   },
   methods: {
-    confirmUnlock(correc_id, prix) {
-      this.confirm_modal = false
-      this.collectAndUnlock(correc_id, prix)
+    confirmUnlock() {
+      if (this.user.tirelire >= this.correc.prix) {
+        this.$buefy.dialog.confirm({
+          title: 'Confirmer le prélèvement',
+          message: `Es-tu sûr de vouloir prélever le montant de ${this.correc.prix} pts sur
+                  ta tirelire ? <br> Il te restera ${this.user.tirelire - this.correc.prix} pts.`,
+          confirmText: 'Confirmer',
+          cancelText: 'Annuler',
+          type: 'is-warning',
+          hasIcon: true,
+          onConfirm: () => this.collectAndUnlock()
+        })
+      } else {
+        this.$buefy.dialog.confirm({
+          title: 'Pas assez de crédit',
+          message: `Tu n'as pas assez de crédit sur ta cagnotte pour acheter cette correction.`,
+          type: 'is-danger',
+          hasIcon: true,
+          cancelText: 'Fermer',
+          confirmText: 'Recharge ta cagnotte',
+          onConfirm: () => this.$router.push({ 'name': 'tirelire' })
+        })
+      }
+
     },
-    collectAndUnlock(correc_id, prix) {
-      let payload = { 'prix': prix }
-      correctionsService.collectAndUnlock(correc_id, payload)
+    collectAndUnlock() {
+      let payload = { 'prix': this.correc.prix }
+      correctionsService.collectAndUnlock(this.correc.id, payload)
         .then(data => {
           this.$store.dispatch('authentication/getProfileUser')
         })
-    }
+    },
   },
 }
 </script>

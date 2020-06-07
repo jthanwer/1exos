@@ -31,12 +31,12 @@
         <b-tag v-if="exo.corrections.length === 0 && !delai_depasse"
                type="is-success"
                size="is-medium">
-          + {{exo.prix}} pts
+          {{exo.prix}} pts
         </b-tag>
         <b-tag v-else-if="exo.corrections.length === 0 && delai_depasse"
                type="is-success"
                size="is-medium">
-          + 1 pts
+          1 pts
         </b-tag>
       </div>
     </div>
@@ -101,7 +101,7 @@ export default {
       let date1 = moment()
       let date2 = moment(this.exo.date_limite)
       let diffHours = date2.diff(date1, 'hours');
-      if (diffHours < 0) {
+      if (diffHours <= 0) {
         this.delai_depasse = true
       } else if (diffHours < 1) {
         let diffMinutes = date2.diff(date1, 'minutes');

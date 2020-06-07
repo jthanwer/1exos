@@ -1,8 +1,12 @@
 import api from "@/services/api";
 
 export default {
-  getMyCorrections() {
-    return api.get('corrections/my_corrections/')
+  getMyPostedCorrections() {
+    return api.get('corrections/my_posted_corrections/')
+      .then(response => response.data);
+  },
+  getMyUnlockedCorrections() {
+    return api.get('corrections/my_unlocked_corrections/')
       .then(response => response.data);
   },
   getCorrection(id) {

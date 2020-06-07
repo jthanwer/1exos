@@ -1,7 +1,9 @@
 from django.test import TestCase
 from users.models import CustomUser
 from users.viewsets import *
+from filemanager.models import Exercice
 import os
+import datetime as dt
 
 os.system('rm -f ./filemanager/migrations/00*')
 os.system('rm -f ./users/migrations/00*')
@@ -26,6 +28,19 @@ user2 = CustomUser.objects.create_user(username="cassosdu45",
                                        nom_prof="Durant",
                                        etablissement="Lycée Clément Marot",
                                        is_active=True)
+
+
+for i in range(10):
+    Exercice.objects.create(posteur=user1,
+                            niveau=user1.classe,
+                            category='Test',
+                            type='Exo simple',
+                            livre='Sesameth',
+                            num_page=2 * i,
+                            num_exo=i,
+                            prix=4 * i,
+                            date_limite=dt.datetime(2021, 5, 31),
+                            )
 
 # data_user1= dict(username="cassosdu46",
 #                   email="joel.thanwerdas@gmail.com",

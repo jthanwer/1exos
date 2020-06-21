@@ -52,7 +52,6 @@
                  :src="exo.file"
                  :page="page"
                  :rotate="rotate"
-                 @progress="loadedRatio = $event"
                  @num-pages="numPages = $event"></pdf>
           </div>
         </div>
@@ -61,22 +60,23 @@
           <div class="level">
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Manuel</p>
-                <p class="title is-5">{{exo.livre}}</p>
+                <p class="heading">Numéro</p>
+                <p class="title is-5">{{exo.num_exo}}</p>
               </div>
             </div>
-          </div>
-          <div class="level">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Page</p>
                 <p class="title is-5">{{exo.num_page}}</p>
               </div>
             </div>
+          </div>
+          <div class="level">
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Numéro</p>
-                <p class="title is-5">{{exo.num_exo}}</p>
+                <img style="height: 400px;"
+                     :src="require('@/assets/images/livres/' + exo.livre + '.jpg')"
+                     alt="Image indisponible" />
               </div>
             </div>
           </div>
@@ -96,20 +96,13 @@
               <p class="heading">Le</p>
               <p class="title is-5">{{exo.date_created | dateFormatter}}</p>
             </div>
-            <div class="column is-12 has-text-centered mt-6">
-              <p class="heading">Catégorie</p>
-              <p class="title is-5">{{exo.category}}</p>
-            </div>
-            <div class="column is-6 has-text-centered">
+            <div class="column is-12 has-text-centered">
               <p class="heading">Niveau</p>
               <p class="title is-5">{{classes[exo.posteur.classe]}}</p>
             </div>
-            <div class="column is-6 has-text-centered">
-              <p class="heading">Difficulté</p>
-              <b-rate v-model="mark"
-                      style="justify-content: center;"
-                      :max="5"
-                      :disabled="true"></b-rate>
+            <div class="column is-12 has-text-centered mt-6">
+              <p class="heading">Chapitre</p>
+              <p class="title is-5">{{exo.chapitre}}</p>
             </div>
           </div>
           <div>

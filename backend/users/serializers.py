@@ -15,25 +15,27 @@ class BasicUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'classe', 'is_active',
-                  'etablissement', 'nom_prof', 'sexe_prof')
+                  'nom_etablissement', 'ville_etablissement',
+                  'nom_prof', 'prefix_prof')
 
 
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('pk', 'username', 'email', 'is_active',
-                  'classe', 'etablissement',
-                  'nom_prof', 'sexe_prof',
+        fields = ('pk', 'username', 'email',
+                  'is_active', 'classe',
+                  'nom_etablissement', 'ville_etablissement',
+                  'nom_prof', 'prefix_prof',
                   'tirelire', 'correc')
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email',
-                  'classe', 'etablissement',
-                  'nom_prof', 'sexe_prof')
+        fields = ('username', 'email', 'classe',
+                  'nom_etablissement', 'ville_etablissement',
+                  'nom_prof', 'prefix_prof')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -43,8 +45,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password', 'is_active',
-                  'classe', 'etablissement',
-                  'nom_prof', 'sexe_prof')
+                  'classe', 'nom_etablissement', 'ville_etablissement',
+                  'nom_prof', 'prefix_prof')
 
     def save(self, **kwargs):
         cleaned_data = {
@@ -52,8 +54,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'email': self.validated_data.get('email', ''),
             'password': self.validated_data.get('password', ''),
             'classe': self.validated_data.get('classe', ''),
-            'etablissement': self.validated_data.get('etablissement', ''),
-            'sexe_prof': self.validated_data.get('sexe_prof', ''),
+            'nom_etablissement': self.validated_data.get('nom_etablissement', ''),
+            'ville_etablissement': self.validated_data.get('ville_etablissement', ''),
+            'prefix_prof': self.validated_data.get('prefix_prof', ''),
             'nom_prof': self.validated_data.get('nom_prof', ''),
         }
         user = CustomUser.objects.create_user(**cleaned_data, **kwargs)

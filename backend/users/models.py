@@ -12,9 +12,10 @@ class CustomUser(AbstractUser):
                               })
     tirelire = models.IntegerField(default=cst.START_POINTS, blank=True)
     classe = models.IntegerField(default=0)
-    sexe_prof = models.BooleanField(default=True)
+    prefix_prof = models.BooleanField(default=True)
     nom_prof = models.CharField(max_length=100, default="Admin")
-    etablissement = models.CharField(max_length=100, default="Admin")
+    nom_etablissement = models.CharField(max_length=100, default="Admin")
+    ville_etablissement = models.CharField(max_length=40, default="Admin")
     correc = models.ManyToManyField(Correction, related_name='buyers')
 
     objects = UserManager()

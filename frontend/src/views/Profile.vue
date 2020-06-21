@@ -9,15 +9,15 @@
           <b-menu-list label="Profil">
             <b-menu-item icon="account"
                          :active="isActive"
-                         @click="selected=1"
+                         @click="selected = 1"
                          label="Identité">
             </b-menu-item>
             <b-menu-item icon="book"
-                         @click="selected=2"
+                         @click="selected = 2"
                          label="Scolarité">
             </b-menu-item>
             <b-menu-item icon="lock-reset"
-                         @click="selected=3"
+                         @click="selected = 3"
                          label="Mot de passe">
             </b-menu-item>
           </b-menu-list>
@@ -38,26 +38,32 @@
             <div class="columns has-text-centered">
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="form_user_active['username'] = !form_user_active['username']"
-                            :type="{'is-primary': form_user_active['username']}"
+                  <b-button @click="
+                        form_user_active['username'] = !form_user_active[
+                          'username'
+                        ]
+                      "
+                            :type="{ 'is-primary': form_user_active['username'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
                   </b-button>
                   <strong class="heading">Pseudo</strong>
-                  <p class="title is-5">{{user.username}}</p>
+                  <p class="title is-5">{{ user.username }}</p>
                   <ValidationObserver ref="username">
                     <form v-if="form_user_active['username']"
                           @submit.prevent="validateForm('username')">
                       <ValidationProvider rules="required|unique_username"
-                                          v-slot="{ errors, valid}">
+                                          v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
                             <b-input v-model="form_user['username']"
                                      placeholder="Nouveau pseudo..."></b-input>
-
                           </b-field>
                           <b-button @click="validateForm('username')"
                                     class="mb-3 is-pulled-right"
@@ -70,26 +76,30 @@
               </div>
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="form_user_active['email'] = !form_user_active['email']"
-                            :type="{'is-primary': form_user_active['email']}"
+                  <b-button @click="
+                        form_user_active['email'] = !form_user_active['email']
+                      "
+                            :type="{ 'is-primary': form_user_active['email'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
                   </b-button>
                   <strong class="heading">Adresse e-mail</strong>
-                  <p class="title is-5">{{user.email}}</p>
+                  <p class="title is-5">{{ user.email }}</p>
                   <ValidationObserver ref="email">
                     <form v-if="form_user_active['email']"
                           @submit.prevent="validateForm('email')">
                       <ValidationProvider rules="required|email|unique_email"
-                                          v-slot="{ errors, valid}">
+                                          v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
                             <b-input v-model="form_user['email']"
                                      placeholder="Nouvelle adresse e-mail..."></b-input>
-
                           </b-field>
                           <b-button @click="validateForm('email')"
                                     class="mb-3 is-pulled-right"
@@ -117,27 +127,32 @@
             <div class="columns is-multiline has-text-centered">
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="form_user_active['classe'] = !form_user_active['classe']"
-                            :type="{'is-primary': form_user_active['classe']}"
+                  <b-button @click="
+                        form_user_active['classe'] = !form_user_active['classe']
+                      "
+                            :type="{ 'is-primary': form_user_active['classe'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
                   </b-button>
                   <strong class="heading">Niveau</strong>
-                  <p class="title is-5">{{classes[user.classe]}}</p>
+                  <p class="title is-5">{{ classes[user.classe] }}</p>
                   <ValidationObserver ref="classe">
                     <form v-if="form_user_active['classe']"
                           @submit.prevent="validateForm('classe')">
                       <ValidationProvider rules="required"
-                                          v-slot="{ errors, valid}">
+                                          v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
                             <b-select v-model="form_user['classe']"
                                       placeholder="Choisis ta classe...">
                               <option v-for="(value, key) in classes"
-                                      :value="key">{{value}}</option>
+                                      :value="key">{{ value }}</option>
                             </b-select>
                           </b-field>
                           <b-button @click="validateForm('classe')"
@@ -151,16 +166,20 @@
               </div>
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="form_user_active['prof'] = !form_user_active['prof']"
-                            :type="{'is-primary': form_user_active['prof']}"
+                  <b-button @click="
+                        form_user_active['prof'] = !form_user_active['prof']
+                      "
+                            :type="{ 'is-primary': form_user_active['prof'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
                   </b-button>
-                  <strong class="heading">Professeur</strong>
+                  <strong class="heading">Professeur de méthématiques</strong>
                   <p class="title is-5">
-                    <span class="mr-1">{{user.sexe_prof ? 'M.' : 'Mme'}}</span>
-                    <span>{{user.nom_prof}}</span>
+                    <span class="mr-1">{{
+                        user.prefix_prof ? "M." : "Mme"
+                      }}</span>
+                    <span>{{ user.nom_prof }}</span>
                   </p>
                   <ValidationObserver ref="prof">
                     <form v-if="form_user_active['prof']"
@@ -169,8 +188,11 @@
                         <ValidationProvider rules="required"
                                             v-slot="{ errors, valid }">
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                            <b-select v-model="form_user['sexe_prof']"
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
+                            <b-select v-model="form_user['prefix_prof']"
                                       placeholder="M. ou Mme">
                               <option :value="true">M.</option>
                               <option :value="false">Mme</option>
@@ -180,7 +202,10 @@
                         <ValidationProvider rules="required"
                                             v-slot="{ errors, valid }">
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
                             <b-input v-model="form_user['nom_prof']"
                                      type="text"
                                      placeholder="Dupont">
@@ -198,23 +223,32 @@
               </div>
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="form_user_active['etablissement'] = !form_user_active['etablissement']"
-                            :type="{'is-primary': form_user_active['etablissement']}"
+                  <b-button @click="
+                        form_user_active['nom_etablissement'] = !form_user_active[
+                          'nom_etablissement'
+                        ]
+                      "
+                            :type="{
+                        'is-primary': form_user_active['nom_etablissement']
+                      }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
                   </b-button>
                   <strong class="heading">Établissement</strong>
-                  <p class="title is-5">{{user.etablissement}}</p>
-                  <ValidationObserver ref="etablissement">
-                    <form v-if="form_user_active['etablissement']"
-                          @submit.prevent="validateForm('etablissement')">
+                  <p class="title is-5">{{ user.nom_etablissement }}</p>
+                  <ValidationObserver ref="nom_etablissement">
+                    <form v-if="form_user_active['nom_etablissement']"
+                          @submit.prevent="validateForm('nom_etablissement')">
                       <ValidationProvider rules="required"
-                                          v-slot="{ errors, valid}">
+                                          v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
                           <b-field :message="errors"
-                                   :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
                             <b-autocomplete expanded
                                             v-model="etablissement_input"
                                             :loading="autocomplete_loading"
@@ -230,14 +264,14 @@
                                 <div class="is-pulled-left has-text-weight-bold">
                                   {{ props.option.n }}
                                 </div>
-                                <br>
+                                <br />
                                 <small>
                                   {{ props.option.c }}
                                 </small>
                               </template>
                             </b-autocomplete>
                           </b-field>
-                          <b-button @click="validateForm('etablissement')"
+                          <b-button @click="validateForm('nom_etablissement')"
                                     class="mb-3 is-pulled-right"
                                     type="is-success">Valider</b-button>
                         </b-field>
@@ -298,7 +332,9 @@
             </b-field>
 
             <button class="button is-primary is-fullwidth"
-                    type="submit">Valider</button>
+                    type="submit">
+              Valider
+            </button>
           </form>
         </ValidationObserver>
       </div>
@@ -308,11 +344,10 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState } from "vuex";
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import usersService from "@/services/usersService"
-import classes from '@/data/classes.json'
-import etablissements from '@/data/etablissements.json'
+import usersService from "@/services/usersService";
+import classes from "@/data/classes.json";
 export default {
   name: "Profile",
   components: {
@@ -327,19 +362,19 @@ export default {
       isActive: true,
       password: null,
       form_user_active: {
-        'username': false,
-        'email': false,
-        'classe': false,
-        'etablissement': false,
-        'prof': false,
+        username: false,
+        email: false,
+        classe: false,
+        nom_etablissement: false,
+        prof: false
       },
       form_user: {
-        'username': null,
-        'email': null,
-        'classe': null,
-        'etablissement': null,
-        'sexe_prof': null,
-        'nom_prof': null,
+        username: null,
+        email: null,
+        classe: null,
+        nom_etablissement: null,
+        prefix_prof: null,
+        nom_prof: null
       },
       form_password: {
         old_password: null,
@@ -347,14 +382,19 @@ export default {
         new_password_confirm: null
       },
 
-      etablissements: etablissements,
+      etablissements: [],
       etablissement_items: [],
-      etablissement_input: '',
-      autocomplete_loading: false,
-    }
+      etablissement_input: "",
+      autocomplete_loading: false
+    };
+  },
+  created() {
+    fetch('data/etablissements.json')
+      .then(r => r.json())
+      .then(json => { this.etablissements = json })
   },
   computed: {
-    ...mapState('authentication', ['user']),
+    ...mapState("authentication", ["user"])
   },
   methods: {
     changePassword() {
@@ -362,136 +402,151 @@ export default {
         if (!success) {
           return;
         }
-        this.change_password_loading = true
-        usersService.change_password(this.form_password)
+        this.change_password_loading = true;
+        usersService
+          .change_password(this.form_password)
           .then(() => {
             this.form_password = {
-              old_password: '',
-              new_password: '',
-              new_password_confirm: ''
-            }
+              old_password: "",
+              new_password: "",
+              new_password_confirm: ""
+            };
             this.$buefy.toast.open({
               duration: 5000,
               message: `Ton mot de passe a été modifé avec succès.
             Utilise maintenant ce mot de passe pour tes futures connexions.`,
-              type: 'is-success'
-            })
-            this.change_password_loading = false
-            this.$refs.change_password.reset()
+              type: "is-success"
+            });
+            this.change_password_loading = false;
+            this.$refs.change_password.reset();
           })
-          .catch((err) => {
-            let status = err.response.status
-            let message = `Un problème est survenu... Réessaye plus tard.`
+          .catch(err => {
+            let status = err.response.status;
+            let message = `Un problème est survenu... Réessaye plus tard.`;
             switch (status) {
               case 400:
-                message = `Un problème est survenu... Vérifie les informations fournies.`
-                break
+                message = `Un problème est survenu... Vérifie les informations fournies.`;
+                break;
               case 401:
-                message = `Ta session est expirée, reconnecte-toi pour continuer.`
-                break
+                message = `Ta session est expirée, reconnecte-toi pour continuer.`;
+                break;
               case 406:
-                message = `Le mot de passe actuel donné est invalide.`
-                break
+                message = `Le mot de passe actuel donné est invalide.`;
+                break;
               default:
-                message = `Un problème est survenu... Réessaye plus tard.`
+                message = `Un problème est survenu... Réessaye plus tard.`;
             }
             this.$buefy.toast.open({
               duration: 5000,
               message: message,
-              type: 'is-danger'
-            })
-            this.change_password_loading = false
-          })
-      })
+              type: "is-danger"
+            });
+            this.change_password_loading = false;
+          });
+      });
     },
     validateForm(element) {
-      this.form_user['etablissement'] = this.etablissement_input
+      this.form_user["nom_etablissement"] = this.etablissement_input;
       this.$refs[element].validate().then(success => {
         if (!success) {
           return;
         }
         // If form is valid
-        let payload = {}
+        let payload = {};
         // Prof is split in two parts
-        if (element == 'prof') {
-          payload['sexe_prof'] = this.form_user['sexe_prof']
-          payload['nom_prof'] = this.form_user['nom_prof']
-          this.updateProfile(payload, element)
+        if (element == "prof") {
+          payload["prefix_prof"] = this.form_user["prefix_prof"];
+          payload["nom_prof"] = this.form_user["nom_prof"];
+          this.updateProfile(payload, element);
         }
         // Username and email require password
-        else if (['username', 'email'].includes(element)) {
-          payload[element] = this.form_user[element]
-          this.askForPassword(payload, element)
+        else if (["username", "email"].includes(element)) {
+          payload[element] = this.form_user[element];
+          this.askForPassword(payload, element);
         }
         // Else is basic
         else {
-          payload[element] = this.form_user[element]
-          this.updateProfile(payload, element)
+          payload[element] = this.form_user[element];
+          this.updateProfile(payload, element);
         }
-      })
+      });
     },
     askForPassword(payload, element) {
       this.$buefy.dialog.prompt({
         message: `Rentre ton mot de passe :`,
-        type: 'is-primary',
+        type: "is-primary",
         inputAttrs: {
-          type: 'password',
-          placeholder: 'Ton mot de passe...'
+          type: "password",
+          placeholder: "Ton mot de passe..."
         },
-        cancelText: 'Annuler',
-        confirmText: 'Valider',
+        cancelText: "Annuler",
+        confirmText: "Valider",
         trapFocus: true,
-        onConfirm: (value) => {
-          payload['password'] = value
-          this.updateProfile(payload, element)
+        onConfirm: value => {
+          payload["password"] = value;
+          this.updateProfile(payload, element);
         }
-      })
+      });
     },
     updateProfile(payload, element) {
-      usersService.update_profile(this.user.pk, payload)
+      usersService
+        .update_profile(this.user.pk, payload)
         .then(data => {
-          this.form_user_active[element] = false
+          this.form_user_active[element] = false;
           this.$buefy.toast.open({
             duration: 5000,
             message: `Ton profil a été mis à jour avec succès`,
-            type: 'is-success'
-          })
-          let updated_user = Object.assign(this.user, data)
-          this.$store.dispatch('authentication/updateProfileUser', updated_user)
+            type: "is-success"
+          });
+          let updated_user = Object.assign(this.user, data);
+          this.$store.dispatch(
+            "authentication/updateProfileUser",
+            updated_user
+          );
         })
-        .catch((err) => {
-          let status = err.response.status
-          let message = `Un problème est survenu... Réessaye plus tard.`
+        .catch(err => {
+          let status = err.response.status;
+          let message = `Un problème est survenu... Réessaye plus tard.`;
           switch (status) {
             case 401:
-              message = `Ta session est expirée, reconnecte-toi pour continuer.`
-              break
+              message = `Ta session est expirée, reconnecte-toi pour continuer.`;
+              break;
             case 406:
-              message = `Le mot de passe donné est invalide.`
-              break
+              message = `Le mot de passe donné est invalide.`;
+              break;
             default:
-              message = `Un problème est survenu... Réessaye plus tard.`
+              message = `Un problème est survenu... Réessaye plus tard.`;
           }
           this.$buefy.toast.open({
             duration: 5000,
             message: message,
-            type: 'is-danger'
-          })
-        })
+            type: "is-danger"
+          });
+        });
     },
     filterEtablissements(v) {
       this.etablissement_items = this.etablissements.filter(object => {
-        return (object.n || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          .indexOf((v || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) > -1
+        return (
+          (object.n || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .indexOf(
+            (v || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+          ) > -1
+        );
       });
-    },
+    }
   },
   watch: {
     etablissement_input: function(input) {
       input && input.length > 5 && this.filterEtablissements(input);
     }
   }
-}
+};
 </script>
 
 <style scoped>

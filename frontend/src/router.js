@@ -49,7 +49,7 @@ export default new Router({
     {
       path: "/",
       name: "home",
-      component: Home,
+      component: Home
     },
     {
       path: "/exercice/:id/",
@@ -75,7 +75,7 @@ export default new Router({
     {
       path: "/rechercher-un-exo/",
       name: "search",
-      component: Search,
+      component: Search
     },
     {
       path: "/poster-un-enonce/",
@@ -134,7 +134,7 @@ export default new Router({
     {
       path: "/*",
       name: "others",
-      component: Home,
+      component: Home
     }
   ]
 });

@@ -1,14 +1,14 @@
 function sizeFormatter(size) {
-  const power = 2 ** 10
-  let n = 0
-  let powerN = { 0: 'B', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB' }
+  const power = 2 ** 10;
+  let n = 0;
+  let powerN = { 0: "B", 1: "KB", 2: "MB", 3: "GB", 4: "TB" };
   while (size > power) {
-    size /= power
-    n += 1
+    size /= power;
+    n += 1;
   }
-  size = Math.round(size * 10) / 10
+  size = Math.round(size * 10) / 10;
 
-  return size.toString() + ' ' + powerN[n]
+  return size.toString() + " " + powerN[n];
 }
 
-export { sizeFormatter }
+export { sizeFormatter };

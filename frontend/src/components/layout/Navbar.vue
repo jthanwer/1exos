@@ -99,9 +99,9 @@ export default {
           icon: 'magnify'
         },
         {
-          title: 'Poster un énoncé',
+          title: 'Demander la correction d\'un exo',
           path: 'post-exo',
-          icon: 'upload'
+          icon: 'hand'
         },
       ],
     }

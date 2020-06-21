@@ -12,7 +12,7 @@
                v-if="['png', 'jpg', 'jpeg'].includes(correc.filetype)">
             <img :src="correc.file">
           </div>
-          <div v-else-if="correc.filetype == 'pdf'">
+          <div v-else>
             <div class="field is-grouped is-grouped-centered">
               <div class="control">
                 <b-button @click="rotate -= 90"
@@ -59,31 +59,6 @@
                  @num-pages="numPages = $event"></pdf>
           </div>
         </div>
-        <div v-else
-             class="correc-info pa-9 has-text-centered">
-          <div class="level">
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Manuel</p>
-                <p class="title is-5">{{correc.enonce.livre}}</p>
-              </div>
-            </div>
-          </div>
-          <div class="level">
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Page</p>
-                <p class="title is-5">{{correc.enonce.num_page}}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Numéro</p>
-                <p class="title is-5">{{correc.enonce.num_correc}}</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -104,19 +79,27 @@
       </div>
       <div class="correc-info pa-9 has-text-centered">
         <div v-if="correc">
-          <div v-if="correc.enonce.livre"
-               class="columns is-centered is-multiline">
-            <div class="column is-12 has-text-centered">
-              <p class="heading">Manuel</p>
-              <p class="title is-5">{{correc.enonce.livre}}</p>
+          <div v-if="correc.enonce.livre">
+            <div class="level">
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Numéro</p>
+                  <p class="title is-5">{{correc.enonce.num_exo}}</p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Page</p>
+                  <p class="title is-5">{{correc.enonce.num_page}}</p>
+                </div>
+              </div>
             </div>
-            <div class="column is-6 has-text-centered">
-              <p class="heading">Page</p>
-              <p class="title is-5">{{correc.enonce.num_page}}</p>
-            </div>
-            <div class="column is-6 has-text-centered">
-              <p class="heading">Numéro</p>
-              <p class="title is-5">{{correc.enonce.num_exo}}</p>
+            <div class="level">
+              <div class="level-item has-text-centered">
+                <img style="height: 400px;"
+                     :src="require('@/assets/images/livres/' + correc.enonce.livre + '.jpg')"
+                     alt="Image indisponible" />
+              </div>
             </div>
           </div>
           <div v-else>

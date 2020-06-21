@@ -24,7 +24,10 @@ sensitive_post_parameters_m = method_decorator(
 )
 
 
-def activate(request, uidb64, token):
+def activate_account(request, uidb64, token):
+    """
+    View to activate account
+    """
     validlink = False
     try:
         uid = urlsafe_base64_decode(uidb64).decode()

@@ -35,24 +35,26 @@ const mutations = {
 const actions = {
   registerUser({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
-      usersService.register(user)
+      usersService
+        .register(user)
         .then(data => {
-          resolve(data)
+          resolve(data);
         })
         .catch(err => {
-          reject(err)
+          reject(err);
         });
     });
   },
   authRequest({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
-      usersService.authenticate(user)
+      usersService
+        .authenticate(user)
         .then(data => {
           const token = data.access;
           localStorage.setItem("user-token", token);
           api.defaults.headers["Authorization"] = "Bearer " + token;
           commit("AUTH_SUCCESS", token);
-          dispatch("getProfileUser")
+          dispatch("getProfileUser");
           resolve(data);
         })
         .catch(err => {
@@ -73,18 +75,17 @@ const actions = {
   getProfileUser({ commit, getters }) {
     if (getters.isAuthenticated) {
       return new Promise((resolve, reject) => {
-        usersService.get_profile()
-          .then(data => {
-            commit("SET_USER", data);
-            resolve(data);
-          })
-      })
+        usersService.get_profile().then(data => {
+          commit("SET_USER", data);
+          resolve(data);
+        });
+      });
     }
   },
   updateProfileUser({ commit, getters }, updated_user) {
     commit("SET_USER", updated_user);
-  },
-}
+  }
+};
 export default {
   namespaced: true,
   state,

@@ -7,50 +7,48 @@ const state = {
 
 const mutations = {
   SET_MY_EXERCICES(state, exercices) {
-    state.myExercices = exercices
+    state.myExercices = exercices;
   },
   POST_EXERCICE(state, newExercice) {
-    state.myExercices.push(newExercice)
+    state.myExercices.push(newExercice);
   },
   DELETE_EXERCICE(state, data_index) {
-    state.myExercices.splice(data_index, 1)
+    state.myExercices.splice(data_index, 1);
   }
 };
 
 const actions = {
   loadMyExercices({ commit }) {
-    exercicesService.getMyExercices()
-      .then(data => {
-        let myExercices = data.results
-        commit('SET_MY_EXERCICES', myExercices)
-      })
+    exercicesService.getMyExercices().then(data => {
+      let myExercices = data.results;
+      commit("SET_MY_EXERCICES", myExercices);
+    });
   },
   postExercice({ dispatch, commit }, newExercice) {
     return new Promise((resolve, reject) => {
-      exercicesService.postExercice(newExercice)
+      exercicesService
+        .postExercice(newExercice)
         .then(data => {
-          commit('POST_EXERCICE', data)
-          resolve(data)
+          commit("POST_EXERCICE", data);
+          resolve(data);
         })
-        .catch(err => reject(err))
+        .catch(err => reject(err));
     });
   },
   deleteExercice({ dispatch, commit }, payload) {
-    exercicesService.deleteExercice(payload.id)
-      .then(data => {
-        commit('DELETE_EXERCICE', payload.data_index)
-      })
+    exercicesService.deleteExercice(payload.id).then(data => {
+      commit("DELETE_EXERCICE", payload.data_index);
+    });
   },
   downloadFile({ dispatch }, exo) {
-    exercicesService.downloadFile(exo.id)
-      .then((data) => {
-        const url = window.URL.createObjectURL(new Blob([data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', exo.name);
-        document.body.appendChild(link);
-        link.click();
-      })
+    exercicesService.downloadFile(exo.id).then(data => {
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", exo.name);
+      document.body.appendChild(link);
+      link.click();
+    });
   }
 };
 

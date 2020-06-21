@@ -9,109 +9,129 @@
                  animated
                  has-navigation>
           <b-step-item id="firstStep"
-                       label="Infos"
-                       :style="{'min-height': height}"
+                       label="Généralités"
+                       :style="{ 'min-height': height }"
                        clickable>
-            <ValidationObserver ref="firstStep">
-              <hr>
-              <h1 class="title has-text-centered">Infos</h1>
-              <hr>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="De quoi traite cet exo ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-select v-if="user"
-                              v-model="form.category"
-                              placeholder="Choisir une catégorie">
-                      <option v-for="option in categories[user.classe]">
-                        {{option}}
-                      </option>
-                    </b-select>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Cet exo est-il directement issu d'un livre scolaire ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-switch v-model="form.is_from_livre">
-                      {{ form.is_from_livre ? 'Oui' : 'Non' }}
-                    </b-switch>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="De quel type d'exo s'agit-il ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-select v-model="form.type"
-                              placeholder="Choisir un type d'exo">
-                      <option> Exo simple </option>
-                      <option> DM </option>
-                      <option> DHC </option>
-                      <option> DS </option>
-                    </b-select>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-            </ValidationObserver>
+            <hr />
+            <h1 class="title has-text-centered">Généralités</h1>
+            <hr />
+            <div class="columns">
+              <div class="column is-half">
+                <ValidationObserver ref="firstStep">
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Chapitre"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <b-select v-if="user"
+                                expanded
+                                v-model="form.chapitre"
+                                placeholder="Choisir un chapitre">
+                        <option v-for="option in chapitres[user.classe]">
+                          {{ option }}
+                        </option>
+                      </b-select>
+                    </b-field>
+                  </ValidationProvider>
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Provenance"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <b-select v-model="form.is_from_livre"
+                                expanded
+                                placeholder="Choisir la provenance">
+                        <option :value="false"> Exo sur feuille</option>
+                        <option :value="true">
+                          Fait partie d'un livre scolaire</option>
+                      </b-select>
+                    </b-field>
+                  </ValidationProvider>
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Type d'exo"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <b-select v-model="form.type"
+                                expanded
+                                placeholder="Choisir un type d'exo">
+                        <option> Exo </option>
+                        <option> Activité </option>
+                        <option> DM </option>
+                        <option> DHC </option>
+                        <option> DS </option>
+                      </b-select>
+                    </b-field>
+                  </ValidationProvider>
+                </ValidationObserver>
+              </div>
+            </div>
+
           </b-step-item>
 
           <b-step-item id="secondStep"
-                       label="Prix et Délai"
-                       :style="{'min-height': height}">
-            <ValidationObserver ref="secondStep">
-              <hr>
-              <h1 class="title has-text-centered">Prix et Délai</h1>
-              <hr>
-              <b-field v-if="user"
-                       grouped>
-                <ValidationProvider :rules="{'required': true, 'min_value': 1, 'max_value': user.tirelire, 'integer': true}"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Prix"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-numberinput v-model="form.prix"
-                                   :min="1"
-                                   :max="user.tirelire"
-                                   placeholder="Choisir un prix">
-                    </b-numberinput>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
+                       label="Points et Délai"
+                       :style="{ 'min-height': height }">
+            <hr />
+            <h1 class="title has-text-centered">Points et Délai</h1>
+            <hr />
+            <div class="columns">
+              <div class="column is-half">
+                <ValidationObserver ref="secondStep">
+                  <ValidationProvider :rules="{
+                      required: true,
+                      min_value: 1,
+                      max_value: user.tirelire,
+                      integer: true
+                    }"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Prix"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <b-numberinput v-model="form.prix"
+                                     :min="1"
+                                     :max="user.tirelire"
+                                     placeholder="Choisir un prix">
+                      </b-numberinput>
+                    </b-field>
+                  </ValidationProvider>
 
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Délai"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-datetimepicker v-model="form.date_limite"
-                                      placeholder="Choisir une date limite"
-                                      :min-datetime="minDatetime"
-                                      icon="calendar-today"
-                                      horizontal-time-picker>
-                    </b-datetimepicker>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-            </ValidationObserver>
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="A faire pour..."
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <b-datetimepicker v-model="form.date_limite"
+                                        placeholder="Choisir une date limite"
+                                        :min-datetime="minDatetime"
+                                        icon="calendar-today"
+                                        horizontal-time-picker>
+                      </b-datetimepicker>
+                    </b-field>
+                  </ValidationProvider>
+                </ValidationObserver>
+              </div>
+            </div>
           </b-step-item>
 
           <b-step-item id="thirdStep1"
                        v-if="!form.is_from_livre"
-                       :style="{'min-height': height}"
+                       :style="{ 'min-height': height }"
                        label="Énoncé">
+            <hr />
+            <h1 class="title has-text-centered">Énoncé</h1>
+            <hr />
+            <div class="notification is-warning is-light">
+              <div class="media">
+                <div class="media-left">
+                  <b-icon icon="alert"></b-icon>
+                </div>
+                <div class="media-content">
+                  Pour des raisons de droit d’auteur, il est interdit d’uploader un énoncé provenant d’un livre.
+                </div>
+              </div>
+            </div>
             <ValidationObserver ref="thirdStep">
-              <hr>
-              <h1 class="title has-text-centered">Énoncé</h1>
-              <hr>
               <ValidationProvider rules="required"
                                   v-slot="{ errors }">
                 <Upload v-model="drop_file"
@@ -122,89 +142,106 @@
 
           <b-step-item id="thirdStep2"
                        v-else
-                       :style="{'min-height': height}"
-                       label="Manuel">
-            <ValidationObserver ref="thirdStep">
-              <hr>
-              <h1 class="title has-text-centered">Manuel</h1>
-              <hr>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="De quel livre scolaire cet énoncé est-il issu ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-select v-model="form.livre.name"
-                              placeholder="Choisir un livre">
-                      <option value="Sesamath">Sesamath</option>
-                      <option value="Autres">Autres</option>
-                    </b-select>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Quel numéro de page ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-numberinput v-model="form.livre.num_page"
-                                   :min="1"
-                                   placeholder="Choisir un numéro de page"></b-numberinput>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Quel numéro d'exercice ?"
-                           :message="errors"
-                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
-                    <b-numberinput v-model="form.livre.num_exo"
-                                   :min="1"
-                                   placeholder="Choisir un numéro d'exo"></b-numberinput>
-                  </b-field>
-                </ValidationProvider>
-              </b-field>
-            </ValidationObserver>
-          </b-step-item>
+                       :style="{ 'min-height': height }"
+                       label="Livre">
+            <hr />
+            <h1 class="title has-text-centered">Livre</h1>
+            <hr />
+            <div class="columns">
+              <div class="column is-half">
+                <ValidationObserver ref="thirdStep">
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Livre"
+                             expand
+                             :message="errors"
+                             :type="{'is-danger': errors[0],'is-success': valid}">
+                      <b-select v-model="form.livre.name"
+                                expanded
+                                placeholder="Choisir un livre">
+                        <option v-for="livre in livres[6]"
+                                :value="livre.name">
+                          {{ livre.name.split("_").join(" - ") }}
+                        </option>
+                      </b-select>
+                    </b-field>
+                  </ValidationProvider>
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Numéro"
+                             :message="errors"
+                             :type="{'is-danger': errors[0], 'is-success': valid}">
+                      <b-numberinput v-model="form.livre.num_exo"
+                                     expanded
+                                     :min="1"
+                                     placeholder="Choisir un numéro d'exercice"></b-numberinput>
+                    </b-field>
+                  </ValidationProvider>
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Page"
+                             :message="errors"
+                             :type="{'is-danger': errors[0],'is-success': valid}">
+                      <b-numberinput v-model="form.livre.num_page"
+                                     expanded
+                                     :min="1"
+                                     placeholder="Choisir un numéro de page"></b-numberinput>
+                    </b-field>
+                  </ValidationProvider>
+                </ValidationObserver>
+              </div>
 
-          <b-step-item label="Aperçu"
-                       :style="{'min-height': height}">
-            <hr>
-            <h1 class="title has-text-centered">Aperçu</h1>
-            <hr class="mb-10">
-            <div class="columns is-centered">
-              <div class="column is-6">
-                <ExercicePreview :exo="exo"
-                                 :activated="false"></ExercicePreview>
+              <div class="column is-half has-text-centered">
+                <img v-if="form.livre.name"
+                     style="height: 400px;"
+                     :src="require('@/assets/images/livres/' + form.livre.name + '.jpg')"
+                     alt="Image indisponible" />
               </div>
             </div>
           </b-step-item>
 
+          <b-step-item label="Récapitulatif"
+                       :style="{ 'min-height': height }">
+            <hr />
+            <h1 class="title has-text-centered">Récapitulatif</h1>
+            <hr />
+            <div class="notification is-info is-light">
+              <div class="media">
+                <div class="media-left">
+                  <b-icon icon="information"></b-icon>
+                </div>
+                <div class="media-content">
+                  Voici comment ton exo apparaîtra.
+                </div>
+              </div>
+            </div>
+            <ExercicePreview :exo="exo"
+                             :activated="false"></ExercicePreview>
+          </b-step-item>
+
           <template slot="navigation"
-                    slot-scope="{previous, next}">
-            <div class="has-text-centered">
-              <a role="button"
-                 class="pagination-previous"
-                 :disabled="previous.disabled"
-                 @click.prevent="previous.action">
-                <b-icon icon="chevron-left" />
-              </a>
-              <a v-if="activeStep < 3"
-                 role="button"
-                 class="pagination-next"
-                 :disabled="next.disabled"
-                 @click.prevent="goNext(next, activeStep)">
-                <b-icon icon="chevron-right" />
-              </a>
-              <a v-else
-                 role="button"
-                 class="pagination-next has-background-success has-text-white"
-                 type="is-success"
-                 @click.prevent="submit()">
-                Poster l'exo
-              </a>
+                    slot-scope="{ previous, next }">
+            <div class="is-flex"
+                 style="align-items: center; justify-content: center;">
+              <b-button type="is-danger"
+                        class="mr-3"
+                        outlined
+                        :disabled="previous.disabled"
+                        @click.prevent="previous.action">
+                Revenir en arrière
+              </b-button>
+              <b-button v-if="activeStep < 3"
+                        type="is-info"
+                        :disabled="next.disabled"
+                        @click.prevent="goNext(next, activeStep)">
+                Continuer
+              </b-button>
+              <b-button v-else
+                        type="is-success"
+                        size="is-large"
+                        @click.prevent="submit()">
+                Demander la correction de cet exo
+              </b-button>
             </div>
           </template>
         </b-steps>
@@ -216,14 +253,15 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import { mapState } from 'vuex'
-import moment from 'moment'
-import categories from "@/data/categories.json"
-import classes from "@/data/classes.json"
-import Upload from '@/components/Upload.vue'
-import ExercicePreview from '@/components/ExercicePreview.vue'
+import { mapState } from "vuex";
+import moment from "moment";
+import chapitres from "@/data/chapitres.json";
+import classes from "@/data/classes.json";
+import livres from "@/data/livres.json";
+import Upload from "@/components/Upload.vue";
+import ExercicePreview from "@/components/ExercicePreview.vue";
 export default {
-  name: 'PostExo',
+  name: "PostExo",
   components: {
     Upload,
     ExercicePreview,
@@ -231,10 +269,11 @@ export default {
     ValidationProvider
   },
   data() {
-    const min = new Date(moment().toISOString(true))
+    const min = new Date(moment().toISOString(true));
     return {
-      categories: categories,
+      chapitres: chapitres,
       classes: classes,
+      livres: livres,
       height: "400px",
       minDatetime: min,
 
@@ -243,26 +282,26 @@ export default {
       activeStep: 0,
       drop_file: null,
       form: {
-        category: null,
+        chapitre: null,
         type: null,
-        is_from_livre: false,
+        is_from_livre: null,
         livre: {
           name: null,
           num_page: null,
           num_exo: null
         },
         date_limite: null,
-        prix: null,
+        prix: null
       }
-    }
+    };
   },
   computed: {
-    ...mapState('authentication', ['user']),
+    ...mapState("authentication", ["user"]),
     exo() {
       return {
         id: 1,
         posteur: this.user,
-        category: this.form.category,
+        chapitre: this.form.chapitre,
         type: this.form.type,
         file: this.drop_file,
         livre: this.form.livre.name,
@@ -271,64 +310,67 @@ export default {
         prix: this.form.prix,
         date_limite: moment(this.form.date_limite).toISOString(true),
         date_created: moment(),
-        corrections: [],
-      }
-    },
+        corrections: []
+      };
+    }
   },
   methods: {
     submit() {
-      this.is_loading = true
-      const fd = new FormData()
-      fd.append('classe', parseInt(this.form.classe))
-      fd.append('category', this.form.category)
-      fd.append('type', this.form.type)
-      fd.append('prix', parseInt(this.form.prix))
-      fd.append('date_limite', moment(this.form.date_limite).toISOString(true))
+      this.is_loading = true;
+      const fd = new FormData();
+      fd.append("chapitre", this.form.chapitre);
+      fd.append("type", this.form.type);
+      fd.append("prix", parseInt(this.form.prix));
+      fd.append("date_limite", moment(this.form.date_limite).toISOString(true));
       if (this.form.is_from_livre) {
-        fd.append('livre', this.form.livre.name)
-        fd.append('num_page', parseInt(this.form.livre.num_page))
-        fd.append('num_exo', parseInt(this.form.livre.num_exo))
+        fd.append("livre", this.form.livre.name);
+        fd.append("num_page", parseInt(this.form.livre.num_page));
+        fd.append("num_exo", parseInt(this.form.livre.num_exo));
       } else {
-        fd.append('file', this.drop_file)
+        fd.append("file", this.drop_file);
       }
-      this.$store.dispatch('exercices/postExercice', fd)
+      this.$store
+        .dispatch("exercices/postExercice", fd)
         .then(data => {
-          this.is_loading = false
-          this.$router.push({ name: 'exercice', params: { id: data.id } })
+          this.is_loading = false;
+          this.$router.push({ name: "exercice", params: { id: data.id } });
         })
         .catch(err => {
-          this.is_loading = false
+          this.is_loading = false;
           this.$buefy.toast.open({
             duration: 5000,
             message: `L'exo n'a pas pu être posté.
             Il manque sûrement des informations essentielles.`,
-            type: 'is-danger'
-          })
-        })
+            type: "is-danger"
+          });
+        });
     },
     goNext(next, activeStep) {
       switch (activeStep) {
         case 0:
-          var ref = this.$refs.firstStep
-          break
+          var ref = this.$refs.firstStep;
+          break;
         case 1:
-          var ref = this.$refs.secondStep
-          break
+          var ref = this.$refs.secondStep;
+          break;
         case 2:
-          var ref = this.$refs.thirdStep
-          break
+          var ref = this.$refs.thirdStep;
+          break;
         default:
-          var ref = this.$refs.firstStep
+          var ref = this.$refs.firstStep;
       }
       ref.validate().then(success => {
         if (success) {
-          next.action()
+          next.action();
         }
-      })
+      });
     }
-  },
-}
+  }
+};
 </script>
 
 <style>
+span .field {
+  margin-bottom: 0.75rem;
+}
 </style>

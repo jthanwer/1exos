@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404, FileResponse
+from django.core import serializers
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -36,7 +37,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     filterset_class = ExerciceFilter
 
     permission_classes = (AllowAny,)
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def create(self, request, *args, **kwargs):
         user = request.user
@@ -92,6 +93,18 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False)
+    def etablissements(self, request):
+        queryset = Exercice.objects.values('posteur__ville_etablissement', 'posteur__nom_etablissement')\
+            .distinct()
+        return Response({'results': queryset})
+
+    @action(detail=False)
+    def profs(self, request):
+        queryset = Exercice.objects.values('posteur__prefix_prof', 'posteur__nom_prof')\
+            .distinct()
+        return Response({'results': queryset})
 
 
 # -------------

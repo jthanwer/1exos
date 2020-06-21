@@ -11,29 +11,30 @@ os.system('python manage.py reset_db')
 os.system('python manage.py makemigrations')
 os.system('python manage.py migrate')
 
-# user1 = CustomUser.objects.create_user(username="cassosdu46",
-#                                        email="joel.thanwerdas@gmail.com",
-#                                        password="Zdv:89??",
-#                                        classe=1,
-#                                        sexe_prof=0,
-#                                        nom_prof="Durant",
-#                                        etablissement="Lycée Clément Marot",
-#                                        is_active=True)
+user1 = CustomUser.objects.create_user(username="cassosdu46",
+                                       email="joel.thanwerdas@gmail.com",
+                                       password="Zdv:89??",
+                                       classe=1,
+                                       prefix_prof=0,
+                                       nom_prof="Durant",
+                                       nom_etablissement="Lycée Clément Marot",
+                                       ville_etablissement="Cahors",
+                                       is_active=True)
 #
 # user2 = CustomUser.objects.create_user(username="cassosdu45",
 #                                        email="cassosdu45@gmail.com",
 #                                        password="Zdv:89??",
 #                                        classe=1,
-#                                        sexe_prof=1,
+#                                        prefix_prof=1,
 #                                        nom_prof="Durant",
-#                                        etablissement="Lycée Clément Marot",
+#                                        nom_etablissement="Lycée Clément Marot",
 #                                        is_active=True)
 #
 #
 # for i in range(10):
 #     Exercice.objects.create(posteur=user1,
 #                             niveau=user1.classe,
-#                             category='Test',
+#                             chapitre='Test',
 #                             type='Exo simple',
 #                             livre='Sesameth',
 #                             num_page=2 * i,
@@ -46,18 +47,18 @@ os.system('python manage.py migrate')
 #                   email="joel.thanwerdas@gmail.com",
 #                   password="Zdv:89??",
 #                   classe=1,
-#                   sexe_prof=0,
+#                   prefix_prof=0,
 #                   nom_prof="Durant",
-#                   etablissement="Lycée Clément Marot",
+#                   nom_etablissement="Lycée Clément Marot",
 #                   is_active=False)
 #
 # data_user2 = dict(username="cassosdu45",
 #                   email="cassosdu45@gmail.com",
 #                   password="Zdv:89??",
 #                   classe=1,
-#                   sexe_prof=0,
+#                   prefix_prof=0,
 #                   nom_prof="Durant",
-#                   etablissement="Lycée Clément Marot",
+#                   nom_etablissement="Lycée Clément Marot",
 #                   is_active=False)
 #
 # serializer = RegistrationSerializer(data=data_user2)

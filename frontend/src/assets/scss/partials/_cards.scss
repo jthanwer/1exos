@@ -3,6 +3,13 @@
   transition: all 0.4s;
 }
 
+.border-success {
+    border: 4px solid $success;
+}
+
+.border-danger {
+    border: 4px solid $danger;
+}
 
 .primary-border {
     border: 2px solid $primary;

@@ -8,7 +8,7 @@ class Exercice(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='exercices')
     niveau = models.IntegerField()
-    category = models.CharField(max_length=100)
+    chapitre = models.CharField(max_length=100)
     type = models.CharField(max_length=10)
     file = models.FileField(null=True, blank=True, max_length=100)
     livre = models.CharField(null=True, blank=True, max_length=100)

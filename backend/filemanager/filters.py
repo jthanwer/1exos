@@ -17,6 +17,6 @@ class ExerciceFilter(filters.FilterSet):
 
     class Meta:
         model = Exercice
-        fields = ['posteur__classe', 'posteur__nom_prof', 'posteur__etablissement',
-                  'category', 'type', 'livre', 'num_page', 'num_exo', 'is_corrected']
+        fields = ['posteur__prefix_prof', 'posteur__nom_prof', 'posteur__nom_etablissement', 'niveau',
+                  'chapitre', 'type', 'livre', 'num_page', 'num_exo', 'is_corrected']
 

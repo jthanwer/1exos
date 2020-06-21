@@ -1,0 +1,16 @@
+{
+  "6" : [
+          {
+            "name": "6_Hachette_Phare_2016",
+            "editeur": "Hachette",
+            "collection": "Phare",
+            "year": "2016"
+          },
+          {
+          "name": "6_Generation5_iParcours_2017",
+          "editeur": "Generation 5",
+          "collection": "iParcours",
+          "year": "2017"
+          }
+  ]
+}

@@ -5,7 +5,7 @@ from django.urls import path, include, re_path
 import django.contrib.auth.views as auth_views
 
 from .viewsets import UserViewSet
-from .views import PasswordResetView, PasswordResetConfirmView, activate
+from .views import PasswordResetView, PasswordResetConfirmView, activate_account
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet, base_name='users')
@@ -26,6 +26,6 @@ urlpatterns = [
          name='password_reset_complete'),
 
     # -- Activate account
-    path('accounts/activate/<uidb64>/<token>/', activate, name='activate'),
+    path('accounts/activate/<uidb64>/<token>/', activate_account, name='activate_account'),
 
 ]

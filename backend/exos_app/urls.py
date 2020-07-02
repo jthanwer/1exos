@@ -18,26 +18,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path, re_path
 
-from .views import IndexTemplateView
+from .views import fetch_constants
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    #######################
-    # Django REST Framework
-    #######################
+    # -----------
+    # -- Our App
+    # -----------
 
-    #########
-    # Our App
-    #########
-
-    # API
+    # -- API
     path('api/', include('users.urls')),
     path('api/', include('filemanager.urls')),
 
-    # Entry point of the VueJS web application
-    # re_path(r'^.*$', IndexTemplateView.as_view(), name='entry_point')
-    # path('', IndexTemplateView.as_view(), name='entry_point')
+    # -- Constants
+    path('api/constants/', fetch_constants, name='fetch_constants'),
 ]
 
 if settings.DEBUG:

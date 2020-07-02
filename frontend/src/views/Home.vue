@@ -83,7 +83,7 @@
                         class="big-button"
                         size="is-large"
                         icon-left="pencil"
-                        :to="{ name: 'post-exo-with-correc' }">
+                        :to="{ name: 'search' , params: {id:2, is_corrected: false}}">
                 Corriger un exo
               </b-button>
             </div>

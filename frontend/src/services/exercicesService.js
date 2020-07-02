@@ -4,11 +4,17 @@ export default {
   getAllExercices() {
     return api.get("exercices/").then(response => response.data);
   },
-  getMyExercices() {
-    return api.get("exercices/my_exercices/").then(response => response.data);
+  getPostedExercices() {
+    return api.get("exercices/my_posted_exercices/")
+      .then(response => response.data);
+  },
+  getLikedExercices() {
+    return api.get("exercices/my_liked_exercices/")
+      .then(response => response.data);
   },
   searchExercices(text_query) {
-    return api.get(`exercices/${text_query}`).then(response => response.data);
+    return api.get(`exercices/${text_query}`)
+      .then(response => response.data);
   },
   postExercice(file) {
     const config = {
@@ -40,6 +46,12 @@ export default {
   getExerciceCorrections(id) {
     return api.get(`exercices/${id}/corrections/`)
       .then(response => response.data);
+  },
+  likeExercice(id) {
+    return api.get(`exercices/${id}/like/`)
+  },
+  dislikeExercice(id) {
+    return api.get(`exercices/${id}/dislike/`)
   },
   getEtablissements() {
     return api.get(`exercices/etablissements/`)

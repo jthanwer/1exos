@@ -38,16 +38,13 @@
             <div class="columns has-text-centered">
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="
-                        form_user_active['username'] = !form_user_active[
-                          'username'
-                        ]
-                      "
+                  <!-- <b-button @click="
+                        form_user_active['username'] = !form_user_active['username']"
                             :type="{ 'is-primary': form_user_active['username'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
-                  </b-button>
+                  </b-button> -->
                   <strong class="heading">Pseudo</strong>
                   <p class="title is-5">{{ user.username }}</p>
                   <ValidationObserver ref="username">
@@ -76,14 +73,12 @@
               </div>
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="
-                        form_user_active['email'] = !form_user_active['email']
-                      "
+                  <!-- <b-button @click="form_user_active['email'] = !form_user_active['email']"
                             :type="{ 'is-primary': form_user_active['email'] }"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
-                  </b-button>
+                  </b-button> -->
                   <strong class="heading">Adresse e-mail</strong>
                   <p class="title is-5">{{ user.email }}</p>
                   <ValidationObserver ref="email">
@@ -128,8 +123,7 @@
               <div class="column is-half">
                 <div class="box">
                   <b-button @click="
-                        form_user_active['classe'] = !form_user_active['classe']
-                      "
+                        form_user_active['classe'] = !form_user_active['classe']"
                             :type="{ 'is-primary': form_user_active['classe'] }"
                             icon-left="pencil"
                             :native-value="true"
@@ -166,9 +160,7 @@
               </div>
               <div class="column is-half">
                 <div class="box">
-                  <b-button @click="
-                        form_user_active['prof'] = !form_user_active['prof']
-                      "
+                  <b-button @click="form_user_active['prof'] = !form_user_active['prof']"
                             :type="{ 'is-primary': form_user_active['prof'] }"
                             icon-left="pencil"
                             :native-value="true"
@@ -224,10 +216,52 @@
               <div class="column is-half">
                 <div class="box">
                   <b-button @click="
-                        form_user_active['nom_etablissement'] = !form_user_active[
-                          'nom_etablissement'
-                        ]
-                      "
+                        form_user_active['ville_etablissement'] = !form_user_active['ville_etablissement']"
+                            :type="{
+                        'is-primary': form_user_active['ville_etablissement']
+                      }"
+                            icon-left="pencil"
+                            :native-value="true"
+                            class="mb-3 is-pulled-right">
+                  </b-button>
+                  <strong class="heading">Ville</strong>
+                  <p class="title is-5">{{ user.ville_etablissement }}</p>
+                  <ValidationObserver ref="ville_etablissement">
+                    <form v-if="form_user_active['ville_etablissement']"
+                          @submit.prevent="validateForm('ville_etablissement')">
+                      <ValidationProvider rules="required"
+                                          v-slot="{ errors, valid }">
+                        <b-field position="is-centered"
+                                 grouped>
+                          <b-field :message="errors"
+                                   :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }">
+                            <b-autocomplete expanded
+                                            v-model="ville_input"
+                                            placeholder="Cherche ta ville..."
+                                            :data="ville_items"
+                                            keep-first>
+                              <template slot="empty">
+                                <span v-if="ville_input.length > 3">Aucun résultat</span>
+                                <span v-else>Tapes au moins 3 caractères</span>
+                              </template>
+                            </b-autocomplete>
+                          </b-field>
+                          <b-button @click="validateForm('ville_etablissement')"
+                                    class="mb-3 is-pulled-right"
+                                    type="is-success">Valider</b-button>
+                        </b-field>
+                      </ValidationProvider>
+                    </form>
+                  </ValidationObserver>
+                </div>
+              </div>
+              <div class="column is-half">
+                <div class="box">
+                  <b-button @click="
+                        form_user_active['nom_etablissement'] = !form_user_active['nom_etablissement']"
                             :type="{
                         'is-primary': form_user_active['nom_etablissement']
                       }"
@@ -254,20 +288,9 @@
                                             :loading="autocomplete_loading"
                                             placeholder="Cherche ton établissement..."
                                             :data="etablissement_items"
-                                            field="n"
                                             keep-first>
                               <template slot="empty">
-                                <span v-if="etablissement_input.length > 5">Aucun résultat</span>
-                                <span v-else>Tapes au moins 6 caractères</span>
-                              </template>
-                              <template slot-scope="props">
-                                <div class="is-pulled-left has-text-weight-bold">
-                                  {{ props.option.n }}
-                                </div>
-                                <br />
-                                <small>
-                                  {{ props.option.c }}
-                                </small>
+                                Aucun résultat
                               </template>
                             </b-autocomplete>
                           </b-field>
@@ -365,6 +388,7 @@ export default {
         username: false,
         email: false,
         classe: false,
+        ville_etablissement: false,
         nom_etablissement: false,
         prof: false
       },
@@ -372,6 +396,7 @@ export default {
         username: null,
         email: null,
         classe: null,
+        ville_etablissement: null,
         nom_etablissement: null,
         prefix_prof: null,
         nom_prof: null
@@ -382,13 +407,19 @@ export default {
         new_password_confirm: null
       },
 
+      villes: [],
+      ville_items: [],
+      ville_input: "",
       etablissements: [],
       etablissement_items: [],
       etablissement_input: "",
-      autocomplete_loading: false
+      autocomplete_loading: false,
     };
   },
   created() {
+    fetch('data/villes.json')
+      .then(r => r.json())
+      .then(json => { this.villes = json })
     fetch('data/etablissements.json')
       .then(r => r.json())
       .then(json => { this.etablissements = json })
@@ -403,8 +434,7 @@ export default {
           return;
         }
         this.change_password_loading = true;
-        usersService
-          .change_password(this.form_password)
+        usersService.change_password(this.form_password)
           .then(() => {
             this.form_password = {
               old_password: "",
@@ -446,6 +476,7 @@ export default {
       });
     },
     validateForm(element) {
+      this.form_user["ville_etablissement"] = this.ville_input;
       this.form_user["nom_etablissement"] = this.etablissement_input;
       this.$refs[element].validate().then(success => {
         if (!success) {
@@ -524,10 +555,10 @@ export default {
           });
         });
     },
-    filterEtablissements(v) {
-      this.etablissement_items = this.etablissements.filter(object => {
+    filterVilles(v) {
+      this.ville_items = this.villes.filter(object => {
         return (
-          (object.n || "")
+          (object || "")
           .toLowerCase()
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
@@ -539,11 +570,31 @@ export default {
           ) > -1
         );
       });
-    }
+    },
+    filterEtablissements(v) {
+      this.etablissement_items = this.etablissements[this.ville_input]
+        .filter(object => {
+          return (
+            (object || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .indexOf(
+              (v || "")
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+            ) > -1
+          );
+        });
+    },
   },
   watch: {
+    ville_input: function(input) {
+      input && input.length > 2 && this.filterVilles(input);
+    },
     etablissement_input: function(input) {
-      input && input.length > 5 && this.filterEtablissements(input);
+      input && this.filterEtablissements(input);
     }
   }
 };

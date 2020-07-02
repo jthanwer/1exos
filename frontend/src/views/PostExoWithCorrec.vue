@@ -15,7 +15,7 @@
             <hr />
             <h1 class="title has-text-centered">Généralités</h1>
             <hr />
-            <div class="columns">
+            <div class="columns is-centered">
               <div class="column is-half">
                 <ValidationObserver ref="firstStep">
                   <ValidationProvider rules="required"
@@ -41,9 +41,8 @@
                       <b-select v-model="form.is_from_livre"
                                 expanded
                                 placeholder="Choisir la provenance">
-                        <option :value="false"> Exo sur feuille</option>
-                        <option :value="true">
-                          Fait partie d'un livre scolaire</option>
+                        <option :value="false"> Sur feuille</option>
+                        <option :value="true"> Livre scolaire</option>
                       </b-select>
                     </b-field>
                   </ValidationProvider>
@@ -57,9 +56,6 @@
                                 placeholder="Choisir un type d'exo">
                         <option> Exo </option>
                         <option> Activité </option>
-                        <option> DM </option>
-                        <option> DHC </option>
-                        <option> DS </option>
                       </b-select>
                     </b-field>
                   </ValidationProvider>
@@ -83,7 +79,7 @@
                     <b-icon icon="alert"></b-icon>
                   </div>
                   <div class="media-content">
-                    Pour des raisons de droit d’auteur, il est interdit d’uploader un énoncé provenant d’un livre.
+                    Pour des raisons relatives au droit d’auteur, il est interdit d’uploader un énoncé provenant d’un livre.
                   </div>
                 </div>
               </div>
@@ -116,7 +112,7 @@
                                 placeholder="Choisir un livre">
                         <option v-for="livre in livres[user.classe]"
                                 :value="livre.name">
-                          {{ livre.name.split("_").join(" - ") }}
+                          {{ livre.name.split("_").slice(1).join(" - ") }}
                         </option>
                       </b-select>
                     </b-field>
@@ -170,7 +166,7 @@
                       <b-icon icon="alert"></b-icon>
                     </div>
                     <div class="media-content">
-                      Pour des raisons de droit d’auteur, il est interdit d’uploader une correction provenant d’un livre.
+                      Pour des raisons relatives au droit d’auteur, il est interdit d’uploader une correction provenant d’un livre.
                     </div>
                   </div>
                 </div>
@@ -193,7 +189,8 @@
                 </div>
                 <div class="media-content">
                   Voici comment ton exo apparaîtra. <br>
-                  En postant cet exo et sa correction, <strong>tu gagneras X points</strong>.
+                  En postant cet exo et sa correction, <strong>tu gagneras
+                    {{constants['SELFCORREC_POINTS']}} points</strong>.
                 </div>
               </div>
             </div>
@@ -277,6 +274,7 @@ export default {
   },
   computed: {
     ...mapState("authentication", ["user"]),
+    ...mapState("general", ["constants"]),
     exo() {
       return {
         id: 1,

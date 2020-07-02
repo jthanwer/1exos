@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from .constants import *
 
 
 def submit_correction(correction):
@@ -8,15 +9,20 @@ def submit_correction(correction):
 
     now = datetime.now(timezone.utc)
     condition = posteur != correcteur and \
-                now < exercice.date_limite and \
+                now <= exercice.date_limite and \
                 len(exercice.corrections.all()) == 1
     if condition:
         posteur.tirelire -= exercice.prix
         correcteur.tirelire += exercice.prix
     else:
-        correcteur.tirelire += 3
-    correcteur.correc.add(correction)
-    posteur.correc.add(correction)
+        if posteur == correcteur:
+            correcteur.tirelire += SELFCORREC_POINTS
+        elif now >= exercice.date_limite:
+            correcteur.tirelire += DEADLINE_POINTS
+        else:
+            correcteur.tirelire += MULTIPLECORREC_POINTS
+    correcteur.unlocked_correcs.add(correction)
+    posteur.unlocked_correcs.add(correction)
     posteur.save()
     correcteur.save()
 
@@ -24,7 +30,7 @@ def submit_correction(correction):
 def buy_correction(user, correction):
     prix = correction.prix
     if user.tirelire >= prix:
-        user.correc.add(correction)
+        user.unlocked_correcs.add(correction)
         user.tirelire -= prix
         user.save()
         return True

@@ -2,7 +2,7 @@
 <div class="container is-fluid">
   <div class="mt-2"></div>
   <div class="columns">
-    <div class="column is-6">
+    <div class="column is-8">
       <div v-if="exo">
         <div v-if="exo.file">
           <div class="exo-container"
@@ -84,31 +84,31 @@
       </div>
     </div>
 
-    <div class="column is-5 is-offset-1">
-      <div class="exo-info pa-9 has-text-centered">
+    <div class="column is-3 is-offset-1">
+      <div class="exo-info box pa-5 has-text-centered">
         <div v-if="exo">
           <div class="columns is-centered is-multiline">
-            <div class="column is-6 has-text-centered">
+            <div class="column is-12 has-text-centered">
               <p class="heading">Ajouté par</p>
-              <p class="title is-5">{{exo.posteur.username}}</p>
+              <p class="title is-6">{{exo.posteur.username}}</p>
             </div>
-            <div class="column is-6 has-text-centered">
+            <div class="column is-12 has-text-centered">
               <p class="heading">Le</p>
-              <p class="title is-5">{{exo.date_created | dateFormatter}}</p>
+              <p class="title is-6">{{exo.date_created | dateFormatter}}</p>
             </div>
             <div class="column is-12 has-text-centered">
               <p class="heading">Niveau</p>
-              <p class="title is-5">{{classes[exo.posteur.classe]}}</p>
+              <p class="title is-6">{{classes[exo.posteur.classe]}}</p>
             </div>
-            <div class="column is-12 has-text-centered mt-6">
+            <div class="column is-12 has-text-centered">
               <p class="heading">Chapitre</p>
-              <p class="title is-5">{{exo.chapitre}}</p>
+              <p class="title is-6">{{exo.chapitre}}</p>
             </div>
           </div>
           <div>
             <b-button v-if="exo.file"
                       class="mt-6"
-                      type="is-primary"
+                      type="is-info"
                       expanded
                       icon-left="download"
                       @click="downloadFile()">
@@ -130,10 +130,10 @@
               Aucune correction disponible
             </p>
           </header>
-          <CorrectionPreview v-if="correc"
+          <CorrectionPreview v-if="correc && user"
                              :correc="correc"
                              :user="user"
-                             :unlocked="user && correc.id && user.correc.includes(correc.id)" />
+                             :unlocked="correc.id && user.unlocked_correcs.includes(correc.id)" />
         </div>
         <b-button class="mt-6"
                   expanded
@@ -141,47 +141,46 @@
                   size="is-large"
                   icon-left="upload"
                   @click="modal_correction = !modal_correction">
-          Soumettre une correction
+          Soumettre une correction (+ {{correc_points}} pts)
         </b-button>
-      </div>
-      <div class="mt-8">
-        <b-modal :active.sync="modal_correction"
-                 width="50%"
-                 has-modal-card
-                 trap-focus
-                 aria-role="dialog"
-                 aria-modal>
-          <div class="modal-card">
-            <header class="modal-card-head">
-              <p class="modal-card-title">Soumettre une correction</p>
-            </header>
-            <div class="modal-card-body">
-              <Upload v-model="correction_file"
-                      :exo="false" />
-              <b-button class="my-2"
-                        expanded
-                        type="is-primary"
-                        @click="submitCorrection()">
-                Soumettre
-              </b-button>
-            </div>
-          </div>
-        </b-modal>
       </div>
     </div>
   </div>
-</div>
+  <div>
+    <b-modal :active.sync="modal_correction"
+             has-modal-card
+             trap-focus
+             aria-role="dialog"
+             aria-modal>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Soumettre une correction</p>
+        </header>
+        <div class="modal-card-body">
+          <Upload v-model="correction_file"
+                  :exo="false" />
+          <b-button class="my-2"
+                    expanded
+                    type="is-primary"
+                    @click="submitCorrection()">
+            Soumettre
+          </b-button>
+        </div>
+      </div>
+    </b-modal>
+  </div>
 </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import pdf from 'vue-pdf'
+import moment from "moment";
 import Upload from '@/components/Upload.vue'
 import CorrectionPreview from '@/components/CorrectionPreview.vue'
 import classes from '@/data/classes.json'
 import correctionsService from '@/services/correctionsService'
 import exercicesService from "@/services/exercicesService"
-import { mapState } from 'vuex'
 export default {
   name: "ExerciceDetail",
   components: {
@@ -212,7 +211,29 @@ export default {
     }
   },
   computed: {
-    ...mapState('authentication', ['user'])
+    ...mapState('authentication', ['user']),
+    ...mapState("general", ["constants"]),
+    correc_points() {
+      if (!this.exo) { return; }
+      let delai_depasse = false;
+      let date1 = moment();
+      let date2 = moment(this.exo.date_limite);
+      let diffHours = date2.diff(date1, "hours");
+      if (diffHours <= 0) {
+        delai_depasse = true;
+      }
+      let condition = this.exo.posteur !== this.user && delai_depasse === false &&
+        this.exo.correcs.length === 0
+      if (condition) {
+        return this.exo.prix
+      }
+      if (this.exo.posteur.id === this.user.id) {
+        return this.constants["SELFCORREC_POINTS"]
+      } else if (delai_depasse) {
+        return this.constants["DEADLINE_POINTS"]
+      } else
+        return this.constants["MULTIPLECORREC_POINTS"]
+    }
   },
   created() {
     this.updateExo()
@@ -222,8 +243,8 @@ export default {
       exercicesService.getExercice(this.id)
         .then(exo => {
           this.exo = exo
-          if (exo.corrections.length > 0) {
-            correctionsService.getCorrection(exo.corrections[0]['id'])
+          if (exo.correcs.length > 0) {
+            correctionsService.getCorrection(exo.correcs[0]['id'])
               .then(correc => {
                 this.correc = correc
               })

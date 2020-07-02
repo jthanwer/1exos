@@ -18,6 +18,8 @@ from .filters import ExerciceFilter
 
 import core.fluxes as fluxes
 
+from PIL import Image
+import os
 
 class PassthroughRenderer(renderers.BaseRenderer):
     media_type = ''
@@ -43,11 +45,25 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data.get('file', None):
-            name_file = serializer.validated_data['file'].name
-            extension = name_file.split('.')[-1]
-            serializer.validated_data['file'].name = 'Exercice.' + extension
-        serializer.save(posteur=user, niveau=user.classe)
+        obj = serializer.save(posteur=user, niveau=user.classe,
+                              prefix_prof=user.prefix_prof,
+                              nom_prof=user.nom_prof,
+                              ville_etablissement=user.ville_etablissement,
+                              nom_etablissement=user.nom_etablissement)
+        if obj.file:
+            file = obj.file
+            old_path = file.path
+            old_name = file.name
+            extension = old_name.split('.')[-1]
+            if extension != 'pdf':
+                print('compressing')
+                print(os.stat(old_path).st_size)
+                image = Image.open(file)
+                image.save(old_path, optimize=True, quality=20)
+                print(os.stat(old_path).st_size)
+            file.name = 'Exercice{}.'.format(obj.id) + extension
+            os.rename(old_path, file.path)
+            obj.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
@@ -68,6 +84,24 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 
         return response
 
+    @action(methods=['get'], detail=True)
+    def like(self, request, pk=None):
+        exercice = self.get_object()
+        user = request.user
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user.liked_exos.add(exercice)
+        return Response(status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=True)
+    def dislike(self, request, pk=None):
+        exercice = self.get_object()
+        user = request.user
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user.liked_exos.remove(exercice)
+        return Response(status=status.HTTP_200_OK)
+
     @action(methods=['get'], detail=True, permission_classes=[AllowAny])
     def corrections(self, request, pk=None):
         exercice = self.get_object()
@@ -82,7 +116,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
-    def my_exercices(self, request):
+    def my_posted_exercices(self, request):
         posteur = request.user
         queryset = Exercice.objects.filter(posteur=posteur)
 
@@ -94,15 +128,29 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=False, permission_classes=[AllowAny])
+    def my_liked_exercices(self, request):
+        posteur = request.user
+        queryset = Exercice.objects.filter(liked_by=posteur)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
     @action(detail=False)
     def etablissements(self, request):
-        queryset = Exercice.objects.values('posteur__ville_etablissement', 'posteur__nom_etablissement')\
+        queryset = Exercice.objects.values('ville_etablissement', 'nom_etablissement')\
             .distinct()
         return Response({'results': queryset})
 
     @action(detail=False)
     def profs(self, request):
-        queryset = Exercice.objects.values('posteur__prefix_prof', 'posteur__nom_prof')\
+        queryset = Exercice.objects.values('prefix_prof', 'nom_prof')\
             .distinct()
         return Response({'results': queryset})
 
@@ -123,11 +171,21 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         correcteur = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data.get('file', None):
-            name_file = serializer.validated_data['file'].name
-            extension = name_file.split('.')[-1]
-            serializer.validated_data['file'].name = 'Correction.' + extension
         correction = serializer.save(correcteur=correcteur)
+        if correction.file:
+            file = correction.file
+            old_name = file.name
+            old_path = file.path
+            extension = old_name.split('.')[-1].lower()
+            if extension != 'pdf':
+                print('compressing')
+                print(os.stat(old_path).st_size)
+                image = Image.open(file)
+                image.save(old_path, optimize=True, quality=20)
+                print(os.stat(old_path).st_size)
+            file.name = 'Correction{}.'.format(correction.id) + extension
+            os.rename(old_path, file.path)
+            correction.save()
 
         fluxes.submit_correction(correction)
 

@@ -15,7 +15,7 @@
             <hr />
             <h1 class="title has-text-centered">Généralités</h1>
             <hr />
-            <div class="columns">
+            <div class="columns is-centered">
               <div class="column is-half">
                 <ValidationObserver ref="firstStep">
                   <ValidationProvider rules="required"
@@ -41,9 +41,9 @@
                       <b-select v-model="form.is_from_livre"
                                 expanded
                                 placeholder="Choisir la provenance">
-                        <option :value="false"> Exo sur feuille</option>
+                        <option :value="false"> Sur feuille</option>
                         <option :value="true">
-                          Fait partie d'un livre scolaire</option>
+                          Livre scolaire</option>
                       </b-select>
                     </b-field>
                   </ValidationProvider>
@@ -57,9 +57,6 @@
                                 placeholder="Choisir un type d'exo">
                         <option> Exo </option>
                         <option> Activité </option>
-                        <option> DM </option>
-                        <option> DHC </option>
-                        <option> DS </option>
                       </b-select>
                     </b-field>
                   </ValidationProvider>
@@ -75,32 +72,61 @@
             <hr />
             <h1 class="title has-text-centered">Points et Délai</h1>
             <hr />
-            <div class="columns">
+            <div class="notification is-info is-light">
+              <div class="media">
+                <div class="media-left">
+                  <b-icon icon="information"></b-icon>
+                </div>
+                <div v-if="user && constants"
+                     class="media-content">
+                  Les exos de niveau {{classes[user.classe]}} se corrigent
+                  actuellement pour {{constants['MEAN_PRICES'][user.classe]}} points.
+                </div>
+              </div>
+            </div>
+            <div v-if="user"
+                 class="columns is-centered">
               <div class="column is-half">
                 <ValidationObserver ref="secondStep">
                   <ValidationProvider :rules="{
                       required: true,
                       min_value: 1,
-                      max_value: user.tirelire,
+                      max_cagnotte_value: user.tirelire,
                       integer: true
                     }"
                                       v-slot="{ errors, valid }">
-                    <b-field label="Prix"
-                             :message="errors"
+                    <b-field :message="errors"
                              :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <template slot="label">
+                        Points
+                        <b-tooltip type="is-dark"
+                                   label="Quel est le nombre de points que tu es prêt à céder pour obtenir la correction de ton exo ?"
+                                   multilined>
+                          <b-icon size="is-small"
+                                  icon="help-circle-outline"></b-icon>
+                        </b-tooltip>
+                      </template>
                       <b-numberinput v-model="form.prix"
                                      :min="1"
                                      :max="user.tirelire"
-                                     placeholder="Choisir un prix">
+                                     placeholder="Choisir un nombre de points">
                       </b-numberinput>
                     </b-field>
                   </ValidationProvider>
 
                   <ValidationProvider rules="required"
                                       v-slot="{ errors, valid }">
-                    <b-field label="A faire pour..."
-                             :message="errors"
+                    <b-field :message="errors"
                              :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                      <template slot="label">
+                        À faire pour...
+                        <b-tooltip type="is-dark"
+                                   label="Quelle est la date avant laquelle tu aimerais préférentiellement obtenir ta correction ?"
+                                   multilined>
+                          <b-icon size="is-small"
+                                  icon="help-circle-outline"></b-icon>
+                        </b-tooltip>
+                      </template>
                       <b-datetimepicker v-model="form.date_limite"
                                         placeholder="Choisir une date limite"
                                         :min-datetime="minDatetime"
@@ -127,7 +153,7 @@
                   <b-icon icon="alert"></b-icon>
                 </div>
                 <div class="media-content">
-                  Pour des raisons de droit d’auteur, il est interdit d’uploader un énoncé provenant d’un livre.
+                  Pour des raisons relatives au droit d’auteur, il est interdit d’uploader un énoncé provenant d’un livre.
                 </div>
               </div>
             </div>
@@ -161,7 +187,7 @@
                                 placeholder="Choisir un livre">
                         <option v-for="livre in livres[6]"
                                 :value="livre.name">
-                          {{ livre.name.split("_").join(" - ") }}
+                          {{ livre.name.split("_").slice(1).join(" - ") }}
                         </option>
                       </b-select>
                     </b-field>
@@ -193,7 +219,7 @@
 
               <div class="column is-half has-text-centered">
                 <img v-if="form.livre.name"
-                     style="height: 400px;"
+                     style="height: 300px;"
                      :src="require('@/assets/images/livres/' + form.livre.name + '.jpg')"
                      alt="Image indisponible" />
               </div>
@@ -240,7 +266,7 @@
                         type="is-success"
                         size="is-large"
                         @click.prevent="submit()">
-                Demander la correction de cet exo
+                Demander la correction
               </b-button>
             </div>
           </template>
@@ -297,6 +323,7 @@ export default {
   },
   computed: {
     ...mapState("authentication", ["user"]),
+    ...mapState("general", ["constants"]),
     exo() {
       return {
         id: 1,
@@ -310,7 +337,7 @@ export default {
         prix: this.form.prix,
         date_limite: moment(this.form.date_limite).toISOString(true),
         date_created: moment(),
-        corrections: []
+        correcs: []
       };
     }
   },
@@ -329,8 +356,7 @@ export default {
       } else {
         fd.append("file", this.drop_file);
       }
-      this.$store
-        .dispatch("exercices/postExercice", fd)
+      this.$store.dispatch("exercices/postExercice", fd)
         .then(data => {
           this.is_loading = false;
           this.$router.push({ name: "exercice", params: { id: data.id } });

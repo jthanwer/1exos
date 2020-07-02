@@ -5,7 +5,7 @@
   <ValidationObserver ref="form"
                       v-slot="{ handleSubmit }">
     <div class="columns is-centered">
-      <div class="column is-10">
+      <div class="column is-6">
         <div class="card">
           <header class="card-header">
             <p class="card-header-title is-centered has-background-primary has-text-white">
@@ -15,18 +15,19 @@
           <section class="card-content">
             <form @submit.prevent="validate()">
               <b-field grouped>
-                <ValidationProvider class="is-flex"
+                <ValidationProvider class="is-expanded"
                                     ref="username_validator"
                                     rules="required|unique_username"
                                     v-slot="{ errors, valid, failed, pending, failedRules }">
-                  <b-field label="Ton pseudo"
+                  <b-field label="Pseudo"
+                           expanded
                            :message="errors"
                            :loading="pending"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-input v-model="form.username"
                              type="text"
                              @input="reset_validation_username(failed)"
-                             placeholder="xxXLeMatheuxXxx">
+                             placeholder="Choisis ton pseudo...">
                     </b-input>
                   </b-field>
                   <b-field v-if="failedRules.hasOwnProperty('unique_username')"
@@ -42,13 +43,15 @@
                 </ValidationProvider>
               </b-field>
 
-              <b-field grouped>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field label="Ta classe"
+              <ValidationProvider rules="required"
+                                  v-slot="{ errors, valid }">
+                <b-field grouped>
+                  <b-field label="Classe"
+                           expanded
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-select v-model="form.classe"
+                              expanded
                               placeholder="Choisis ta classe...">
                       <option v-for="(value, key) in classes"
                               :value="key">{{
@@ -56,14 +59,37 @@
                         }}</option>
                     </b-select>
                   </b-field>
-                </ValidationProvider>
-              </b-field>
+                </b-field>
+              </ValidationProvider>
 
-              <b-field label="Ton établissement"></b-field>
-              <b-field>
-                <ValidationProvider rules="required"
-                                    v-slot="{ errors, valid }">
-                  <b-field expanded
+
+              <ValidationProvider rules="required"
+                                  v-slot="{ errors, valid }">
+                <b-field grouped>
+                  <b-field label="Ville"
+                           expanded
+                           :message="errors"
+                           :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                    <b-autocomplete expanded
+                                    v-model="ville_input"
+                                    placeholder="Cherche ta ville..."
+                                    :data="ville_items"
+                                    keep-first>
+                      <template slot="empty">
+                        <span v-if="ville_input.length > 3">Aucun résultat</span>
+                        <span v-else>Tapes au moins 3 caractères</span>
+                      </template>
+                    </b-autocomplete>
+                  </b-field>
+                </b-field>
+              </ValidationProvider>
+
+
+              <ValidationProvider rules="required"
+                                  v-slot="{ errors, valid }">
+                <b-field grouped>
+                  <b-field label="Établissement"
+                           expanded
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-autocomplete expanded
@@ -71,27 +97,16 @@
                                     :loading="autocomplete_loading"
                                     placeholder="Cherche ton établissement..."
                                     :data="etablissement_items"
-                                    field="n"
                                     keep-first>
                       <template slot="empty">
-                        <span v-if="etablissement_input.length > 5">Aucun résultat</span>
-                        <span v-else>Tapes au moins 6 caractères</span>
-                      </template>
-                      <template slot-scope="props">
-                        <div class="is-pulled-left has-text-weight-bold">
-                          {{ props.option.n }}
-                        </div>
-                        <br />
-                        <small>
-                          {{ props.option.c }}
-                        </small>
+                        Aucun résultat
                       </template>
                     </b-autocomplete>
                   </b-field>
-                </ValidationProvider>
-              </b-field>
+                </b-field>
+              </ValidationProvider>
 
-              <b-field label="Ton/ta prof de maths"></b-field>
+              <b-field label="Prof de maths"></b-field>
               <b-field grouped>
                 <ValidationProvider rules="required"
                                     v-slot="{ errors, valid }">
@@ -104,11 +119,14 @@
                     </b-select>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider rules="required"
+                <ValidationProvider class="is-expanded"
+                                    rules="required"
                                     v-slot="{ errors, valid }">
                   <b-field :message="errors"
+                           expanded
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-input v-model="form.nom_prof"
+                             expanded
                              type="text"
                              placeholder="Dupont">
                     </b-input>
@@ -117,11 +135,13 @@
               </b-field>
 
               <b-field grouped>
-                <ValidationProvider rules="required|email|unique_email"
+                <ValidationProvider class="is-expanded"
+                                    rules="required|email|unique_email"
                                     ref="email_validator"
                                     name="email1"
                                     v-slot="{ errors, failed, valid, pending }">
-                  <b-field label="Ton adresse e-mail"
+                  <b-field label="Adresse e-mail"
+                           expanded
                            :message="errors"
                            :loading="pending"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
@@ -130,9 +150,11 @@
                              @input="reset_validation_email(failed)"></b-input>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider rules="required|same_email:@email1"
+                <ValidationProvider class="is-expanded"
+                                    rules="required|same_email:@email1"
                                     v-slot="{ errors, valid }">
                   <b-field label="Confirmation"
+                           expanded
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-input v-model="form.email2"
@@ -142,10 +164,12 @@
               </b-field>
 
               <b-field grouped>
-                <ValidationProvider rules="required|min:6"
+                <ValidationProvider class="is-expanded"
+                                    rules="required|min:6"
                                     name="password1"
                                     v-slot="{ errors, valid }">
-                  <b-field label="Ton mot de passe"
+                  <b-field label="Mot de passe"
+                           expanded
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-input v-model="form.password1"
@@ -153,9 +177,11 @@
                              placeholder="Mot de passe"></b-input>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider rules="required|same_password:@password1"
+                <ValidationProvider class="is-expanded"
+                                    rules="required|same_password:@password1"
                                     v-slot="{ errors, valid }">
                   <b-field label="Confirmation"
+                           expanded
                            :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
                     <b-input v-model="form.password2"
@@ -218,12 +244,15 @@ export default {
         password1: null,
         password2: null,
         classe: null,
+        ville_etablissement: null,
         nom_etablissement: null,
         prefix_prof: null,
         nom_prof: null
       },
 
-      // etablissements: etablissements,
+      villes: [],
+      ville_items: [],
+      ville_input: "",
       etablissements: [],
       etablissement_items: [],
       etablissement_input: "",
@@ -233,6 +262,9 @@ export default {
     };
   },
   created() {
+    fetch('data/villes.json')
+      .then(r => r.json())
+      .then(json => { this.villes = json })
     fetch('data/etablissements.json')
       .then(r => r.json())
       .then(json => { this.etablissements = json })
@@ -260,6 +292,7 @@ export default {
     submit() {
       this.is_loading = true;
       this.form.nom_etablissement = this.etablissement_input;
+      this.form.ville_etablissement = this.ville_input;
       let email = this.form.email1.toLowerCase();
       const fd = new FormData();
       fd.append("username", this.form.username);
@@ -289,10 +322,10 @@ export default {
           this.error = true;
         });
     },
-    filterEtablissements(v) {
-      this.etablissement_items = this.etablissements.filter(object => {
+    filterVilles(v) {
+      this.ville_items = this.villes.filter(object => {
         return (
-          (object.n || "")
+          (object || "")
           .toLowerCase()
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
@@ -305,10 +338,30 @@ export default {
         );
       });
     },
+    filterEtablissements(v) {
+      this.etablissement_items = this.etablissements[this.ville_input]
+        .filter(object => {
+          return (
+            (object || "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .indexOf(
+              (v || "")
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f]/g, "")
+            ) > -1
+          );
+        });
+    },
   },
   watch: {
+    ville_input: function(input) {
+      input && input.length > 2 && this.filterVilles(input);
+    },
     etablissement_input: function(input) {
-      input && input.length > 5 && this.filterEtablissements(input);
+      input && this.filterEtablissements(input);
     }
   }
 };
@@ -317,5 +370,18 @@ export default {
 <style scoped>
 .field.is-grouped .field {
   margin-right: 0.75rem;
+}
+
+.field:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+span .field {
+  margin-bottom: 0.5rem;
+}
+
+span.is-expanded {
+  display: flex;
+  flex-grow: 1
 }
 </style>

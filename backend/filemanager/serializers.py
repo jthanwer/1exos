@@ -13,7 +13,11 @@ class PreviewCorrectionSerializer(serializers.ModelSerializer):
 class ExerciceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
     niveau = serializers.IntegerField(read_only=True)
-    corrections = PreviewCorrectionSerializer(many=True, read_only=True)
+    prefix_prof = serializers.BooleanField(read_only=True)
+    nom_prof = serializers.CharField(read_only=True)
+    ville_etablissement = serializers.CharField(read_only=True)
+    nom_etablissement = serializers.CharField(read_only=True)
+    correcs = PreviewCorrectionSerializer(many=True, read_only=True)
     name = serializers.SerializerMethodField()
     filetype = serializers.SerializerMethodField()
 

@@ -27,7 +27,9 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_active', 'classe',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof',
-                  'tirelire', 'correc')
+                  'tirelire',
+                  'unlocked_correcs', 'posted_correcs',
+                  'posted_exos', 'liked_exos')
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):

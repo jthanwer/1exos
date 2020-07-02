@@ -6,8 +6,12 @@ from django.utils import timezone
 class Exercice(models.Model):
     posteur = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.CASCADE,
-                                related_name='exercices')
+                                related_name='posted_exos')
     niveau = models.IntegerField()
+    prefix_prof = models.BooleanField(default=True)
+    nom_prof = models.CharField(max_length=100, default="Admin")
+    ville_etablissement = models.CharField(max_length=40, default="Admin")
+    nom_etablissement = models.CharField(max_length=100, default="Admin")
     chapitre = models.CharField(max_length=100)
     type = models.CharField(max_length=10)
     file = models.FileField(null=True, blank=True, max_length=100)
@@ -25,10 +29,10 @@ class Exercice(models.Model):
 class Correction(models.Model):
     correcteur = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.CASCADE,
-                                   related_name='corrections')
+                                   related_name='posted_correcs')
     enonce = models.ForeignKey(Exercice,
                                on_delete=models.CASCADE,
-                               related_name='corrections')
+                               related_name='correcs')
     file = models.FileField(null=True, max_length=255)
     prix = models.IntegerField(default=1)
     date_created = models.DateTimeField(default=timezone.now)

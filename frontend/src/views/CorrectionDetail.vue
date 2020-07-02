@@ -5,7 +5,7 @@
   <!-- </div> -->
   <div class="mt-2"></div>
   <div class="columns">
-    <div class="column is-6">
+    <div class="column is-8">
       <div v-if="correc">
         <div v-if="correc.file">
           <div class="correc-container"
@@ -62,55 +62,54 @@
       </div>
     </div>
 
-    <div class="column is-5 is-offset-1">
-      <div class="correc-info pa-9 mb-8 has-text-centered">
+    <div class="column is-3 is-offset-1">
+      <div class="correc-info box pa-5 mb-8 has-text-centered">
         <div v-if="correc">
           <div class="columns is-centered is-multiline">
-            <div class="column is-6 has-text-centered">
+            <div class="column is-7 has-text-centered">
               <p class="heading">Ajouté par</p>
-              <p class="title is-5">{{correc.correcteur}}</p>
+              <p class="title is-6">{{correc.correcteur}}</p>
             </div>
-            <div class="column is-6 has-text-centered">
+            <div class="column is-7 has-text-centered">
               <p class="heading">Le</p>
-              <p class="title is-5">{{correc.date_created | dateFormatter}}</p>
+              <p class="title is-6">{{correc.date_created | dateFormatter}}</p>
             </div>
           </div>
         </div>
       </div>
-      <div class="correc-info pa-9 has-text-centered">
-        <div v-if="correc">
-          <div v-if="correc.enonce.livre">
-            <div class="level">
-              <div class="level-item has-text-centered">
-                <div>
-                  <p class="heading">Numéro</p>
-                  <p class="title is-5">{{correc.enonce.num_exo}}</p>
-                </div>
-              </div>
-              <div class="level-item has-text-centered">
-                <div>
-                  <p class="heading">Page</p>
-                  <p class="title is-5">{{correc.enonce.num_page}}</p>
-                </div>
+      <div v-if="correc">
+        <div class="pa-9 has-text-centered"
+             v-if="correc.enonce.livre">
+          <div class="level">
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Numéro</p>
+                <p class="title is-5">{{correc.enonce.num_exo}}</p>
               </div>
             </div>
-            <div class="level">
-              <div class="level-item has-text-centered">
-                <img style="height: 400px;"
-                     :src="require('@/assets/images/livres/' + correc.enonce.livre + '.jpg')"
-                     alt="Image indisponible" />
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Page</p>
+                <p class="title is-5">{{correc.enonce.num_page}}</p>
               </div>
             </div>
           </div>
-          <div v-else>
-            <b-button class="mt-6"
-                      type="is-primary"
-                      expanded
-                      icon-left="book-open-page-variant"
-                      @click="$router.push({name: 'exercice', params: {id: correc.enonce.id}})">
-              Voir l'énoncé associé
-            </b-button>
+          <div class="level">
+            <div class="level-item has-text-centered">
+              <img style="height: 400px;"
+                   :src="require('@/assets/images/livres/' + correc.enonce.livre + '.jpg')"
+                   alt="Image indisponible" />
+            </div>
           </div>
+        </div>
+        <div v-else>
+          <b-button class="mt-6"
+                    type="is-primary"
+                    expanded
+                    icon-left="book-open-page-variant"
+                    @click="$router.push({name: 'exercice', params: {id: correc.enonce.id}})">
+            Voir l'énoncé associé
+          </b-button>
         </div>
       </div>
     </div>

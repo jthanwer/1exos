@@ -30,8 +30,9 @@
                     </div>
                     <div class="box has-background-primary has-text-centered"
                          style="display: inline-block;">
-                      <span class="has-text-centered title is-5 my-4 has-text-white">
-                        1 € = 4 pts
+                      <span v-if="constants"
+                            class="has-text-centered title is-5 my-4 has-text-white">
+                        1 € = {{constants["CHANGE"]}} pts
                       </span>
                     </div>
                   </div>
@@ -40,38 +41,38 @@
                 <div class="column is-8">
                   <div>
                     <b-field position="is-centered">
-                      <b-radio-button v-model="amount"
+                      <b-radio-button v-model="choice_amount"
                                       :native-value="5"
-                                      :disabled="specific_amount"
-                                      size="is-large"
+                                      :disabled="!!specific_amount"
+                                      size="is-medium"
                                       type="is-info">
                         <span>5 €</span>
                       </b-radio-button>
-                      <b-radio-button v-model="amount"
+                      <b-radio-button v-model="choice_amount"
                                       :native-value="10"
-                                      :disabled="specific_amount"
-                                      size="is-large"
+                                      :disabled="!!specific_amount"
+                                      size="is-medium"
                                       type="is-info">
                         <span>10 €</span>
                       </b-radio-button>
-                      <b-radio-button v-model="amount"
+                      <b-radio-button v-model="choice_amount"
                                       :native-value="20"
-                                      :disabled="specific_amount"
-                                      size="is-large"
+                                      :disabled="!!specific_amount"
+                                      size="is-medium"
                                       type="is-info">
                         <span>20 €</span>
                       </b-radio-button>
-                      <b-radio-button v-model="amount"
+                      <b-radio-button v-model="choice_amount"
                                       :native-value="50"
-                                      :disabled="specific_amount"
-                                      size="is-large"
+                                      :disabled="!!specific_amount"
+                                      size="is-medium"
                                       type="is-info">
                         <span>50 €</span>
                       </b-radio-button>
-                      <b-radio-button v-model="amount"
+                      <b-radio-button v-model="choice_amount"
                                       :native-value="100"
-                                      :disabled="specific_amount"
-                                      size="is-large"
+                                      :disabled="!!specific_amount"
+                                      size="is-medium"
                                       type="is-info">
                         <span>100 €</span>
                       </b-radio-button>
@@ -87,7 +88,7 @@
                         <b-field :message="errors"
                                  :type="{ 'is-danger': errors[0] }">
                           <b-input size="is-medium"
-                                   v-model="amount">
+                                   v-model="specific_amount">
                           </b-input>
                         </b-field>
                         <p class="control">
@@ -131,12 +132,6 @@
                       <img src="@/assets/images/paiement/visa.png">
                       <img src="@/assets/images/paiement/amex.png">
                     </div>
-                    <div class="box has-background-primary has-text-centered"
-                         style="display: inline-block;">
-                      <span class="has-text-centered title is-5 my-4 has-text-white">
-                        {{ amount }} € = {{ net_amount_points }} pts
-                      </span>
-                    </div>
                   </div>
                 </div>
 
@@ -148,30 +143,36 @@
                   </b-field>
 
                   <b-field grouped>
-                    <ValidationProvider rules="required"
+                    <ValidationProvider class="is-expanded"
+                                        rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Nom (sur la carte bancaire)"
+                               expanded
                                :message="errors"
                                :type="{'is-danger': errors[0],'is-success': valid }">
-                        <b-input v-model="last_name"></b-input>
+                        <b-input v-model="last_name"
+                                 placeholder="Dupont"></b-input>
                       </b-field>
                     </ValidationProvider>
-                    <ValidationProvider rules="required"
+                    <ValidationProvider class="is-expanded"
+                                        rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Prénom"
+                               expanded
                                :message="errors"
                                :type="{'is-danger': errors[0], 'is-success': valid}">
-                        <b-input v-model="first_name"></b-input>
+                        <b-input v-model="first_name"
+                                 placeholder="Jean"></b-input>
                       </b-field>
                     </ValidationProvider>
-                    <ValidationProvider rules="required"
+                    <!-- <ValidationProvider rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Code postal"
                                :message="errors"
                                :type="{'is-danger': errors[0],'is-success': valid}">
                         <b-input v-model="postal_code"></b-input>
                       </b-field>
-                    </ValidationProvider>
+                    </ValidationProvider> -->
                   </b-field>
 
                   <b-field label="Date d'expiration"
@@ -180,7 +181,7 @@
                     <div ref="card-expiry"></div>
                   </b-field>
 
-                  <b-field label="CVC (3 ou 4 chiffres)"
+                  <b-field label="CVC"
                            :message="stripeErrors.card_cvc"
                            :type="{ 'is-danger': stripeErrors.card_cvc }">
                     <div ref="card-cvc"></div>
@@ -278,8 +279,8 @@ export default {
       height: "300px",
       activeStep: 0,
 
-      specific_amount: false,
-      amount: 5,
+      specific_amount: null,
+      choice_amount: 5,
       last_name: null,
       first_name: null,
       postal_code: null,
@@ -312,14 +313,23 @@ export default {
   },
   computed: {
     ...mapState("authentication", ["user"]),
+    ...mapState("general", ["constants"]),
+    amount() {
+      if (this.specific_amount) {
+        this.choice_amount = null;
+        return this.specific_amount;
+      } else {
+        return this.choice_amount;
+      }
+    },
     gross_amount_points() {
-      return this.amount * 4;
+      return this.amount * this.constants["CHANGE"];
     },
     bonus_points() {
-      return Math.floor(this.amount * 4 * 0.2);
+      return Math.floor(this.amount * this.constants["CHANGE"] * this.constants["BONUS"]);
     },
     net_amount_points() {
-      return Math.floor(this.amount * 4 * 1.2);
+      return Math.floor(this.amount * this.constants["CHANGE"] * (1 + this.constants["BONUS"]));
     }
   },
   methods: {
@@ -392,8 +402,7 @@ export default {
           name: `${this.first_name} ${this.last_name}`,
         }
       };
-      stripe
-        .createPaymentMethod(data)
+      stripe.createPaymentMethod(data)
         .then(result => {
           let payload = {
             payment_id: this.payment_id,
@@ -462,11 +471,24 @@ export default {
     -webkit-box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1) !important;
 }
 
+img {
+    height: 30px;
+}
+
 .field.is-grouped .field {
     margin-right: 0.75rem;
 }
 
-img {
-    height: 30px;
+.field:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
+span .field {
+    margin-bottom: 0.5rem;
+}
+
+span.is-expanded {
+    display: flex;
+    flex-grow: 1;
 }
 </style>

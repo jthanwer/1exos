@@ -75,6 +75,7 @@ export default new Router({
     {
       path: "/rechercher-un-exo/",
       name: "search",
+      props: true,
       component: Search
     },
     {

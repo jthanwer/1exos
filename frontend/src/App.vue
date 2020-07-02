@@ -5,7 +5,8 @@
     <transition name="fade"
                 mode="out-in">
       <keep-alive include="search">
-        <router-view />
+        <router-view :key="$route.path +
+        ($route.params.id ? $route.params.id : '').toString()" />
       </keep-alive>
     </transition>
   </div>
@@ -16,6 +17,7 @@
 
 <script>
 require("@/assets/css/animate.css");
+import { mapState } from "vuex";
 import NavbarComponent from "@/components/layout/Navbar.vue";
 
 export default {
@@ -25,7 +27,12 @@ export default {
   },
   created() {
     this.$store.dispatch("authentication/getProfileUser");
-  }
+    this.$store.dispatch("general/updateConstants");
+    this.$store.dispatch("exercices/loadPostedExercices");
+    this.$store.dispatch("exercices/loadLikedExercices");
+    this.$store.dispatch("corrections/loadPostedCorrections");
+    this.$store.dispatch("corrections/loadUnlockedCorrections");
+  },
 };
 </script>
 

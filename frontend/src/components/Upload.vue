@@ -1,69 +1,64 @@
 <template>
-  <section>
-    <b-field expanded>
-      <b-upload
-        :value="value"
-        expanded
-        @input="$emit('input', $event)"
-        :type="type_upload"
-        drag-drop
-      >
-        <section class="section">
-          <div class="content has-text-centered">
+<section>
+  <b-field expanded>
+    <b-upload :value="file"
+              expanded
+              @input="input($event)"
+              :type="type_upload"
+              drag-drop>
+      <section class="section">
+        <div class="content has-text-centered">
+          <p>
+            <b-icon v-if="!file && !error"
+                    icon="upload"
+                    size="is-large">
+            </b-icon>
+            <b-icon v-else-if="file"
+                    icon="check"
+                    class="has-background-success"
+                    style="border-radius: 50%;"
+                    type="is-white"
+                    size="is-large">
+            </b-icon>
+            <b-icon v-else
+                    icon="close"
+                    class="has-background-danger"
+                    style="border-radius: 50%;"
+                    type="is-white"
+                    size="is-large">
+            </b-icon>
+          </p>
+          <div v-if="!file">
             <p>
-              <b-icon v-if="!value && !error" icon="upload" size="is-large">
-              </b-icon>
-              <b-icon
-                v-else-if="value"
-                icon="check"
-                class="has-background-success"
-                style="border-radius: 50%;"
-                type="is-white"
-                size="is-large"
-              >
-              </b-icon>
-              <b-icon
-                v-else
-                icon="close"
-                class="has-background-danger"
-                style="border-radius: 50%;"
-                type="is-white"
-                size="is-large"
-              >
-              </b-icon>
+              <strong :class="{ 'has-text-danger': error }">
+                Glisse
+                <span v-if="exo">ton énoncé</span>
+                <span v-else>ta correction</span>
+                (.pdf, .jpg, .png)
+              </strong>
+              dans cette zone <br />
+              ou <br />
+              <strong :class="{ 'has-text-danger': error }">Clique dessus</strong>
+              pour choisir le fichier à importer
             </p>
-            <div v-if="!value">
+
+            <div class="has-text-grey is-size-6">
               <p>
-                <strong :class="{ 'has-text-danger': error }">
-                  Glisse
-                  <span v-if="exo">ton énoncé</span>
-                  <span v-else>ta correction</span>
-                  (.pdf, .jpg, .png)
-                </strong>
-                dans cette zone <br />
-                ou <br />
-                <strong :class="{ 'has-text-danger': error }"
-                  >Clique dessus</strong
-                >
-                pour choisir le fichier à importer
+                <span>1 énoncé = 1 fichier </span> <br />
+                <span>Bonne lisibilité </span> <br />
+                <span>Bon cadrage</span> <br />
+                <span>Dans le bon sens</span> <br />
+                <span>Taille maximale = 5 Mo</span> <br />
               </p>
 
-              <div class="has-text-grey is-size-6">
-                <p>
-                  <span>1 énoncé = 1 fichier </span> <br />
-                  <span>Bonne lisibilité </span> <br />
-                  <span>Bon cadrage</span> <br />
-                  <span>Dans le bon sens</span> <br />
-                </p>
-
-                <p class="is-size-7">
-                  Si ces conditions ne sont pas remplies, ton exo ne sera
-                  sûrement pas corrigé, voire sera supprimé.
-                </p>
-              </div>
+              <p class="is-size-7">
+                Si ces conditions ne sont pas remplies, ton exo ne sera
+                sûrement pas corrigé, voire sera supprimé.
+              </p>
             </div>
+          </div>
 
-            <!-- <div class="has-text-grey is-size-7">
+          <!-- <div class="has-text-grey is-size-7">
               <p>
                 Si
                 <span v-if="exo">
@@ -87,22 +82,20 @@
             </div>
           </div> -->
 
-            <b-tag
-              v-else
-              class="mb-3"
-              type="is-primary"
-              size="is-large"
-              closable
-              aria-close-label="Close tag"
-              @close.prevent="value = null"
-            >
-              {{ value.name }}
-            </b-tag>
-          </div>
-        </section>
-      </b-upload>
-    </b-field>
-  </section>
+          <b-tag v-else
+                 class="mb-3"
+                 type="is-primary"
+                 size="is-large"
+                 closable
+                 aria-close-label="Close tag"
+                 @close.prevent="file = null">
+            {{ file.name }}
+          </b-tag>
+        </div>
+      </section>
+    </b-upload>
+  </b-field>
+</section>
 </template>
 
 <script>
@@ -122,20 +115,35 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      file: this.value
+    };
   },
   computed: {
     type_upload() {
-      if (!this.value && this.error) {
+      if (!this.file && this.error) {
         return "is-danger";
-      } else if (this.value) {
+      } else if (this.file) {
         return "is-success";
       } else {
         return "is-primary";
       }
-    }
+    },
   },
-  methods: {}
+  methods: {
+    input(file) {
+      if (file.size > 5 * 1024 * 1024) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: `La taille du fichier doit être inférieure à 5 Mo`,
+          type: 'is-danger'
+        })
+        return;
+      }
+      this.file = file
+      this.$emit('input', file)
+    }
+  }
 };
 </script>
 

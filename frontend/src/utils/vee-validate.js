@@ -66,6 +66,11 @@ extend("max_value", {
   message: "Le nombre entré doit être inférieur ou égal à {max}"
 });
 
+extend("max_cagnotte_value", {
+  ...max_value,
+  message: "Le nombre entré ne doit pas dépasser les points de votre cagnotte."
+});
+
 extend("unique_username", {
   validate: isUnique("username"),
   message: "Ce pseudo est déjà pris par un autre utilisateur"

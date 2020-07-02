@@ -2,32 +2,48 @@ import api from "@/services/api";
 import exercicesService from "@/services/exercicesService";
 
 const state = {
-  myExercices: []
+  postedExercices: [],
+  likedExercices: []
 };
 
 const mutations = {
-  SET_MY_EXERCICES(state, exercices) {
-    state.myExercices = exercices;
+  SET_POSTED_EXERCICES(state, exercices) {
+    state.postedExercices = exercices;
+  },
+  SET_LIKED_EXERCICES(state, exercices) {
+    state.likedExercices = exercices;
   },
   POST_EXERCICE(state, newExercice) {
-    state.myExercices.push(newExercice);
+    state.postedExercices.push(newExercice);
+  },
+  LIKE_EXERCICE(state, newExercice) {
+    state.likedExercices.push(newExercice);
   },
   DELETE_EXERCICE(state, data_index) {
-    state.myExercices.splice(data_index, 1);
+    state.postedExercices.splice(data_index, 1);
+  },
+  DISLIKE_EXERCICE(state, exercice) {
+    const index = state.likedExercices.findIndex(liked_exo => liked_exo.id === exercice.id);
+    state.likedExercices.splice(index, 1);
   }
 };
 
 const actions = {
-  loadMyExercices({ commit }) {
-    exercicesService.getMyExercices().then(data => {
-      let myExercices = data.results;
-      commit("SET_MY_EXERCICES", myExercices);
+  loadPostedExercices({ commit }) {
+    exercicesService.getPostedExercices().then(data => {
+      let postedExercices = data.results;
+      commit("SET_POSTED_EXERCICES", postedExercices);
     });
   },
-  postExercice({ dispatch, commit }, newExercice) {
+  loadLikedExercices({ commit }) {
+    exercicesService.getLikedExercices().then(data => {
+      let likedExercices = data.results;
+      commit("SET_LIKED_EXERCICES", likedExercices);
+    });
+  },
+  postExercice({ commit }, newExercice) {
     return new Promise((resolve, reject) => {
-      exercicesService
-        .postExercice(newExercice)
+      exercicesService.postExercice(newExercice)
         .then(data => {
           commit("POST_EXERCICE", data);
           resolve(data);
@@ -35,10 +51,26 @@ const actions = {
         .catch(err => reject(err));
     });
   },
-  deleteExercice({ dispatch, commit }, payload) {
-    exercicesService.deleteExercice(payload.id).then(data => {
-      commit("DELETE_EXERCICE", payload.data_index);
+  likeExercice({ commit }, exercice) {
+    return new Promise((resolve, reject) => {
+      exercicesService.likeExercice(exercice.id)
+        .then(() => {
+          commit("LIKE_EXERCICE", exercice);
+        })
+        .catch(err => reject(err));
     });
+  },
+  deleteExercice({ commit }, payload) {
+    exercicesService.deleteExercice(payload.id)
+      .then(data => {
+        commit("DELETE_EXERCICE", payload.data_index);
+      });
+  },
+  dislikeExercice({ commit }, exercice) {
+    exercicesService.dislikeExercice(exercice.id)
+      .then(data => {
+        commit("DISLIKE_EXERCICE", exercice);
+      });
   },
   downloadFile({ dispatch }, exo) {
     exercicesService.downloadFile(exo.id).then(data => {

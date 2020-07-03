@@ -213,7 +213,7 @@
                   </ValidationObserver>
                 </div>
               </div>
-              <div class="column is-half">
+              <div class="column is-12">
                 <div class="box">
                   <b-button @click="
                         form_user_active['ville_etablissement'] = !form_user_active['ville_etablissement']"
@@ -258,7 +258,7 @@
                   </ValidationObserver>
                 </div>
               </div>
-              <div class="column is-half">
+              <div class="column">
                 <div class="box">
                   <b-button @click="
                         form_user_active['nom_etablissement'] = !form_user_active['nom_etablissement']"
@@ -276,28 +276,27 @@
                           @submit.prevent="validateForm('nom_etablissement')">
                       <ValidationProvider rules="required"
                                           v-slot="{ errors, valid }">
-                        <b-field position="is-centered"
-                                 grouped>
-                          <b-field :message="errors"
-                                   :type="{
+                        <b-field grouped
+                                 :message="errors"
+                                 :type="{
                                 'is-danger': errors[0],
                                 'is-success': valid
                               }">
-                            <b-autocomplete expanded
-                                            v-model="etablissement_input"
-                                            :loading="autocomplete_loading"
-                                            placeholder="Cherche ton établissement..."
-                                            :data="etablissement_items"
-                                            keep-first>
-                              <template slot="empty">
-                                Aucun résultat
-                              </template>
-                            </b-autocomplete>
-                          </b-field>
+                          <b-autocomplete expanded
+                                          v-model="etablissement_input"
+                                          :loading="autocomplete_loading"
+                                          placeholder="Cherche ton établissement..."
+                                          :data="etablissement_items"
+                                          keep-first>
+                            <template slot="empty">
+                              Aucun résultat
+                            </template>
+                          </b-autocomplete>
                           <b-button @click="validateForm('nom_etablissement')"
                                     class="mb-3 is-pulled-right"
                                     type="is-success">Valider</b-button>
                         </b-field>
+
                       </ValidationProvider>
                     </form>
                   </ValidationObserver>
@@ -381,7 +380,7 @@ export default {
     return {
       classes: classes,
 
-      selected: 1,
+      selected: 2,
       isActive: true,
       password: null,
       form_user_active: {
@@ -572,7 +571,7 @@ export default {
       });
     },
     filterEtablissements(v) {
-      this.etablissement_items = this.etablissements[this.ville_input]
+      this.etablissement_items = this.etablissements[this.user.ville_etablissement]
         .filter(object => {
           return (
             (object || "")

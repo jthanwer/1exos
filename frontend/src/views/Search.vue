@@ -150,6 +150,7 @@
                                 :data="etablissement_items"
                                 field="nom_etablissement"
                                 keep-first
+                                dropdown-position="top"
                                 @select="option =>
                                 form.nom_etablissement = option.nom_etablissement">
                   <template slot="empty">
@@ -183,6 +184,7 @@
                                 :data="profs_items"
                                 field="nom_prof"
                                 keep-first
+                                dropdown-position="top"
                                 @select="option =>
                                   form.nom_prof = option.nom_prof">
                   <template slot="empty">

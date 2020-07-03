@@ -8,7 +8,7 @@ import decimal
 
 
 def euros2points(amount_euros):
-    amount_points = amount_euros * cst.CHANGE * (1 + cst.BONUS)
+    amount_points = amount_euros * cst.CHANGE() * (1 + cst.BONUS())
     return amount_points
 
 
@@ -17,6 +17,7 @@ def stripe_create_payment(request):
     serializer = PaymentIntentSerializer(data=request.data)
     if serializer.is_valid():
         intent = stripe.PaymentIntent.create(**serializer.validated_data,
+                                             receipt_email=request.user.email,
                                              confirmation_method='manual')
         return Response(intent)
     else:

@@ -81,13 +81,14 @@
                     <div class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold">
                       Autre montant ?
                     </div>
-                    <ValidationProvider rules="required|integer|min:0"
+                    <ValidationProvider rules="integer|min_value:5"
                                         v-slot="{ errors }">
                       <b-field position="is-centered"
                                grouped>
                         <b-field :message="errors"
                                  :type="{ 'is-danger': errors[0] }">
                           <b-input size="is-medium"
+                                   @input="typeSpecificAmount()"
                                    v-model="specific_amount">
                           </b-input>
                         </b-field>
@@ -333,6 +334,11 @@ export default {
     }
   },
   methods: {
+    typeSpecificAmount() {
+      if (!this.specific_amount) {
+        this.choice_amount = 5;
+      }
+    },
     listenForErrors() {
       const vm = this;
       this.card_number.addEventListener("change", function(event) {
@@ -459,7 +465,7 @@ export default {
           });
         });
     }
-  }
+  },
 };
 </script>
 

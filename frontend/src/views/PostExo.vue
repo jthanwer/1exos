@@ -77,10 +77,15 @@
                 <div class="media-left">
                   <b-icon icon="information"></b-icon>
                 </div>
-                <div v-if="user && constants"
+                <div v-if="user && constants && constants['MEAN_PRICES'][user.classe] > 0"
                      class="media-content">
                   Les exos de niveau {{classes[user.classe]}} se corrigent
                   actuellement pour {{constants['MEAN_PRICES'][user.classe]}} points.
+                </div>
+                <div v-else
+                     class="media-content">
+                  Aucun exercice de ce niveau n'est en ligne pour le moment.
+                  Calcul de la moyenne impossible.
                 </div>
               </div>
             </div>

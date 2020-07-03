@@ -6,14 +6,15 @@ import core.constants as cst
 @api_view()
 def fetch_constants(request):
     return Response({
-        "START_POINTS": cst.START_POINTS,
-        "CHANGE": cst.CHANGE,
-        "BONUS": cst.BONUS,
-        "SELFCORREC_POINTS": cst.SELFCORREC_POINTS,
-        "DEADLINE_POINTS": cst.DEADLINE_POINTS,
-        "MULTIPLECORREC_POINTS": cst.MULTIPLECORREC_POINTS,
-        "MEAN_PRICES": cst.MEAN_PRICES,
+        "START_POINTS": cst.START_POINTS(),
+        "CHANGE": cst.CHANGE(),
+        "BONUS": cst.BONUS(),
+        "SELFCORREC_POINTS": cst.SELFCORREC_POINTS(),
+        "DEADLINE_POINTS": cst.DEADLINE_POINTS(),
+        "MULTIPLECORREC_POINTS": cst.MULTIPLECORREC_POINTS(),
+        "MEAN_PRICES": cst.MEAN_PRICES(),
     })
+
 
 # class IndexTemplateView(LoginRequiredMixin, TemplateView):
 # class IndexTemplateView(TemplateView):

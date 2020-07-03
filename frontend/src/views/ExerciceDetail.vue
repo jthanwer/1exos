@@ -222,7 +222,7 @@ export default {
       if (diffHours <= 0) {
         delai_depasse = true;
       }
-      let condition = this.exo.posteur !== this.user && delai_depasse === false &&
+      let condition = this.exo.posteur.id !== this.user.id && delai_depasse === false &&
         this.exo.correcs.length === 0
       if (condition) {
         return this.exo.prix

@@ -10,17 +10,17 @@ def submit_correction(correction):
     now = datetime.now(timezone.utc)
     condition = posteur != correcteur and \
                 now <= exercice.date_limite and \
-                len(exercice.corrections.all()) == 1
+                exercice.corrections.count() == 1
     if condition:
         posteur.tirelire -= exercice.prix
         correcteur.tirelire += exercice.prix
     else:
         if posteur == correcteur:
-            correcteur.tirelire += SELFCORREC_POINTS
+            correcteur.tirelire += SELFCORREC_POINTS()
         elif now >= exercice.date_limite:
-            correcteur.tirelire += DEADLINE_POINTS
+            correcteur.tirelire += DEADLINE_POINTS()
         else:
-            correcteur.tirelire += MULTIPLECORREC_POINTS
+            correcteur.tirelire += MULTIPLECORREC_POINTS()
     correcteur.unlocked_correcs.add(correction)
     posteur.unlocked_correcs.add(correction)
     posteur.save()

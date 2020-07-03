@@ -146,6 +146,8 @@ export default {
       }
     },
     correc_points() {
+      if (!this.activated) { return this.exo.prix; }
+      if (!this.exo.posteur) { return; }
       let delai_depasse = false;
       let date1 = moment();
       let date2 = moment(this.exo.date_limite);
@@ -153,17 +155,23 @@ export default {
       if (diffHours <= 0) {
         delai_depasse = true;
       }
-      let condition = this.exo.posteur !== this.user && delai_depasse === false &&
+      let condition = this.exo.posteur.id !== this.user.id && delai_depasse === false &&
         this.exo.correcs.length === 0
+      console.log(this.exo.posteur.id !== this.user.id)
       if (condition) {
+        console.log('condition')
         return this.exo.prix
       }
       if (this.exo.posteur.id === this.user.id) {
+        console.log('selfcorrec')
         return this.constants["SELFCORREC_POINTS"]
       } else if (delai_depasse) {
+        console.log('deadline')
         return this.constants["DEADLINE_POINTS"]
-      } else
+      } else {
+        console.log('multiplecorrec')
         return this.constants["MULTIPLECORREC_POINTS"]
+      }
     }
   },
   methods: {

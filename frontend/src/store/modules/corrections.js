@@ -26,20 +26,23 @@ const mutations = {
 
 const actions = {
   loadPostedCorrections({ commit }) {
-    correctionsService
-      .getMyPostedCorrections()
-      .then(data => {
-        commit("SET_POSTED_CORRECTIONS", data.results);
-      })
-      .catch(error => {});
+    return new Promise((resolve, reject) => {
+      correctionsService.getMyPostedCorrections()
+        .then(data => {
+          commit("SET_POSTED_CORRECTIONS", data.results);
+          resolve()
+        })
+        .catch(err => reject(err))
+    })
   },
   loadUnlockedCorrections({ commit }) {
-    correctionsService
-      .getMyUnlockedCorrections()
-      .then(data => {
-        commit("SET_UNLOCKED_CORRECTIONS", data.results);
-      })
-      .catch(error => {});
+    return new Promise((resolve, reject) => {
+      correctionsService.getMyUnlockedCorrections()
+        .then(data => {
+          commit("SET_UNLOCKED_CORRECTIONS", data.results);
+        })
+        .catch(err => reject(err))
+    })
   },
   postCorrection({ dispatch, commit }, newCorrection) {
     return new Promise((resolve, reject) => {

@@ -66,7 +66,7 @@
       <b-button type="is-primary"
                 @click="$router.push({ name: 'tirelire' })"
                 inverted>
-        {{user.tirelire}} pts
+        {{user.tirelire }} {{user.tirelire > 1 ? 'pts': 'pt'}}
       </b-button>
       </div>
     </b-navbar-item>
@@ -98,11 +98,11 @@ export default {
           path: 'search',
           icon: 'magnify'
         },
-        {
-          title: 'Demander la correction d\'un exo',
-          path: 'post-exo',
-          icon: 'hand'
-        },
+        // {
+        //   title: 'Poster un exo',
+        //   path: 'post-exo',
+        //   icon: 'magnify'
+        // },
       ],
     }
   },
@@ -113,7 +113,6 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('authentication/authLogout')
-        .then(this.$router.push({ name: 'home' }))
     }
   }
 }

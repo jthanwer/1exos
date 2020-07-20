@@ -20,20 +20,22 @@ from django.urls import include, path, re_path
 
 from .views import fetch_constants
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
+if settings.DEBUG:
+    urlpatterns = [
+        path('api/admin/', admin.site.urls),
+        path('api/', include('users.urls')),
+        path('api/', include('filemanager.urls')),
+        path('api/constants/', fetch_constants, name='fetch_constants'),
+    ]
 
-    # -----------
-    # -- Our App
-    # -----------
-
-    # -- API
-    path('api/', include('users.urls')),
-    path('api/', include('filemanager.urls')),
-
-    # -- Constants
-    path('api/constants/', fetch_constants, name='fetch_constants'),
-]
+# -- Remove 'api/' for planethoster
+else:
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('', include('users.urls')),
+        path('', include('filemanager.urls')),
+        path('constants/', fetch_constants, name='fetch_constants'),
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(

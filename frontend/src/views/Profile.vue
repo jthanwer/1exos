@@ -1,4 +1,4 @@
-<template>
+pychar<template>
 <div id="profile-container"
      class="container is-fluid">
   <div class="columns is-gapless"
@@ -50,7 +50,7 @@
                   <ValidationObserver ref="username">
                     <form v-if="form_user_active['username']"
                           @submit.prevent="validateForm('username')">
-                      <ValidationProvider rules="required|unique_username"
+                      <ValidationProvider slim rules="required|unique_username"
                                           v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
@@ -84,7 +84,7 @@
                   <ValidationObserver ref="email">
                     <form v-if="form_user_active['email']"
                           @submit.prevent="validateForm('email')">
-                      <ValidationProvider rules="required|email|unique_email"
+                      <ValidationProvider slim rules="required|email|unique_email"
                                           v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
@@ -134,7 +134,7 @@
                   <ValidationObserver ref="classe">
                     <form v-if="form_user_active['classe']"
                           @submit.prevent="validateForm('classe')">
-                      <ValidationProvider rules="required"
+                      <ValidationProvider slim rules="required"
                                           v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
@@ -177,7 +177,7 @@
                     <form v-if="form_user_active['prof']"
                           @submit.prevent="validateForm('prof')">
                       <b-field grouped>
-                        <ValidationProvider rules="required"
+                        <ValidationProvider slim rules="required"
                                             v-slot="{ errors, valid }">
                           <b-field :message="errors"
                                    :type="{
@@ -191,7 +191,7 @@
                             </b-select>
                           </b-field>
                         </ValidationProvider>
-                        <ValidationProvider rules="required"
+                        <ValidationProvider slim rules="required"
                                             v-slot="{ errors, valid }">
                           <b-field :message="errors"
                                    :type="{
@@ -217,9 +217,7 @@
                 <div class="box">
                   <b-button @click="
                         form_user_active['ville_etablissement'] = !form_user_active['ville_etablissement']"
-                            :type="{
-                        'is-primary': form_user_active['ville_etablissement']
-                      }"
+                            :type="{ 'is-primary': form_user_active['ville_etablissement']}"
                             icon-left="pencil"
                             :native-value="true"
                             class="mb-3 is-pulled-right">
@@ -229,7 +227,7 @@
                   <ValidationObserver ref="ville_etablissement">
                     <form v-if="form_user_active['ville_etablissement']"
                           @submit.prevent="validateForm('ville_etablissement')">
-                      <ValidationProvider rules="required"
+                      <ValidationProvider slim rules="required"
                                           v-slot="{ errors, valid }">
                         <b-field position="is-centered"
                                  grouped>
@@ -274,7 +272,7 @@
                   <ValidationObserver ref="nom_etablissement">
                     <form v-if="form_user_active['nom_etablissement']"
                           @submit.prevent="validateForm('nom_etablissement')">
-                      <ValidationProvider rules="required"
+                      <ValidationProvider slim rules="required"
                                           v-slot="{ errors, valid }">
                         <b-field grouped
                                  :message="errors"
@@ -316,7 +314,7 @@
           <form class="card-content"
                 @submit.prevent="changePassword()">
             <b-field grouped>
-              <ValidationProvider rules="required"
+              <ValidationProvider slim rules="required"
                                   v-slot="{ errors, valid }">
                 <b-field label="Ton mot de passe actuel"
                          :message="errors"
@@ -329,7 +327,7 @@
               </ValidationProvider>
             </b-field>
             <b-field grouped>
-              <ValidationProvider rules="required|min:6"
+              <ValidationProvider slim rules="required|min:6"
                                   name="new_password"
                                   v-slot="{ errors, valid }">
                 <b-field label="Ton nouveau mot de passe"
@@ -340,7 +338,7 @@
                            placeholder="Nouveau mot de passe"></b-input>
                 </b-field>
               </ValidationProvider>
-              <ValidationProvider rules="required|same_password:@new_password"
+              <ValidationProvider slim rules="required|same_password:@new_password"
                                   v-slot="{ errors, valid }">
                 <b-field label="Confirmation"
                          :message="errors"
@@ -600,7 +598,4 @@ export default {
 </script>
 
 <style scoped>
-.field.is-grouped .field {
-  margin-right: 0.75rem;
-}
 </style>

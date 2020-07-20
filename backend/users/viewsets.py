@@ -138,6 +138,19 @@ class UserViewSet(viewsets.ModelViewSet):
     def stripe_validate_payment(self, request):
         return stripe_validate_payment(request)
 
+    @action(detail=False)
+    def etablissements(self, request):
+        queryset = CustomUser.objects.values('ville_etablissement', 'nom_etablissement')\
+            .distinct()
+        return Response({'results': queryset})
+
+    @action(detail=False)
+    def profs(self, request):
+        queryset = CustomUser.objects.values('prefix_prof', 'nom_prof')\
+            .distinct()
+        return Response({'results': queryset})
+
+
 
 
 

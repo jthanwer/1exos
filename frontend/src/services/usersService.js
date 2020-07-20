@@ -31,5 +31,13 @@ export default {
   },
   reset_password(payload) {
     return api.post("accounts/password/reset/", payload);
+  },
+  getEtablissements() {
+    return api.get(`users/etablissements/`)
+      .then(response => response.data.results);
+  },
+  getProfs() {
+    return api.get(`users/profs/`)
+      .then(response => response.data.results);
   }
 };

@@ -19,12 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key useapi/d in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', '0j(tt(%#edg&@11_#*0svn5s@710q781t)g&$@74o4q2cf-(7)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['192.168.0.16', '161.35.84.142', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.16', '0.0.0.0', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'corsheaders',
-    'webpack_loader',
 
     'users',
     'filemanager',
@@ -169,7 +168,6 @@ SIMPLE_JWT = {
 
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
-
 
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True

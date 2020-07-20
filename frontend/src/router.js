@@ -19,6 +19,7 @@ import MyCorrections from "@/views/MyCorrections.vue";
 import Register from "@/views/Register.vue";
 import Login from "@/views/Login.vue";
 import store from "@/store";
+import api from "@/services/api";
 
 Vue.use(Router);
 
@@ -27,14 +28,15 @@ const ifNotAuthenticated = (to, from, next) => {
     next();
     return;
   } else {
-    next("/");
+    next(from.name);
   }
 };
 
 const ifAuthenticated = (to, from, next) => {
+  store.dispatch("general/updateConstants")
   if (store.getters["authentication/isAuthenticated"]) {
     let token = store.state.authentication.token;
-    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    api.defaults.headers["Authorization"] = "Bearer " + token;
     next();
     return;
   } else {

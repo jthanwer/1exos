@@ -32,7 +32,7 @@
                          style="display: inline-block;">
                       <span v-if="constants"
                             class="has-text-centered title is-5 my-4 has-text-white">
-                        1 € = {{constants["CHANGE"]}} pts
+                        1 € = {{constants["CHANGE"]}} {{constants["CHANGE"] > 1 ? 'pts': 'pt'}}
                       </span>
                     </div>
                   </div>
@@ -81,7 +81,8 @@
                     <div class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold">
                       Autre montant ?
                     </div>
-                    <ValidationProvider rules="integer|min_value:5"
+                    <ValidationProvider slim
+                                        rules="integer|min_value:5"
                                         v-slot="{ errors }">
                       <b-field position="is-centered"
                                grouped>
@@ -138,13 +139,13 @@
 
                 <div class="column is-8">
                   <b-field label="Numéro de carte bancaire"
-                           :type="{ 'is-danger': stripeErrors.card_number }"
-                           :message="stripeErrors.card_number">
+                           :type="{ 'is-danger': stripeFinalErrors.card_number }"
+                           :message="stripeFinalErrors.card_number">
                     <div ref="card-number"></div>
                   </b-field>
 
                   <b-field grouped>
-                    <ValidationProvider class="is-expanded"
+                    <ValidationProvider slim
                                         rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Nom (sur la carte bancaire)"
@@ -155,7 +156,7 @@
                                  placeholder="Dupont"></b-input>
                       </b-field>
                     </ValidationProvider>
-                    <ValidationProvider class="is-expanded"
+                    <ValidationProvider slim
                                         rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Prénom"
@@ -166,7 +167,7 @@
                                  placeholder="Jean"></b-input>
                       </b-field>
                     </ValidationProvider>
-                    <!-- <ValidationProvider rules="required"
+                    <!-- <ValidationProvider slim rules="required"
                                         v-slot="{ errors, valid }">
                       <b-field label="Code postal"
                                :message="errors"
@@ -177,14 +178,14 @@
                   </b-field>
 
                   <b-field label="Date d'expiration"
-                           :message="stripeErrors.card_expiry"
-                           :type="{ 'is-danger': stripeErrors.card_expiry }">
+                           :message="stripeFinalErrors.card_expiry"
+                           :type="{ 'is-danger': stripeFinalErrors.card_expiry }">
                     <div ref="card-expiry"></div>
                   </b-field>
 
                   <b-field label="CVC"
-                           :message="stripeErrors.card_cvc"
-                           :type="{ 'is-danger': stripeErrors.card_cvc }">
+                           :message="stripeFinalErrors.card_cvc"
+                           :type="{ 'is-danger': stripeFinalErrors.card_cvc }">
                     <div ref="card-cvc"></div>
                   </b-field>
                 </div>
@@ -262,10 +263,16 @@ var styles = {
     fontWeight: 400,
     fontFamily: '"Open Sans", "Helvetica Neue", "Helvetica", sans-serif',
     fontSize: "15px",
-
     "::placeholder": {
       color: "#CFD7DF"
-    }
+    },
+  },
+  invalid: {
+    color: "#32315E",
+    iconColor: '#fa755a',
+    ':-webkit-autofill': {
+      color: '#fa755a',
+    },
   }
 };
 
@@ -296,9 +303,21 @@ export default {
       card_cvc: null,
 
       stripeErrors: {
-        card_number: "Ce champ est requis",
-        card_expiry: "Ce champ est requis",
-        card_cvc: "Ce champ est requis"
+        card_number: "",
+        card_expiry: "",
+        card_cvc: ""
+      },
+
+      stripeFinalErrors: {
+        card_number: "",
+        card_expiry: "",
+        card_cvc: ""
+      },
+
+      stripeEmpty: {
+        card_number: true,
+        card_expiry: true,
+        card_cvc: true
       }
     };
   },
@@ -355,7 +374,13 @@ export default {
       if (event.error) {
         this.stripeErrors[type] = event.error.message;
       } else {
-        this.stripeErrors[type] = "";
+        if (event.empty) {
+          this.stripeErrors[type] = "Ce champ est requis"
+          this.stripeEmpty[type] = true
+        } else {
+          this.stripeErrors[type] = ""
+          this.stripeEmpty[type] = false
+        }
       }
     },
     goNext(next, activeStep) {
@@ -368,9 +393,16 @@ export default {
           });
           break;
         case 1:
+          let se = this.stripeErrors;
+          let sfe = this.stripeFinalErrors;
+          sfe = Object.assign(sfe, se);
           this.$refs.secondStep.validate().then(success => {
-            let se = this.stripeErrors;
             let cond = !se["card_number"] && !se["card_expiry"] && !se["card_cvc"];
+            for (const [key, value] of Object.entries(this.stripeEmpty)) {
+              if (value) {
+                sfe[key] = "Ce champ est requis"
+              }
+            }
             if (success && cond) {
               this.confirmPayment(next);
             }
@@ -432,9 +464,8 @@ export default {
     },
     handleServerResponse(response) {
       if (response.data.requires_action) {
-        stripe
-          .handleCardAction(response.data.payment_intent_client_secret)
-          .then(this.handleStripeJsResult);
+        stripe.handleCardAction(response.data.payment_intent_client_secret)
+          .then(this.handleStripeJsResult)
       } else {
         this.$store.dispatch("authentication/getProfileUser").then(() => {
           this.is_loading = false;
@@ -451,8 +482,7 @@ export default {
       let payload = {
         payment_id: this.payment_id
       };
-      usersService
-        .stripe_validatePayment(payload)
+      usersService.stripe_validatePayment(payload)
         .then(this.handleServerResponse)
         .catch(err => {
           this.is_loading = false;
@@ -470,6 +500,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.label {
+    color: green !important;
+}
+
+.help {
+    visibility: hidden !important;
+    color: blue !important;
+}
+
 .StripeElement {
     padding: calc(0.6em - 1px) calc(0.625em - 1px);
     border-radius: 4px;
@@ -477,24 +516,11 @@ export default {
     -webkit-box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1) !important;
 }
 
+.StripeElement--invalid {
+    border-color: $danger !important;
+}
+
 img {
     height: 30px;
-}
-
-.field.is-grouped .field {
-    margin-right: 0.75rem;
-}
-
-.field:not(:last-child) {
-    margin-bottom: 0.5rem;
-}
-
-span .field {
-    margin-bottom: 0.5rem;
-}
-
-span.is-expanded {
-    display: flex;
-    flex-grow: 1;
 }
 </style>

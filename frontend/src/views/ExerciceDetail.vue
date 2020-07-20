@@ -60,14 +60,9 @@
           <div class="level">
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Numéro</p>
-                <p class="title is-5">{{exo.num_exo}}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Page</p>
-                <p class="title is-5">{{exo.num_page}}</p>
+                <p>
+                  <span class="title is-size-4">N° {{exo.num_exo}} Page {{exo.num_page}} </span>
+                </p>
               </div>
             </div>
           </div>
@@ -89,20 +84,39 @@
         <div v-if="exo">
           <div class="columns is-centered is-multiline">
             <div class="column is-12 has-text-centered">
-              <p class="heading">Ajouté par</p>
-              <p class="title is-6">{{exo.posteur.username}}</p>
+              <p class="heading">Identifiant</p>
+              <p class="title is-6">{{exo.id}}</p>
             </div>
             <div class="column is-12 has-text-centered">
-              <p class="heading">Le</p>
+              <p class="heading">Nom</p>
+              <p v-if="exo.livre"
+                 class="title is-6">
+                {{exo.type === 'Exo'? 'Exo ': 'Act.' }}
+                {{ exo.num_exo }} - Page {{ exo.num_page }} - Sur
+                livre
+              </p>
+              <p v-else
+                 class="title is-6">
+                {{exo.type === 'Exo'? 'Exo ': 'Act.' }} {{ exo.num_exo }}
+                - Sur feuille
+              </p>
+            </div>
+            <div class="column is-12 has-text-centered">
+              <p class="heading">Posté le</p>
               <p class="title is-6">{{exo.date_created | dateFormatter}}</p>
             </div>
             <div class="column is-12 has-text-centered">
               <p class="heading">Niveau</p>
-              <p class="title is-6">{{classes[exo.posteur.classe]}}</p>
+              <p class="title is-6">{{classes[exo.niveau]}}</p>
             </div>
             <div class="column is-12 has-text-centered">
               <p class="heading">Chapitre</p>
               <p class="title is-6">{{exo.chapitre}}</p>
+            </div>
+            <div v-if="exo.devoir"
+                 class="column is-12 has-text-centered">
+              <p class="heading">Fait partie d'un</p>
+              <p class="title is-6">{{exo.devoir}}</p>
             </div>
           </div>
           <div>
@@ -135,13 +149,14 @@
                              :user="user"
                              :unlocked="correc.id && user.unlocked_correcs.includes(correc.id)" />
         </div>
-        <b-button class="mt-6"
+        <b-button v-if="exo.correcs.length < 1"
+                  class="mt-6 big-button"
                   expanded
                   type="is-primary"
                   size="is-large"
                   icon-left="upload"
                   @click="modal_correction = !modal_correction">
-          Soumettre une correction (+ {{correc_points}} pts)
+          Soumettre une correction <br> (+ {{correc_points}} {{correc_points > 1 ? 'pts': 'pt'}})
         </b-button>
       </div>
     </div>

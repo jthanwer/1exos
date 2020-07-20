@@ -33,26 +33,28 @@
           <p v-else
              class="title is-4">
             <span class="title is-3 has-text-grey">{{ exo.id }}.</span>
-            {{exo.type === 'Exo'? 'Exo ': 'Act.' }}
-            sur feuille
+            {{exo.type === 'Exo'? 'Exo ': 'Act.' }} {{ exo.num_exo }}
+            - Sur feuille
           </p>
           <div v-if="exo.posteur"
                class="subtitle is-size-6">
-            <p>
+            <!-- <p>
               Posté par <strong>{{ exo.posteur.username }}</strong> le
               {{ exo.date_created | dateFormatter }}
-            </p>
-            <p>Niveau : {{ classes[exo.posteur.classe] }}</p>
+            </p> -->
+            <p>Niveau : {{ classes[exo.niveau] }}</p>
+            <p v-if="exo.devoir">Fait partie d'un : {{ exo.devoir }}</p>
             <a @click="isLivreModalActive = true"
                v-if="exo.livre">
-              Livre : {{ exo.livre.split("_").slice(1).join(" - ") }}
+              Livre : {{ exo.livre.split("_").join(" - ") }}
             </a>
           </div>
         </div>
-        <div class="media-right">
+        <div v-if="!has_correc"
+             class="media-right">
           <b-tag type="is-success"
                  size="is-medium">
-            {{ correc_points }} pts
+            {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à gagner
           </b-tag>
         </div>
       </div>
@@ -80,7 +82,7 @@
 
         <div class="level-right">
           <div class="level-item">
-            <b-button type="is-info"
+            <b-button type="is-primary"
                       :disabled="!activated"
                       size="is-medium"
                       icon-left="arrow-right"
@@ -147,6 +149,7 @@ export default {
     },
     correc_points() {
       if (!this.activated) { return this.exo.prix; }
+      if (!this.user) { return this.exo.prix; }
       if (!this.exo.posteur) { return; }
       let delai_depasse = false;
       let date1 = moment();
@@ -157,19 +160,14 @@ export default {
       }
       let condition = this.exo.posteur.id !== this.user.id && delai_depasse === false &&
         this.exo.correcs.length === 0
-      console.log(this.exo.posteur.id !== this.user.id)
       if (condition) {
-        console.log('condition')
         return this.exo.prix
       }
       if (this.exo.posteur.id === this.user.id) {
-        console.log('selfcorrec')
         return this.constants["SELFCORREC_POINTS"]
       } else if (delai_depasse) {
-        console.log('deadline')
         return this.constants["DEADLINE_POINTS"]
       } else {
-        console.log('multiplecorrec')
         return this.constants["MULTIPLECORREC_POINTS"]
       }
     }

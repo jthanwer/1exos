@@ -9,7 +9,6 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
-    "apexcharts": "^3.19.2",
     "axios": "^0.19.2",
     "buefy": "^0.8.20",
     "core-js": "^2.6.11",
@@ -17,7 +16,6 @@
     "stripe": "^8.64.0",
     "vee-validate": "^3.3.5",
     "vue": "^2.6.11",
-    "vue-apexcharts": "^1.5.3",
     "vue-pdf": "^4.1.0",
     "vue-router": "^3.3.4",
     "vuex": "^3.4.0"

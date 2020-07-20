@@ -15,23 +15,31 @@ from datetime import timedelta
 from . import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['161.35.84.142', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['app.1exo.fr', '1exo.fr', '85.236.153.45', 'localhost', '0.0.0.0']
 
+# Static files
+STATIC_URL = '/django_static/'
+STATIC_ROOT = '/home/appeatqc/public_html/django_static/'
+STATICFILES_DIRS = []
+
+# Media files
+MEDIA_URL = '/django_media/'
+MEDIA_ROOT = '/home/appeatqc/public_html/django_media/'
+
+EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('MAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME'),
-        'USER': 'jthanwer',
+        'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': '',
-        'PORT': '5432',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
-

@@ -36,17 +36,18 @@ def MEAN_PRICES():
 
 # -- Points données lorsque le correcteur corrige un exercice à lui
 def SELFCORREC_POINTS():
-    qs = Exercice.objects.all()
-    if qs.count() > 0:
-        value = Exercice.objects.all().aggregate(Avg('prix'))['prix__avg']
-    else:
-        value = -1
-    return int(value)
+    return 1
+    # qs = Exercice.objects.all()
+    # if qs.count() > 0:
+    #     value = Exercice.objects.all().aggregate(Avg('prix'))['prix__avg']
+    # else:
+    #     value = -1
+    # return int(value)
 
 
 # -- Points données lorsque le correcteur a dépassé la date limite
 def DEADLINE_POINTS():
-    return 3
+    return 1
 
 # -- Points données lorsque ce n'est pas la première correction
 def MULTIPLECORREC_POINTS():

@@ -15,7 +15,7 @@
           <section class="card-content">
             <form @submit.prevent="validate()">
               <b-field grouped>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     ref="username_validator"
                                     rules="required|unique_username"
                                     v-slot="{ errors, valid, failed, pending, failedRules }">
@@ -43,7 +43,8 @@
                 </ValidationProvider>
               </b-field>
 
-              <ValidationProvider rules="required"
+              <ValidationProvider slim
+                                  rules="required"
                                   v-slot="{ errors, valid }">
                 <b-field grouped>
                   <b-field label="Classe"
@@ -63,7 +64,8 @@
               </ValidationProvider>
 
 
-              <ValidationProvider rules="required"
+              <ValidationProvider slim
+                                  rules="required"
                                   v-slot="{ errors, valid }">
                 <b-field grouped>
                   <b-field label="Ville"
@@ -85,7 +87,8 @@
               </ValidationProvider>
 
 
-              <ValidationProvider rules="required"
+              <ValidationProvider slim
+                                  rules="required"
                                   v-slot="{ errors, valid }">
                 <b-field grouped>
                   <b-field label="Établissement"
@@ -108,7 +111,8 @@
 
               <b-field label="Prof de maths"></b-field>
               <b-field grouped>
-                <ValidationProvider rules="required"
+                <ValidationProvider slim
+                                    rules="required"
                                     v-slot="{ errors, valid }">
                   <b-field :message="errors"
                            :type="{ 'is-danger': errors[0], 'is-success': valid }">
@@ -119,7 +123,7 @@
                     </b-select>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     rules="required"
                                     v-slot="{ errors, valid }">
                   <b-field :message="errors"
@@ -135,7 +139,7 @@
               </b-field>
 
               <b-field grouped>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     rules="required|email|unique_email"
                                     ref="email_validator"
                                     name="email1"
@@ -150,7 +154,7 @@
                              @input="reset_validation_email(failed)"></b-input>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     rules="required|same_email:@email1"
                                     v-slot="{ errors, valid }">
                   <b-field label="Confirmation"
@@ -164,7 +168,7 @@
               </b-field>
 
               <b-field grouped>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     rules="required|min:6"
                                     name="password1"
                                     v-slot="{ errors, valid }">
@@ -177,7 +181,7 @@
                              placeholder="Mot de passe"></b-input>
                   </b-field>
                 </ValidationProvider>
-                <ValidationProvider class="is-expanded"
+                <ValidationProvider slim
                                     rules="required|same_password:@password1"
                                     v-slot="{ errors, valid }">
                   <b-field label="Confirmation"
@@ -231,7 +235,6 @@ export default {
   data() {
     return {
       classes: classes,
-      height: "400px",
       input_username: null,
       is_loading: false,
 
@@ -368,20 +371,4 @@ export default {
 </script>
 
 <style scoped>
-.field.is-grouped .field {
-  margin-right: 0.75rem;
-}
-
-.field:not(:last-child) {
-  margin-bottom: 0.5rem;
-}
-
-span .field {
-  margin-bottom: 0.5rem;
-}
-
-span.is-expanded {
-  display: flex;
-  flex-grow: 1
-}
 </style>

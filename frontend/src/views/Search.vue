@@ -21,8 +21,57 @@
             </b-button>
           </div>
           <b-menu class="is-custom-mobile">
+            <b-field position="is-centered">
+              <b-radio-button v-model="form.is_corrected"
+                              size="is-large"
+                              :native-value="false"
+                              type="is-danger">
+                <b-icon size="is-medium"
+                        icon="close"></b-icon>
+              </b-radio-button>
 
-            <b-field class="mb-3">
+              <b-radio-button v-model="form.is_corrected"
+                              size="is-large"
+                              :native-value="null">
+                <b-icon size="is-medium"
+                        icon="minus"></b-icon>
+              </b-radio-button>
+
+              <b-radio-button v-model="form.is_corrected"
+                              size="is-large"
+                              :native-value="true"
+                              type="is-success">
+                <b-icon size="is-medium"
+                        icon="check"></b-icon>
+              </b-radio-button>
+            </b-field>
+            <p class="has-text-centered is-size-4 mb-4">{{text_is_corrected}}</p>
+            <b-field position="is-centered">
+              <b-radio-button v-model="form.is_from_livre"
+                              size="is-large"
+                              :native-value="false"
+                              type="is-warning">
+                <b-icon size="is-medium"
+                        icon="file-outline"></b-icon>
+              </b-radio-button>
+
+              <b-radio-button v-model="form.is_from_livre"
+                              size="is-large"
+                              :native-value="null">
+                <b-icon size="is-medium"
+                        icon="minus"></b-icon>
+              </b-radio-button>
+
+              <b-radio-button v-model="form.is_from_livre"
+                              size="is-large"
+                              :native-value="true"
+                              type="is-info">
+                <b-icon size="is-medium"
+                        icon="book-open-page-variant"></b-icon>
+              </b-radio-button>
+            </b-field>
+            <p class="has-text-centered is-size-4 mb-4">{{text_is_from_livre}}</p>
+            <!-- <b-field class="mb-3">
               <b-switch type="is-success"
                         size="is-large"
                         passive-type="is-danger"
@@ -37,7 +86,7 @@
                         v-model="form.is_from_livre">
                 {{form.is_from_livre ? "Sur livre" : "Sur feuille"}}
               </b-switch>
-            </b-field>
+            </b-field> -->
             <b-menu-list label="Général">
               <b-field>
                 <b-checkbox type="is-secondary"
@@ -71,6 +120,22 @@
 
               <b-field>
                 <b-checkbox type="is-secondary"
+                            v-model="filter.devoir">
+                  Fait partie d'un devoir ?
+                </b-checkbox>
+              </b-field>
+              <b-field v-if="filter.devoir">
+                <b-select v-model="form.devoir"
+                          placeholder="Choisir un devoir"
+                          expanded>
+                  <option> DM </option>
+                  <option> DHC </option>
+                  <option> DS </option>
+                </b-select>
+              </b-field>
+
+              <b-field>
+                <b-checkbox type="is-secondary"
                             v-model="filter.chapitre">
                   Chapitre
                 </b-checkbox>
@@ -86,6 +151,17 @@
                 <p class="has-text-danger"
                    v-else>Vous devez d'abord renseigner un niveau.</p>
               </b-field>
+              <b-field>
+                <b-checkbox type="is-secondary"
+                            v-model="filter.num_exo">
+                  Numéro d'exercice
+                </b-checkbox>
+              </b-field>
+              <b-field v-if="filter.num_exo">
+                <b-numberinput v-model="form.num_exo"
+                               controls-position="compact"
+                               placeholder="Numéro d'exercice"></b-numberinput>
+              </b-field>
             </b-menu-list>
 
             <b-menu-list v-if="form.is_from_livre"
@@ -98,12 +174,15 @@
               </b-field>
               <b-field v-if="filter.livre">
                 <b-select v-model="form.livre"
+                          v-if="form.niveau"
                           placeholder="Choisir un livre">
-                  <option v-for="livre in livres[6]"
-                          :value="livre.name">
-                    {{ livre.name.split("_").slice(1).join(" - ") }}
+                  <option v-for="livre in livres[form.niveau]"
+                          :value="livre">
+                    {{ livre.split("_").join(" - ") }}
                   </option>
                 </b-select>
+                <p class="has-text-danger"
+                   v-else>Vous devez d'abord renseigner un niveau.</p>
               </b-field>
               <div class="has-text-centered">
                 <img v-if="filter.livre && form.livre"
@@ -112,18 +191,6 @@
                      :src="require('@/assets/images/livres/' + form.livre + '.jpg')"
                      alt="Image indisponible" />
               </div>
-              <b-field>
-                <b-checkbox type="is-secondary"
-                            v-model="filter.num_exo">
-                  Numéro d'exercice
-                </b-checkbox>
-              </b-field>
-              <b-field v-if="filter.num_exo">
-                <b-numberinput v-model="form.num_exo"
-                               controls-position="compact"
-                               placeholder="Numéro d'exercice"></b-numberinput>
-              </b-field>
-
               <b-field>
                 <b-checkbox type="is-secondary"
                             v-model="filter.num_page">
@@ -264,6 +331,7 @@
 
 <script>
 import { mapState } from "vuex";
+import usersService from "@/services/usersService";
 import exercicesService from "@/services/exercicesService";
 import chapitres from "@/data/chapitres.json";
 import classes from "@/data/classes.json";
@@ -273,7 +341,7 @@ import ExercicePreview from "@/components/ExercicePreview.vue";
 export default {
   name: "search",
   components: {
-    ExercicePreview
+    ExercicePreview,
   },
   props: {
     id: {
@@ -282,7 +350,7 @@ export default {
     },
     is_corrected: {
       type: Boolean,
-      default: true
+      default: null
     }
   },
   data() {
@@ -299,6 +367,7 @@ export default {
         niveau: null,
         chapitre: null,
         type: null,
+        devoir: null,
         livre: null,
         num_page: null,
         num_exo: null,
@@ -313,13 +382,14 @@ export default {
         niveau: null,
         chapitre: null,
         type: null,
+        devoir: null,
         livre: null,
         num_page: null,
         num_exo: null,
         nom_etablissement: null,
         prefix_prof: null,
         nom_prof: null,
-        is_from_livre: false,
+        is_from_livre: null,
         is_corrected: this.is_corrected
       },
 
@@ -335,30 +405,54 @@ export default {
       current_page: 1
     };
   },
-  created() {
-    exercicesService.getEtablissements()
-      .then(data => {
-        this.etablissements = data;
+  mounted() {
+    usersService.getEtablissements()
+      .then(etablissements => {
+        this.etablissements = etablissements;
+        return usersService.getProfs()
+      }).then(profs => {
+        this.profs = profs;
       })
-    exercicesService.getProfs()
-      .then(data => {
-        this.profs = data;
+      .finally(() => {
+        this.searchExercices()
       })
-    this.searchExercices()
   },
   computed: {
     ...mapState("exercices", ["likedExercices"]),
+    text_is_corrected: function() {
+      switch (this.form.is_corrected) {
+        case false:
+          return "À corriger";
+          break;
+        case true:
+          return "Corrigé";
+          break;
+        default:
+          return "À corriger/Corrigé";
+      }
+    },
+    text_is_from_livre: function() {
+      switch (this.form.is_from_livre) {
+        case false:
+          return "Sur feuille";
+          break;
+        case true:
+          return "Sur livre";
+          break;
+        default:
+          return "Sur feuille/Sur livre";
+      }
+    },
     text_query: function() {
       this.filter.prefix_prof = this.filter.nom_prof
       if (!this.form.is_from_livre) {
         this.filter.livre = false;
         this.filter.num_page = false;
-        this.filter.num_exo = false;
       }
-      if (!this.form.niveau) {
-        this.filter.chapitre = false;
-        this.filter.livre = false;
-      }
+      // if (!this.form.niveau) {
+      //   this.filter.chapitre = false;
+      //   this.filter.livre = false;
+      // }
       let text = "?";
       for (let [key, value] of Object.entries(this.form)) {
         if (value === "") {
@@ -379,13 +473,17 @@ export default {
     searchExercices() {
       this.used_search = true;
       this.is_loading = true;
-      exercicesService.searchExercices(this.text_query).then(data => {
-        this.count_elements = data.count;
-        this.result_files = [];
-        this.result_files.push(...data.results);
-        this.used_search = true;
-        this.is_loading = false;
-      });
+      exercicesService.searchExercices(this.text_query)
+        .then(data => {
+          this.count_elements = data.count;
+          this.result_files = [];
+          this.result_files.push(...data.results);
+          this.used_search = true;
+          this.is_loading = false;
+        })
+        .catch(() => {
+          this.is_loading = false;
+        })
     },
     filterEtablissements(v) {
       this.etablissement_items = this.etablissements.filter(object => {
@@ -421,6 +519,18 @@ export default {
     }
   },
   watch: {
+    form: {
+      handler(inputs) {
+        this.searchExercices()
+      },
+      deep: true
+    },
+    filter: {
+      handler(inputs) {
+        this.searchExercices()
+      },
+      deep: true
+    },
     current_page(val) {
       this.searchExercices();
     },
@@ -444,5 +554,10 @@ export default {
     color: $primary;
     border-bottom: 1px solid $primary;
     width: 70%;
+}
+
+.button .icon:first-child:not(:last-child) {
+    margin-left: calc(-0.375em - 1px);
+    margin-right: calc(-0.375em - 1px);
 }
 </style>

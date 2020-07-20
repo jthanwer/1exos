@@ -18,7 +18,8 @@
             <div class="columns is-centered">
               <div class="column is-half">
                 <ValidationObserver ref="firstStep">
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Chapitre"
                              :message="errors"
@@ -33,7 +34,8 @@
                       </b-select>
                     </b-field>
                   </ValidationProvider>
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Provenance"
                              :message="errors"
@@ -46,7 +48,8 @@
                       </b-select>
                     </b-field>
                   </ValidationProvider>
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Type d'exo"
                              :message="errors"
@@ -83,7 +86,8 @@
                   </div>
                 </div>
               </div>
-              <ValidationProvider rules="required"
+              <ValidationProvider slim
+                                  rules="required"
                                   v-slot="{ errors }">
                 <Upload v-model="drop_file_exo"
                         :error="errors[0]" />
@@ -102,7 +106,8 @@
             <div class="columns">
               <div class="column is-6">
                 <ValidationObserver ref="secondStep">
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Livre"
                              :message="errors"
@@ -112,12 +117,13 @@
                                 placeholder="Choisir un livre">
                         <option v-for="livre in livres[user.classe]"
                                 :value="livre.name">
-                          {{ livre.name.split("_").slice(1).join(" - ") }}
+                          {{ livre.name.split("_").join(" - ") }}
                         </option>
                       </b-select>
                     </b-field>
                   </ValidationProvider>
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Numéro"
                              :message="errors"
@@ -128,7 +134,8 @@
                                      placeholder="Choisir un numéro d'exercice"></b-numberinput>
                     </b-field>
                   </ValidationProvider>
-                  <ValidationProvider rules="required"
+                  <ValidationProvider slim
+                                      rules="required"
                                       v-slot="{ errors, valid }">
                     <b-field label="Page"
                              :message="errors"
@@ -158,7 +165,8 @@
               <hr />
               <h1 class="title has-text-centered">Correction</h1>
               <hr />
-              <ValidationProvider rules="required"
+              <ValidationProvider slim
+                                  rules="required"
                                   v-slot="{ errors }">
                 <div class="notification is-warning is-light">
                   <div class="media">
@@ -329,7 +337,6 @@ export default {
     },
     postCorrection(id) {
       const fd = new FormData();
-      console.log(id);
       fd.append("enonce_id", id);
       fd.append("file", this.drop_file_correc);
       return this.$store.dispatch("corrections/postCorrection", fd);
@@ -358,4 +365,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+</style>

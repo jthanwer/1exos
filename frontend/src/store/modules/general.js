@@ -31,11 +31,17 @@ const mutations = {
 
 const actions = {
   updateConstants({ commit }) {
-    generalService.fetchConstants().then(data => {
-      commit("SET_CONSTANTS", data);
-    });
+    return new Promise((resolve, reject) => {
+      generalService.fetchConstants()
+        .then(data => {
+          commit("SET_CONSTANTS", data);
+          resolve(data)
+        })
+        .catch(err => reject(err))
+    })
   },
-}
+};
+
 export default {
   namespaced: true,
   state,

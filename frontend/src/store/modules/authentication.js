@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import router from '@/router';
 import usersService from "@/services/usersService";
 
 const state = {
@@ -28,7 +29,7 @@ const mutations = {
   },
   AUTH_LOGOUT(state) {
     state.token = "";
-    state.user = "";
+    state.user = null;
   }
 };
 
@@ -47,14 +48,17 @@ const actions = {
   },
   authRequest({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
-      usersService
-        .authenticate(user)
+      usersService.authenticate(user)
         .then(data => {
           const token = data.access;
           localStorage.setItem("user-token", token);
           api.defaults.headers["Authorization"] = "Bearer " + token;
           commit("AUTH_SUCCESS", token);
           dispatch("getProfileUser");
+          dispatch("exercices/loadPostedExercices", null, { root: true });
+          dispatch("exercices/loadLikedExercices", null, { root: true });
+          dispatch("corrections/loadPostedCorrections", null, { root: true });
+          dispatch("corrections/loadUnlockedCorrections", null, { root: true });
           resolve(data);
         })
         .catch(err => {
@@ -64,23 +68,23 @@ const actions = {
         });
     });
   },
-  authLogout({ commit }) {
+  authLogout({ state, commit }) {
     return new Promise((resolve, reject) => {
-      commit("AUTH_LOGOUT");
-      delete api.defaults.headers["Authorization"];
-      localStorage.removeItem("user-token");
+      commit("AUTH_LOGOUT")
+      delete api.defaults.headers["Authorization"]
+      localStorage.removeItem("user-token")
+      router.push({ 'name': 'home' })
       resolve();
     });
   },
   getProfileUser({ commit, getters }) {
-    if (getters.isAuthenticated) {
-      return new Promise((resolve, reject) => {
-        usersService.get_profile().then(data => {
+    return new Promise((resolve, reject) => {
+      usersService.get_profile()
+        .then(data => {
           commit("SET_USER", data);
           resolve(data);
         });
-      });
-    }
+    });
   },
   updateProfileUser({ commit, getters }, updated_user) {
     commit("SET_USER", updated_user);

@@ -7,7 +7,7 @@
           <p class="title is-3">Ma tirelire</p>
           <p class="title has-text-info"
              style="font-size: 5em;">
-            {{ user.tirelire }} pts
+            {{ user.tirelire }} {{user.tirelire > 1 ? 'pts': 'pt'}}
           </p>
         </div>
       </div>

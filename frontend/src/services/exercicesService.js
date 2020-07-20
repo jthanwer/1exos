@@ -53,12 +53,4 @@ export default {
   dislikeExercice(id) {
     return api.get(`exercices/${id}/dislike/`)
   },
-  getEtablissements() {
-    return api.get(`exercices/etablissements/`)
-      .then(response => response.data.results);
-  },
-  getProfs() {
-    return api.get(`exercices/profs/`)
-      .then(response => response.data.results);
-  }
 };

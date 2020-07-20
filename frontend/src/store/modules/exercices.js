@@ -30,16 +30,28 @@ const mutations = {
 
 const actions = {
   loadPostedExercices({ commit }) {
-    exercicesService.getPostedExercices().then(data => {
-      let postedExercices = data.results;
-      commit("SET_POSTED_EXERCICES", postedExercices);
-    });
+    return new Promise((resolve, reject) => {
+      exercicesService.getPostedExercices()
+        .then(data => {
+          let postedExercices = data.results;
+          commit("SET_POSTED_EXERCICES", postedExercices);
+          resolve()
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
   },
   loadLikedExercices({ commit }) {
-    exercicesService.getLikedExercices().then(data => {
-      let likedExercices = data.results;
-      commit("SET_LIKED_EXERCICES", likedExercices);
-    });
+    return new Promise((resolve, reject) => {
+      exercicesService.getLikedExercices()
+        .then(data => {
+          let likedExercices = data.results;
+          commit("SET_LIKED_EXERCICES", likedExercices);
+          resolve()
+        })
+        .catch(err => reject(err))
+    })
   },
   postExercice({ commit }, newExercice) {
     return new Promise((resolve, reject) => {

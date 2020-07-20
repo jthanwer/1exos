@@ -77,20 +77,16 @@
           </div>
         </div>
       </div>
-      <div v-if="correc">
-        <div class="pa-9 has-text-centered"
+      <div class="correc-info box "
+           v-if="correc">
+        <div class="has-text-centered"
              v-if="correc.enonce.livre">
           <div class="level">
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Numéro</p>
-                <p class="title is-5">{{correc.enonce.num_exo}}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Page</p>
-                <p class="title is-5">{{correc.enonce.num_page}}</p>
+                <p>
+                  <span class="title is-size-4">N° {{correc.enonce.num_exo}} Page {{correc.enonce.num_page}} </span>
+                </p>
               </div>
             </div>
           </div>

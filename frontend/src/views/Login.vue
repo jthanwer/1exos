@@ -1,85 +1,73 @@
 <template>
-  <div class="container is-fluid">
-    <ValidationObserver ref="form" v-slot="{ handleSubmit }">
-      <div class="columns is-centered">
-        <div class="column is-4">
-          <div class="card">
-            <header class="card-header">
-              <p
-                class="card-header-title is-centered has-background-primary has-text-white"
-              >
-                Se connecter
-              </p>
-            </header>
-            <div class="content">
-              <section class="card-content">
-                <form @submit.prevent="handleSubmit(validate())">
-                  <div class="mb-2">
-                    <ValidationProvider
-                      rules="required"
-                      v-slot="{ errors, valid }"
-                    >
-                      <b-field
-                        label="Ton pseudo"
-                        :message="errors"
-                        :type="{ 'is-danger': errors[0] }"
-                      >
-                        <b-input
-                          expanded
-                          v-model="form.username"
-                          type="username"
-                          placeholder="Pseudo"
-                        >
-                        </b-input>
-                      </b-field>
-                    </ValidationProvider>
-                  </div>
-
-                  <div class="mb-3">
-                    <ValidationProvider
-                      rules="required"
-                      v-slot="{ errors, valid }"
-                    >
-                      <b-field
-                        label="Ton mot de passe"
-                        :message="errors"
-                        :type="{ 'is-danger': errors[0] }"
-                      >
-                        <b-input
-                          v-model="form.password"
-                          type="password"
-                          placeholder="Mot de passe"
-                          password-reveal
-                        ></b-input>
-                      </b-field>
-                    </ValidationProvider>
-                    <a @click="askEmail()">Tu as oublié ton mot de passe ?</a>
-                  </div>
-                  <div class="error-box my-3" v-if="error">
-                    {{ text_error }}
-                  </div>
-
-                  <button class="button is-primary is-fullwidth" type="submit">
-                    Connexion
-                  </button>
-                </form>
-              </section>
-              <footer class="card-footer">
-                <div class="card-footer-item has-text-centered">
-                  <span class="has-text-black"
-                    >Tu n'as pas encore de compte ?</span
-                  >
-                  <router-link class="pl-1" :to="{ name: 'register' }">
-                    <span @click="$parent.close()">Crées-en un ici</span>
-                  </router-link>
+<div class="container is-fluid">
+  <ValidationObserver ref="form"
+                      v-slot="{ handleSubmit }">
+    <div class="columns is-centered">
+      <div class="column is-4">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title is-centered has-background-primary has-text-white">
+              Se connecter
+            </p>
+          </header>
+          <div class="content">
+            <section class="card-content">
+              <form @submit.prevent="handleSubmit(validate())">
+                <div class="mb-2">
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Ton pseudo"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0] }">
+                      <b-input expanded
+                               v-model="form.username"
+                               type="username"
+                               placeholder="Pseudo">
+                      </b-input>
+                    </b-field>
+                  </ValidationProvider>
                 </div>
-              </footer>
-            </div>
+
+                <div class="mb-3">
+                  <ValidationProvider rules="required"
+                                      v-slot="{ errors, valid }">
+                    <b-field label="Ton mot de passe"
+                             :message="errors"
+                             :type="{ 'is-danger': errors[0] }">
+                      <b-input v-model="form.password"
+                               type="password"
+                               placeholder="Mot de passe"
+                               password-reveal></b-input>
+                    </b-field>
+                  </ValidationProvider>
+                  <a @click="askEmail()">Tu as oublié ton mot de passe ?</a>
+                </div>
+                <div class="error-box my-3"
+                     v-if="error">
+                  {{ text_error }}
+                </div>
+
+                <button class="button is-primary is-fullwidth"
+                        type="submit">
+                  Connexion
+                </button>
+              </form>
+            </section>
+            <footer class="card-footer">
+              <div class="card-footer-item has-text-centered">
+                <span class="has-text-black">Tu n'as pas encore de compte ?</span>
+                <router-link class="pl-1"
+                             :to="{ name: 'register' }">
+                  <span @click="$parent.close()">Crées-en un ici</span>
+                </router-link>
+              </div>
+            </footer>
           </div>
         </div>
       </div>
-    </ValidationObserver>
-  </div>
+    </div>
+  </ValidationObserver>
+</div>
 </template>
 
 <script>
@@ -115,8 +103,7 @@ export default {
           })
           .catch(() => {
             this.error = true;
-            usersService
-              .check_credentials({ username: username })
+            usersService.check_credentials({ username: username })
               .then(data => {
                 if (!data["unique"] && !data["is_active"]) {
                   this.text_error = `Ce compte n\'a pas encore été activé. Vérifie

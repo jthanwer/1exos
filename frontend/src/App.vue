@@ -17,7 +17,7 @@
 
 <script>
 require("@/assets/css/animate.css");
-import { mapState } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import NavbarComponent from "@/components/layout/Navbar.vue";
 
 export default {
@@ -25,13 +25,20 @@ export default {
   components: {
     NavbarComponent
   },
+  computed: {
+    ...mapGetters("authentication", ["isAuthenticated"])
+  },
   created() {
-    this.$store.dispatch("authentication/getProfileUser");
-    this.$store.dispatch("general/updateConstants");
-    this.$store.dispatch("exercices/loadPostedExercices");
-    this.$store.dispatch("exercices/loadLikedExercices");
-    this.$store.dispatch("corrections/loadPostedCorrections");
-    this.$store.dispatch("corrections/loadUnlockedCorrections");
+    this.$store.dispatch("general/updateConstants")
+      .then(() => {
+        if (this.isAuthenticated) {
+          this.$store.dispatch("authentication/getProfileUser")
+          this.$store.dispatch("exercices/loadPostedExercices")
+          this.$store.dispatch("exercices/loadLikedExercices")
+          this.$store.dispatch("corrections/loadPostedCorrections")
+          this.$store.dispatch("corrections/loadUnlockedCorrections")
+        }
+      })
   },
 };
 </script>

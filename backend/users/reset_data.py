@@ -5,10 +5,10 @@ from filemanager.models import Exercice
 import os
 import datetime as dt
 
-os.system('rm -f ./filemanager/migrations/00*')
-os.system('rm -f ./users/migrations/00*')
+# os.system('rm -f ./filemanager/migrations/00*')
+# os.system('rm -f ./users/migrations/00*')
 os.system('python manage.py reset_db')
-os.system('python manage.py makemigrations')
+# os.system('python manage.py makemigrations')
 os.system('python manage.py migrate')
 
 user1 = CustomUser.objects.create_user(username="cassosdu46",
@@ -20,17 +20,17 @@ user1 = CustomUser.objects.create_user(username="cassosdu46",
                                        nom_etablissement="Lycée Clément Marot",
                                        ville_etablissement="Cahors",
                                        is_active=True)
-#
-# user2 = CustomUser.objects.create_user(username="cassosdu45",
-#                                        email="cassosdu45@gmail.com",
-#                                        password="Zdv:89??",
-#                                        classe=1,
-#                                        prefix_prof=1,
-#                                        nom_prof="Durant",
-#                                        nom_etablissement="Lycée Clément Marot",
-#                                        is_active=True)
-#
-#
+
+user2 = CustomUser.objects.create_user(username="cassosdu45",
+                                       email="cassosdu45@gmail.com",
+                                       password="Zdv:89??",
+                                       classe=1,
+                                       prefix_prof=1,
+                                       nom_prof="Durant",
+                                       nom_etablissement="Lycée Clément Marot",
+                                       is_active=True)
+
+
 # for i in range(10):
 #     Exercice.objects.create(posteur=user1,
 #                             niveau=user1.classe,

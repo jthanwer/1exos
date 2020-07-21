@@ -52,13 +52,12 @@
                     </ValidationProvider>
                     <ValidationProvider slim
                                         v-if="form.is_from_livre === false"
-                                        rules="required|integer|min_value:1"
+                                        rules="integer|min_value:1"
                                         v-slot="{ errors, valid }">
                       <b-field label="Numéro d'exo"
                                expanded
                                v-if="form.is_from_livre === false"
-                               :message="errors"
-                               :type="{ 'is-danger': errors[0], 'is-success': valid }">
+                               message="Ce champ n'est pas obligatoire">
                         <b-numberinput v-model="form.num_exo"
                                        expanded
                                        min="1"
@@ -435,7 +434,9 @@ export default {
       if (this.form.is_from_devoir) {
         fd.append("devoir", this.form.devoir);
       }
-      fd.append("num_exo", parseInt(this.form.num_exo));
+      if (this.form.num_exo) {
+        fd.append("num_exo", parseInt(this.form.num_exo));
+      }
       fd.append("prix", parseInt(this.form.prix));
       fd.append("date_limite", moment(this.form.date_limite).toISOString(true));
       if (this.form.is_from_livre) {

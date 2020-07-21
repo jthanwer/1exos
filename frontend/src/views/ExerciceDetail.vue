@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <div class="column is-3 is-offset-1">
+    <div class="column is-4">
       <div class="exo-info box pa-5 has-text-centered">
         <div v-if="exo">
           <div class="columns is-centered is-multiline">
@@ -147,17 +147,20 @@
           <CorrectionPreview v-if="correc && user"
                              :correc="correc"
                              :user="user"
+                             :title="false"
                              :unlocked="correc.id && user.unlocked_correcs.includes(correc.id)" />
         </div>
-        <b-button v-if="exo.correcs.length < 1"
-                  class="mt-6 big-button"
-                  expanded
-                  type="is-primary"
-                  size="is-large"
-                  icon-left="upload"
-                  @click="modal_correction = !modal_correction">
-          Soumettre une correction <br> (+ {{correc_points}} {{correc_points > 1 ? 'pts': 'pt'}})
-        </b-button>
+        <div v-if="exo">
+          <b-button v-if="exo.correcs.length < 1"
+                    class="mt-6 big-button"
+                    expanded
+                    type="is-primary"
+                    size="is-large"
+                    icon-left="upload"
+                    @click="modal_correction = !modal_correction">
+            Soumettre une correction (+ {{correc_points}} {{correc_points > 1 ? 'pts': 'pt'}})
+          </b-button>
+        </div>
       </div>
     </div>
   </div>
@@ -229,6 +232,7 @@ export default {
     ...mapState('authentication', ['user']),
     ...mapState("general", ["constants"]),
     correc_points() {
+      if (!this.user) { return; }
       if (!this.exo) { return; }
       let delai_depasse = false;
       let date1 = moment();
@@ -237,7 +241,7 @@ export default {
       if (diffHours <= 0) {
         delai_depasse = true;
       }
-      let condition = this.exo.posteur.id !== this.user.id && delai_depasse === false &&
+      let condition = this.exo.posteur.username !== this.user.username && delai_depasse === false &&
         this.exo.correcs.length === 0
       if (condition) {
         return this.exo.prix

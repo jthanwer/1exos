@@ -134,17 +134,17 @@ export default {
     delai() {
       let date1 = moment();
       let date2 = moment(this.exo.date_limite);
-      let diffHours = date2.diff(date1, "hours");
-      if (diffHours <= 0) {
+      let diffMinutes = date2.diff(date1, "minutes");
+      if (diffMinutes < 0) {
         this.delai_depasse = true;
-      } else if (diffHours < 1) {
-        let diffMinutes = date2.diff(date1, "minutes");
-        return diffMinutes.toString() + " minutes";
-      } else if (diffHours < 48) {
-        return diffHours.toString() + " heures";
+      } else if (diffMinutes < 60) {
+        return diffMinutes.toString() + " minute(s)";
+      } else if (diffMinutes < 60 * 48) {
+        let diffHours = date2.diff(date1, "hours");
+        return diffHours.toString() + " heure(s)";
       } else {
         let diffDays = date2.diff(date1, "days");
-        return diffDays.toString() + " jours";
+        return diffDays.toString() + " jour(s)";
       }
     },
     correc_points() {
@@ -158,12 +158,12 @@ export default {
       if (diffHours <= 0) {
         delai_depasse = true;
       }
-      let condition = this.exo.posteur.id !== this.user.id && delai_depasse === false &&
+      let condition = this.exo.posteur.username !== this.user.username && delai_depasse === false &&
         this.exo.correcs.length === 0
       if (condition) {
         return this.exo.prix
       }
-      if (this.exo.posteur.id === this.user.id) {
+      if (this.exo.posteur.username === this.user.username) {
         return this.constants["SELFCORREC_POINTS"]
       } else if (delai_depasse) {
         return this.constants["DEADLINE_POINTS"]

@@ -4,11 +4,13 @@
     <div class="media">
       <div v-if="!unlocked"
            class="media-left pa-1 has-background-warning">
-        <b-icon icon="lock"></b-icon>
+        <b-icon size="is-medium"
+                icon="lock"></b-icon>
       </div>
       <div v-else
            class="media-left pa-1 has-background-success">
-        <b-icon icon="lock-open"></b-icon>
+        <b-icon size="is-medium"
+                icon="lock-open"></b-icon>
       </div>
       <!-- <div class="media-content">
         <div class="subtitle is-size-6">
@@ -17,21 +19,24 @@
           </p>
         </div>
       </div> -->
-      <div class="media-content">
+      <div v-if="title"
+           class="media-content">
         <p v-if="correc.enonce.livre"
            class="subtitle">
           <span class="title is-5 has-text-grey">{{ correc.enonce.id }}.</span>
-          {{correc.enonce.type === 'correc.enonce'? 'Exo': 'Act.' }}
+          {{correc.enonce.type === 'Exo'? 'Exo': 'Act.' }}
           {{ correc.enonce.num_exo }} - Page {{ correc.enonce.num_page }} - Sur
           livre
         </p>
         <p v-else
            class="subtitle">
           <span class="title is-5 has-text-grey">{{ correc.enonce.id }}.</span>
-          {{correc.enonce.type === 'correc.enonce'? 'Exo': 'Act.' }} {{ correc.enonce.num_exo }}
+          {{correc.enonce.type === 'Exo'? 'Exo': 'Act.' }} {{ correc.enonce.num_exo }}
           - Sur feuille
         </p>
       </div>
+      <div v-else
+           class="media-content"></div>
       <div class="media-right">
         <b-button v-if="unlocked"
                   type="is-success"
@@ -63,6 +68,10 @@ export default {
   props: {
     correc: Object,
     user: Object,
+    title: {
+      Boolean,
+      default: true
+    },
     unlocked: {
       type: Boolean,
       default: false

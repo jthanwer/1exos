@@ -519,6 +519,11 @@ export default {
     }
   },
   watch: {
+    $route(to, from) {
+      if (to.name == 'search') {
+        this.searchExercices()
+      }
+    },
     form: {
       handler(inputs) {
         this.searchExercices()

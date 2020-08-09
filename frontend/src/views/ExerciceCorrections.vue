@@ -1,128 +1,67 @@
 <template>
-<div class="container is-fluid">
-  <div class="columns is-centered">
-    <div v-for="(correc, index) in corrections"
-         class="column is-6"
-         :key="correc.id">
-      <div class="card">
-        <div class="card-content">
-          <div class="media">
-            <div class="media-left pa-1 has-background-warning">
-              <b-icon icon="lock"></b-icon>
-            </div>
-            <div class="media-content">
-              <p>
-                <span class="title is-4">Correction</span>
-              </p>
-              <span class="subtitle is-6">par {{ correc.correcteur }}
-                <span>
-                  <b-rate :max="5"
-                          :disabled="true"></b-rate>
-                </span>
-              </span>
-            </div>
-            <div class="media-right">
-              <b-tag type="is-info"
-                     size="is-medium">{{ correc.prix }} pts</b-tag>
-            </div>
-          </div>
-          <div class="level">
-            <div class="level-left">
-              <div class="level-item">
-                <b-tag type="is-success"
-                       size="is-medium">
-                  <b-icon icon="check"
-                          class="mr-1"
-                          size="is-small" />Correction vérifiée
-                </b-tag>
-              </div>
-            </div>
-
-            <div class="level-right">
-              <b-button v-if="user.unlocked_correcs.includes(correc.id)"
-                        type="is-success"
-                        icon-left="arrow-right"
-                        @click="
-                    $router.push({
-                      name: 'correction',
-                      params: { id: correc.id }
-                    })
-                  ">
-                Accéder
-              </b-button>
-              <b-button v-else
-                        type="is-warning"
-                        icon-left="lock-open"
-                        @click="confirm_modal = true">
-                Débloquer
-              </b-button>
-              <b-modal :active.sync="confirm_modal"
-                       has-modal-card
-                       trap-focus
-                       aria-role="dialog"
-                       aria-modal>
-                <div class="modal-card"
-                     style="width: auto">
-                  <header class="modal-card-head">
-                    <p class="modal-card-title">Confirmer le prélèvement</p>
-                  </header>
-                  <div class="modal-card-body">
-                    Es-tu sûr de vouloir prélever le montant de
-                    {{ correc.prix }} pts sur ta tirelire ? <br />
-                    Il te restera {{ user.tirelire - correc.prix }} pts.
-                  </div>
-                  <footer class="modal-card-foot">
-                    <b-button @click="confirm_modal = false">Annuler</b-button>
-                    <b-button @click="confirmUnlock(correc.id, correc.prix)"
-                              type="is-success">Confirmer</b-button>
-                  </footer>
-                </div>
-              </b-modal>
-            </div>
-          </div>
-        </div>
+  <div class="container is-fluid">
+    <div class="columns is-multiline">
+      <div
+        v-for="(correc, index) in corrections"
+        :key="correc.id"
+        class="column is-offset-3 is-6"
+      >
+        <h1 class="title has-text-tertiary">Correction {{ index + 1 }}</h1>
+        <CorrectionPreview
+          v-if="correc && user"
+          :correc="correc"
+          :user="user"
+          :title="false"
+          :unlocked="user.unlocked_correcs.includes(correc.id)"
+        />
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import exercicesService from "@/services/exercicesService";
-import correctionsService from "@/services/correctionsService";
-import { mapState } from "vuex";
+import exercicesService from '@/services/exercicesService'
+import correctionsService from '@/services/correctionsService'
+import CorrectionPreview from '@/components/CorrectionPreview.vue'
+import { mapState } from 'vuex'
 export default {
-  name: "ExerciceCorrections",
+  name: 'ExerciceCorrections',
+  components: {
+    CorrectionPreview
+  },
   props: {
-    id: [Number, String]
+    id: {
+      type: [Number, String],
+      default: null
+    }
   },
   data() {
     return {
       corrections: [],
       confirm_modal: false
-    };
+    }
+  },
+  computed: {
+    ...mapState('authentication', ['user'])
   },
   created() {
     exercicesService.getExerciceCorrections(this.id).then(data => {
-      this.corrections = data.results;
-    });
-  },
-  computed: {
-    ...mapState("authentication", ["user"])
+      this.corrections = data.results
+    })
   },
   methods: {
     confirmUnlock(correc_id, prix) {
-      this.confirm_modal = false;
-      this.collectAndUnlock(correc_id, prix);
+      this.confirm_modal = false
+      this.collectAndUnlock(correc_id, prix)
     },
     collectAndUnlock(correc_id, prix) {
-      let payload = { prix: prix };
-      correctionsService.collectAndUnlock(correc_id, payload).then(data => {
-        this.$store.dispatch("authentication/getProfileUser");
-      });
+      let payload = { prix: prix }
+      correctionsService.collectAndUnlock(correc_id, payload).then(() => {
+        this.$store.dispatch('authentication/getProfileUser')
+      })
     }
   }
-};
+}
 </script>
 
 <style></style>

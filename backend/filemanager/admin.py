@@ -1,13 +1,13 @@
 from django.contrib import admin
+from .models import Exercice, Correction
 
-# @admin.register(Total)
-# class TotalAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'year', 'transport')
-#     list_filter = ('user', 'year')
-#
-#
-# @admin.register(TotalTransport)
-# class TotalTransportAdmin(admin.ModelAdmin):
-#     list_display = ('user', 'year', 'air_transport', 'car_transport')
-#     list_filter = ('user', 'year')
+@admin.register(Exercice)
+class ExerciceAdmin(admin.ModelAdmin):
+    list_display = ('posteur', 'prix', 'niveau')
+    list_filter = ()
+
+@admin.register(Correction)
+class CorrectionAdmin(admin.ModelAdmin):
+    list_display = ('correcteur', 'enonce', 'prix')
+    list_filter = ()
 

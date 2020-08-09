@@ -14,7 +14,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'classe', 'is_active',
+        fields = ('username', 'niveau', 'is_active',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('pk', 'username', 'email',
-                  'is_active', 'classe',
+                  'is_active', 'niveau', 'option',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof',
                   'tirelire',
@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'classe',
+        fields = ('username', 'email', 'niveau', 'option',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
@@ -46,8 +46,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'is_active',
-                  'classe', 'nom_etablissement', 'ville_etablissement',
+        fields = ('username', 'email', 'password', 'is_active', 'option',
+                  'niveau', 'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
     def save(self, **kwargs):
@@ -55,7 +55,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'username': self.validated_data.get('username', ''),
             'email': self.validated_data.get('email', ''),
             'password': self.validated_data.get('password', ''),
-            'classe': self.validated_data.get('classe', ''),
+            'niveau': self.validated_data.get('niveau', ''),
+            'option': self.validated_data.get('option', ''),
             'nom_etablissement': self.validated_data.get('nom_etablissement', ''),
             'ville_etablissement': self.validated_data.get('ville_etablissement', ''),
             'prefix_prof': self.validated_data.get('prefix_prof', ''),

@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '0j(tt(%#edg&@11_#*0svn5s@710q781t)g&$
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['192.168.0.16', '0.0.0.0', 'localhost']
+ALLOWED_HOSTS = ['192.168.0.16', '192.168.1.17', '0.0.0.0', 'localhost']
 
 # Application definition
 INSTALLED_APPS = [
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'corsheaders',
+    'storages',
 
     'users',
     'filemanager',
@@ -127,16 +128,43 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATICFILES_DIRS = []
+
+# Amazon S3
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID'),
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_REGION_NAME = 'eu-west-3'
+AWS_QUERYSTRING_EXPIRE = 5
+AWS_DEFAULT_ACL = None
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+# AWS_QUERYSTRING_AUTH = False
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+AWS_STATIC_LOCATION = 'static'
+STATICFILES_STORAGE = 'exos_app.settings.storage_backends.StaticStorage'
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+DEFAULT_FILE_STORAGE = 'exos_app.settings.storage_backends.PublicMediaStorage'
+
+AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+PRIVATE_FILE_STORAGE = 'exos_app.settings.storage_backends.PrivateMediaStorage'
 
 # This line tells Django to append static
 # to the base url when searching for static files.
-STATIC_URL = '/api/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = []
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# STATIC_URL = '/api/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = []
+#
+# # Media files
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Custom User Model
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -152,11 +180,10 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
-        # 'rest_framework.permissions.IsAuthenticated',
     ),
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 4
+    'PAGE_SIZE': 10
 }
 
 # Simple-JWT Authentication

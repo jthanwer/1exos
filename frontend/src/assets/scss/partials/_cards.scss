@@ -3,12 +3,65 @@
   transition: all 0.4s;
 }
 
+.has-radius-border {
+    border-radius: 20px !important;
+}
+
+.card{
+    border-radius: 20px !important;
+}
+
+.button {
+    font-weight: bold;
+}
+
+.exercice-preview {
+    cursor: pointer;
+}
+
+.correction-preview {
+    cursor: pointer;
+}
+
+.border-primary {
+    border: 2px solid $primary;
+    &:hover {
+        background-color: whitesmoke !important;
+        -webkit-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+}
+}
+
+.border-warning {
+    border: 2px solid $warning;
+    &:hover {
+        background-color: whitesmoke !important;
+        -webkit-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+}
+}
+
+
 .border-success {
-    border: 4px solid $success;
+    border: 2px solid $success;
+    &:hover {
+        background-color: whitesmoke !important;
+        -webkit-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+}
 }
 
 .border-danger {
-    border: 4px solid $danger;
+    border: 2px solid $secondary;
+    &:hover {
+        background-color: whitesmoke !important;
+        -webkit-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+        box-shadow: 8px 7px 21px -3px rgba(0,0,0,0.75);
+    }
 }
 
 .primary-border {

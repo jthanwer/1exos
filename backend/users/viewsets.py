@@ -146,7 +146,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def profs(self, request):
-        queryset = CustomUser.objects.values('prefix_prof', 'nom_prof')\
+        queryset = CustomUser.objects.values('prefix_prof', 'nom_prof', 'ville_etablissement', 'nom_etablissement')\
             .distinct()
         return Response({'results': queryset})
 

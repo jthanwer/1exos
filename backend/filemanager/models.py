@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from exos_app.settings.storage_backends import PrivateMediaStorage
 
 
 class Exercice(models.Model):
@@ -34,9 +35,20 @@ class Correction(models.Model):
     enonce = models.ForeignKey(Exercice,
                                on_delete=models.CASCADE,
                                related_name='correcs')
-    file = models.FileField(null=True, max_length=255)
+    file = models.FileField(null=True, blank=True, max_length=255,
+                            storage=PrivateMediaStorage())
     prix = models.IntegerField(default=1)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return str(self.file.name)
+
+
+class Rating(models.Model):
+    correc = models.ForeignKey(Correction,
+                               on_delete=models.CASCADE,
+                               related_name='ratings')
+    voter = models.ForeignKey(settings.AUTH_USER_MODEL,
+                              on_delete=models.CASCADE,
+                              related_name='ratings')
+    value = models.IntegerField()

@@ -1,11 +1,11 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import general from "./modules/general";
-import authentication from "./modules/authentication";
-import exercices from "./modules/exercices";
-import corrections from "./modules/corrections";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import general from './modules/general'
+import authentication from './modules/authentication'
+import exercices from './modules/exercices'
+import corrections from './modules/corrections'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
@@ -14,4 +14,4 @@ export default new Vuex.Store({
     exercices,
     corrections
   }
-});
+})

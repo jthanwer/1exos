@@ -22,15 +22,15 @@ def BONUS():
 
 
 def MEAN_PRICES():
-    prices = {classe: 0 for classe in range(7)}
-    for classe in range(7):
-        qs = Exercice.objects.filter(niveau=classe)
+    prices = {niveau: 0 for niveau in range(7)}
+    for niveau in range(7):
+        qs = Exercice.objects.filter(niveau=niveau)
         count = qs.count()
         if count > 0:
             value = qs.aggregate(Avg('prix'))['prix__avg']
-            prices[classe] = int(value)
+            prices[niveau] = int(value)
         else:
-            prices[classe] = -1
+            prices[niveau] = -1
     return prices
 
 

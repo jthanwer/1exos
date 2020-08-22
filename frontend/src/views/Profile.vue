@@ -652,7 +652,7 @@ export default {
     },
     updateProfile(payload, element) {
       usersService
-        .update_profile(this.user.pk, payload)
+        .update_profile(this.user.id, payload)
         .then(data => {
           this.form_user_active[element] = false
           this.$buefy.toast.open({

@@ -81,7 +81,7 @@
           <div v-if="correc">
             <div class="columns is-centered is-multiline">
               <div class="column is-7 has-text-centered">
-                <p class="heading">Ajouté par</p>
+                <p class="heading">Ajoutée par</p>
                 <p class="title is-6">{{ correc.correcteur }}</p>
               </div>
               <!-- <div class="column is-7 has-text-centered">
@@ -154,9 +154,9 @@
             </b-button>
           </div>
         </div>
-        <div v-if="user">
+        <div v-if="user && correc">
           <b-button
-            v-if="user_rating"
+            v-if="user_rating && user.username != correc.correcteur"
             class="mt-6"
             type="is-secondary"
             expanded
@@ -166,7 +166,7 @@
             Modifier ta note
           </b-button>
           <b-button
-            v-else
+            v-if="!user_rating && user.username != correc.correcteur"
             class="mt-6"
             type="is-secondary"
             expanded
@@ -188,6 +188,7 @@
         </div>
 
         <b-modal
+          v-if="user && correc"
           :active.sync="modal_new_rating"
           has-modal-card
           trap-focus
@@ -205,11 +206,18 @@
                 style="justify-content: center;"
                 size="is-large"
               ></b-rate>
+              <div
+                v-if="user.username === correc.enonce.posteur.username"
+                class="has-text-centered"
+              >
+                Une note inférieure ou égale à 3 étoiles venant de ta part
+                entraînera la suppression de cette correction.
+              </div>
               <b-button
                 class="mb-2 mt-6"
                 expanded
                 type="is-primary"
-                @click="post_vote()"
+                @click="confirmRating('post')"
               >
                 Noter
               </b-button>
@@ -218,6 +226,7 @@
         </b-modal>
 
         <b-modal
+          v-if="user && correc"
           :active.sync="modal_modify_rating"
           has-modal-card
           trap-focus
@@ -235,11 +244,18 @@
                 style="justify-content: center;"
                 size="is-large"
               ></b-rate>
+              <div
+                v-if="user.username === correc.enonce.posteur.username"
+                class="has-text-centered"
+              >
+                Une note inférieure ou égale à 3 étoiles venant de ta part
+                entraînera la suppression de cette correction.
+              </div>
               <b-button
                 class="mb-2 mt-6"
                 expanded
                 type="is-primary"
-                @click="modify_vote()"
+                @click="confirmRating('patch')"
               >
                 Modifier
               </b-button>
@@ -327,27 +343,87 @@ export default {
         this.vote_value = this.correc.mean_rating
       })
     },
-    post_vote() {
+    confirmRating(method) {
+      if (
+        this.user.username == this.correc.enonce.posteur.username &&
+        this.vote_value < 4
+      ) {
+        this.$buefy.dialog.confirm({
+          title: 'Confirmer la note',
+          message: `Es-tu sûr de vouloir mettre une <strong>note aussi basse ?</strong>
+          Cette correction sera supprimée. <br> Si une autre correction a été postée avant la date limite, 
+          les points seront transférés à son correcteur. <br> Sinon, tu récupéreras tes points.`,
+          confirmText: 'Confirmer',
+          cancelText: 'Annuler',
+          type: 'is-danger',
+          hasIcon: true,
+          onConfirm: () => {
+            if (method === 'post') {
+              this.createRating()
+            } else {
+              this.modifyRating()
+            }
+          }
+        })
+      } else {
+        {
+          if (method === 'post') {
+            this.createRating()
+          } else {
+            this.modifyRating()
+          }
+        }
+      }
+    },
+    createRating() {
       this.modal_new_rating = false
       const fd = new FormData()
       fd.append('correc_id', this.correc.id)
       fd.append('value', this.vote_value)
-      ratingsService.create_rating(fd).then(() => {
-        correctionsService.getCorrection(this.id).then(data => {
-          this.correc = data
+      ratingsService
+        .create_rating(fd)
+        .then(() => {
+          return correctionsService.getCorrection(this.id)
         })
-        this.getRatings()
-      })
+        .then(data => {
+          this.correc = data
+          this.getRatings()
+        })
+        .catch(err => {
+          let status = err.response.status
+          switch (status) {
+            case 404:
+              this.$store.dispatch('authentication/getProfileUser')
+              this.$router.push({
+                name: 'exo-corrections',
+                params: { id: this.correc.enonce.id }
+              })
+          }
+        })
     },
-    modify_vote() {
+    modifyRating() {
       this.modal_modify_rating = false
       const fd = new FormData()
       fd.append('value', this.vote_value)
-      ratingsService.modify_rating(this.user_rating.id, fd).then(() => {
-        correctionsService.getCorrection(this.id).then(data => {
-          this.correc = data
+      ratingsService
+        .modify_rating(this.user_rating.id, fd)
+        .then(() => {
+          return correctionsService.getCorrection(this.id)
         })
-      })
+        .then(data => {
+          this.correc = data
+          this.getRatings()
+        })
+        .catch(err => {
+          let status = err.response.status
+          switch (status) {
+            case 404:
+              this.$router.push({
+                name: 'exo-corrections',
+                params: { id: this.correc.enonce.id }
+              })
+          }
+        })
     },
     confirmDelete() {
       this.$buefy.dialog.confirm({

@@ -67,7 +67,7 @@
                 <b-tag v-if="!has_correc" type="is-secondary" size="is-medium">
                   {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à
                   gagner
-                  <span v-if="exo && user">
+                  <span v-if="activated && exo && user">
                     {{
                       exo.posteur.username !== user.username
                         ? ''

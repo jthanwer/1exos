@@ -51,6 +51,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data.get('file', None)
         exercice = serializer.save(posteur=user, niveau=user.niveau,
+                                   option=user.option,
                                    prefix_prof=user.prefix_prof,
                                    nom_prof=user.nom_prof,
                                    ville_etablissement=user.ville_etablissement,
@@ -119,7 +120,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True, permission_classes=[AllowAny])
     def corrections(self, request, pk=None):
         exercice = self.get_object()
-        queryset = Correction.objects.filter(enonce=exercice)
+        queryset = Correction.objects.filter(enonce=exercice).order_by('date_created')
 
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -160,10 +161,8 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 # -- Correction
 # -------------
 class CorrectionViewSet(viewsets.ModelViewSet):
-    queryset = Correction.objects.all()
+    queryset = Correction.objects.all().order_by('-date_created')
     serializer_class = CorrectionSerializer
-    search_fields = ['file']
-    filter_backends = (filters.SearchFilter,)
 
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
@@ -195,6 +194,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
                 file.name = 'Correction{}.'.format(fileid) + extension
 
             correction.file = file
+            fluxes.submit_correction(correction)
             correction.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -247,10 +247,20 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     def collect_unlock(self, request, pk=None):
         correction = self.get_object()
         user = request.user
-        if not user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        # -- L'utilisateur ne paye pas s'il possède déjà la correction
+        if user.unlocked_correcs.filter(id=correction.id).exists():
+            return Response(status=status.HTTP_200_OK)
+
+        # -- Fait le transfert d'argent si possible
         if not fluxes.buy_correction(user, correction):
             return Response(status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        # -- Débloque toutes les corrections de l'exo
+        all_corrections = correction.enonce.correcs.all()
+        for elt in all_corrections:
+            user.unlocked_correcs.add(elt)
+
         return Response(status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, permission_classes=[AllowAny],
@@ -274,11 +284,36 @@ class RatingViewSet(viewsets.ModelViewSet):
         voter = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(voter=voter)
+        rating = serializer.save(voter=voter)
 
-# import boto3
-# from botocore.client import Config
-# s3 = boto3.client('s3', config=Config(signature_version='s3v4'))
-# url = s3.generate_presigned_url(ClientMethod='get_object', Params={'Bucket': '1exo-assets','Key': 'media/private/Correction4-12.jpg'}, ExpiresIn=5)
-# print(url)
+        # -- Si le posteur de l'exo met une note inférieure à 4,
+        # on supprime la correction et on fait des transferts de points
+        if voter == rating.correc.enonce.posteur and rating.value < 4:
+            correction = rating.correc
+            fluxes.delete_correction(correction)
+            correction.file.delete(save=True)
+            correction.delete()
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        voter = request.user
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        rating = serializer.save()
+
+        # -- Si le posteur de l'exo met une note inférieure à 4,
+        # on supprime la correction et on fait des transferts de points
+        if voter == rating.correc.enonce.posteur and rating.value < 4:
+            correction = rating.correc
+            fluxes.delete_correction(correction)
+            correction.file.delete(save=True)
+            correction.delete()
+
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)

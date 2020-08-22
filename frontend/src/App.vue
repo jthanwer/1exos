@@ -16,15 +16,9 @@
     <footer class="footer has-background-primary" style="margin-top:50px;">
       <div class="columns is-centered">
         <div class="column is-3">
-          <h1 class="title is-3 has-text-white-ter">À propos de nous</h1>
-          <router-link class="has-text-white" :to="{ name: 'home' }">
-            <h2>Qui sommes-nous ?</h2>
-          </router-link>
-          <router-link class="has-text-white" :to="{ name: 'home' }">
-            <h2>FAQ</h2>
-          </router-link>
-          <router-link class="has-text-white" :to="{ name: 'home' }">
-            <h2>Nous contacter</h2>
+          <h1 class="title is-3 has-text-white-ter">À propos</h1>
+          <router-link class="has-text-white" :to="{ name: 'presentation' }">
+            <h2>Présentation du site</h2>
           </router-link>
         </div>
         <div class="column is-3">
@@ -34,12 +28,21 @@
           </router-link>
         </div>
         <div class="column is-3">
-          <h1 class="title is-3 has-text-white-ter">Mentions légales</h1>
+          <h1 class="title is-3 has-text-white-ter">Cadre légal</h1>
           <router-link
             class="has-text-white"
-            :to="{ name: 'conditions-generales' }"
+            :to="{ name: 'mentions-legales' }"
           >
-            <h2>Conditions générales</h2>
+            <h2>Mentions légales</h2>
+          </router-link>
+          <router-link class="has-text-white" :to="{ name: 'cgv' }">
+            <h2>CGV</h2>
+          </router-link>
+          <router-link class="has-text-white" :to="{ name: 'cgu' }">
+            <h2>CGU</h2>
+          </router-link>
+          <router-link class="has-text-white" :to="{ name: 'pdc' }">
+            <h2>Politique de confidentialité</h2>
           </router-link>
         </div>
       </div>

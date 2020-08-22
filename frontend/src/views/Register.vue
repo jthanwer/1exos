@@ -75,11 +75,13 @@
                         :value="key"
                         >{{ value }}</option
                       >
+                      <option value="100">Enseignant</option>
                     </b-select>
                   </b-field>
                 </ValidationProvider>
 
                 <ValidationProvider
+                  v-if="form.niveau == 0"
                   v-slot="{ errors, valid }"
                   slim
                   rules="required"
@@ -157,7 +159,7 @@
                       </template>
                     </b-autocomplete>
                   </b-field>
-                  <p class="mb-3">
+                  <p class="mb-3 is-size-7">
                     Tu ne trouves pas ton établissement ?
                     <b-tooltip label="profinou@gmail.com" dashed
                       >Contacte-nous
@@ -210,8 +212,7 @@
                         "
                       >
                         <template slot="empty"
-                          >Aucun résultat parmi les profs déjà
-                          enregistrés</template
+                          >Aucun résultat : ton professeur sera ajouté</template
                         >
                         <template slot-scope="props">
                           <span class="mr-1">{{
@@ -304,14 +305,12 @@
                   </ValidationProvider>
                 </b-field>
 
-                <b-field
-                  expanded
-                  :message="conditions_error"
-                  :type="{ 'is-danger': !!conditions_error }"
-                >
+                <b-field expanded :type="{ 'is-danger': !!conditions_error }">
                   <b-checkbox v-model="form.conditions_agreed" expanded>
-                    J’accepte la politique de confidentialité et les conditions
-                    générales d’utilisation de ce site.
+                    <p :class="{ 'has-text-danger': !!conditions_error }">
+                      J’accepte la politique de confidentialité et les
+                      conditions générales d’utilisation de ce site.
+                    </p>
                   </b-checkbox>
                 </b-field>
 
@@ -364,17 +363,17 @@ export default {
       conditions_error: null,
 
       form: {
-        username: 'cassosdu39',
-        email1: 'cassosdu39@gmail.com',
-        email2: 'cassosdu39@gmail.com',
-        password1: 'Zdv:89??',
-        password2: 'Zdv:89??',
-        niveau: 1,
+        username: null,
+        email1: null,
+        email2: null,
+        password1: null,
+        password2: null,
+        niveau: null,
         option: null,
-        ville_etablissement: 'Cahors',
-        nom_etablissement: 'Lycée Clément Marot',
-        prefix_prof: 1,
-        nom_prof: 'Dupont',
+        ville_etablissement: null,
+        nom_etablissement: null,
+        prefix_prof: null,
+        nom_prof: null,
         conditions_agreed: false
       },
 
@@ -450,16 +449,14 @@ export default {
     validate() {
       this.$refs.form.validate().then(success => {
         this.input_username = this.form.username
-        console.log('test')
         if (!success) {
-          console.log('success')
           return
         }
-        console.log(!this.form.conditions_agreed)
         if (!this.form.conditions_agreed) {
-          this.conditions_error = `Il est obligatoire d'accepter ces conditions pour s'inscrire sur ce site.`
+          this.conditions_error = true
           return
         }
+
         this.submit()
       })
     },
@@ -477,6 +474,7 @@ export default {
       fd.append('password', this.form.password1)
       fd.append('niveau', parseInt(this.form.niveau))
       fd.append('option', parseInt(this.form.option))
+      console.log(parseInt(this.form.niveau))
       fd.append('nom_etablissement', this.form.nom_etablissement)
       fd.append('ville_etablissement', this.form.ville_etablissement)
       fd.append('nom_prof', this.form.nom_prof)
@@ -490,8 +488,7 @@ export default {
             type: 'is-success',
             message: `Merci d'avoir créé ton compte! <br>
             <b>Un lien de confirmation</b> a été envoyé à l'adresse e-mail
-            indiquée. <b>Clique sur ce lien</b> pour activer ton compte.<br>
-            Tu ne pourras pas te connecter avant d'avoir fait cela.`,
+            indiquée.`,
             confirmText: 'OK',
             onConfirm: () => this.$router.push('/')
           })

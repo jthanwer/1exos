@@ -224,6 +224,23 @@
                     </ValidationProvider> -->
                     </b-field>
 
+                    <ValidationProvider
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="email"
+                    >
+                      <b-field
+                        label="Adresse e-mail"
+                        expanded
+                        :message="errors"
+                        :type="{
+                          'is-danger': errors[0]
+                        }"
+                      >
+                        <b-input v-model="email" expanded></b-input>
+                      </b-field>
+                    </ValidationProvider>
+
                     <b-field
                       label="Date d'expiration"
                       :message="stripeFinalErrors.card_expiry"
@@ -238,6 +255,19 @@
                       :type="{ 'is-danger': stripeFinalErrors.card_cvc }"
                     >
                       <div ref="card-cvc"></div>
+                    </b-field>
+
+                    <b-field
+                      class="mt-4"
+                      expanded
+                      :type="{ 'is-danger': !!conditions_error }"
+                    >
+                      <b-checkbox v-model="conditions_agreed" expanded>
+                        <p :class="{ 'has-text-danger': !!conditions_error }">
+                          J’accepte les conditions générales de vente de ce
+                          site.
+                        </p>
+                      </b-checkbox>
                     </b-field>
                   </div>
                 </div>
@@ -350,7 +380,10 @@ export default {
       choice_amount: 5,
       last_name: null,
       first_name: null,
+      email: null,
       postal_code: null,
+      conditions_agreed: null,
+      conditions_error: false,
 
       is_loading: false,
 
@@ -473,6 +506,10 @@ export default {
                 sfe[key] = 'Ce champ est requis'
               }
             }
+            if (!this.conditions_agreed) {
+              this.conditions_error = true
+              return
+            }
             if (success && cond) {
               this.confirmPayment(next)
             }
@@ -483,7 +520,8 @@ export default {
       next.action()
       let payload = {
         amount: parseInt(this.amount),
-        currency: 'eur'
+        currency: 'eur',
+        email: this.email
       }
       usersService.stripe_createPaymentIntent(payload).then(data => {
         this.payment_id = data.id
@@ -515,7 +553,8 @@ export default {
         .then(result => {
           let payload = {
             payment_id: this.payment_id,
-            payment_method_id: result.paymentMethod['id']
+            payment_method_id: result.paymentMethod['id'],
+            email: this.email
           }
           usersService.stripe_validatePayment(payload).then(response => {
             this.handleServerResponse(response)

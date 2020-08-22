@@ -6,9 +6,9 @@ module.exports = {
     host: "0.0.0.0",
     proxy: {
       "/api*": {
-        // target: "http://0.0.0.0:8000/"
+        target: "http://0.0.0.0:8000/"
         // target: "http://192.168.0.16:8000/"
-        target: "http://192.168.1.17:8000/"
+        // target: "http://192.168.1.17:8000/"
       }
     }
   },

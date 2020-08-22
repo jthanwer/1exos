@@ -17,14 +17,40 @@ from . import *
 DEBUG = False
 ALLOWED_HOSTS = ['app.1exo.fr', '1exo.fr', '85.236.153.45', 'localhost', '0.0.0.0']
 
-# Static files
-STATIC_URL = '/django_static/'
-STATIC_ROOT = '/home/appeatqc/public_html/django_static/'
-STATICFILES_DIRS = []
+if os.environ.get('USE_S3') == "TRUE":
+    # Amazon S3
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    AWS_S3_REGION_NAME = 'eu-west-3'
+    AWS_QUERYSTRING_EXPIRE = 10
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_DEFAULT_ACL = None
 
-# Media files
-MEDIA_URL = '/django_media/'
-MEDIA_ROOT = '/home/appeatqc/public_html/django_media/'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+
+    AWS_STATIC_LOCATION = 'static'
+    STATICFILES_STORAGE = 'exos_app.settings.storage_backends.StaticStorage'
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_STATIC_LOCATION)
+
+    AWS_PUBLIC_MEDIA_LOCATION = 'media/public'
+    DEFAULT_FILE_STORAGE = 'exos_app.settings.storage_backends.PublicMediaStorage'
+
+    AWS_PRIVATE_MEDIA_LOCATION = 'media/private'
+    PRIVATE_FILE_STORAGE = 'exos_app.settings.storage_backends.PrivateMediaStorage'
+
+else:
+    # Static files
+    STATIC_URL = '/django_static/'
+    STATIC_ROOT = '/home/appeatqc/public_html/django_static/'
+    STATICFILES_DIRS = []
+
+    # Media files
+    MEDIA_URL = '/django_media/'
+    MEDIA_ROOT = '/home/appeatqc/public_html/django_media/'
 
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

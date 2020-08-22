@@ -28,7 +28,7 @@ const api = axios.create({
 api.interceptors.response.use(undefined, err => {
   return new Promise((resolve, reject) => {
     let res = err.response
-    if (res.status === 401 && res.config) {
+    if (res.status === 401 && res.config && res.config.url !== 'token/') {
       store.dispatch('authentication/authLogout').then(() => {
         reject(err)
         router.push({ name: 'login' })

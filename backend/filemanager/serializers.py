@@ -4,17 +4,24 @@ from users.serializers import BasicUserSerializer
 import decimal
 from django.db.models import Avg
 
-
-
 class PreviewCorrectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Correction
-        fields = ('id', 'prix')
+        fields = ('id', 'correcteur', 'prix')
+
+
+class PreviewExerciceSerializer(serializers.ModelSerializer):
+    posteur = BasicUserSerializer(read_only=True)
+
+    class Meta:
+        model = Exercice
+        fields = ('id', 'posteur', 'prix')
 
 
 class ExerciceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
     niveau = serializers.IntegerField(read_only=True)
+    option = serializers.CharField(read_only=True)
     prefix_prof = serializers.BooleanField(read_only=True)
     nom_prof = serializers.CharField(read_only=True)
     ville_etablissement = serializers.CharField(read_only=True)
@@ -39,16 +46,9 @@ class ExerciceSerializer(serializers.ModelSerializer):
         return None
 
 
-class LightCorrectionSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Correction
-        fields = ('id', 'correcteur')
-
-
 class CorrectionSerializer(serializers.ModelSerializer):
     correcteur = serializers.StringRelatedField(read_only=True)
-    enonce = ExerciceSerializer(read_only=True)
+    enonce = PreviewExerciceSerializer(read_only=True)
     enonce_id = serializers.IntegerField(write_only=True)
     name = serializers.SerializerMethodField()
     mean_rating = serializers.SerializerMethodField()

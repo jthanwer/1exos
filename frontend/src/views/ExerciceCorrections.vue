@@ -1,6 +1,6 @@
 <template>
   <div class="container is-fluid">
-    <div class="columns is-multiline">
+    <div v-if="corrections.length > 0" class="columns is-multiline">
       <div
         v-for="(correc, index) in corrections"
         :key="correc.id"
@@ -15,6 +15,15 @@
           :unlocked="user.unlocked_correcs.includes(correc.id)"
         />
       </div>
+    </div>
+    <div v-else class="has-text-centered">
+      <p class="title is-3">Aucune correction n'est disponible.</p>
+      <b-button
+        type="is-tertiary"
+        @click="$router.push({ name: 'exercice', params: { id: id } })"
+      >
+        Retourner à l'énoncé
+      </b-button>
     </div>
   </div>
 </template>

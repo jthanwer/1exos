@@ -20,8 +20,8 @@
           <b-icon class="mr-1" icon="information"></b-icon>
           <span class="is-uppercase">À propos</span>
         </template>
-        <b-navbar-item tag="router-link" :to="{ name: 'search' }">
-          Comment ça marche ?
+        <b-navbar-item tag="router-link" :to="{ name: 'presentation' }">
+          Présentation du site
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{ name: 'search' }">
           L'équipe

@@ -24,6 +24,7 @@
           </header>
         </div>
         <b-button
+          v-if="display_submit"
           class="big-button mt-2"
           expanded
           type="is-primary"
@@ -254,6 +255,21 @@ export default {
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('general', ['constants']),
+    display_submit() {
+      if (!this.user) {
+        return
+      }
+      if (!this.exo) {
+        return
+      }
+      let user_correcs = this.exo.correcs.filter(obj => {
+        return obj.correcteur === this.user.id
+      })
+      if (user_correcs.length > 0) {
+        return false
+      }
+      return true
+    },
     correc_points() {
       if (!this.user) {
         return
@@ -279,7 +295,9 @@ export default {
         return this.constants['SELFCORREC_POINTS']
       } else if (delai_depasse) {
         return this.constants['DEADLINE_POINTS']
-      } else return this.constants['MULTIPLECORREC_POINTS']
+      } else {
+        return this.constants['MULTIPLECORREC_POINTS']
+      }
     }
   },
   created() {

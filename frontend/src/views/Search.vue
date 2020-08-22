@@ -13,11 +13,11 @@
         >
           <div class="p-2">
             <b-menu class="">
-              <h1 class="title mt-2 has-text-tertiary has-text-centered">
+              <h1 class="title mt-2 has-text-primary has-text-centered">
                 <b-icon class="mr-1" icon="filter" size="is-medium"></b-icon
                 >Filtrer
               </h1>
-              <hr class="has-background-tertiary" />
+              <hr class="has-background-primary" />
               <b-field position="is-centered">
                 <b-radio-button
                   v-model="form.is_corrected"
@@ -114,6 +114,26 @@
                       :key="classe"
                       :value="index"
                       >{{ classe }}</option
+                    >
+                  </b-select>
+                </b-field>
+
+                <b-field v-if="form.niveau == 0">
+                  <b-checkbox v-model="filter.option" type="is-secondary"
+                    >Option</b-checkbox
+                  >
+                </b-field>
+                <b-field v-if="filter.option">
+                  <b-select
+                    v-model="form.option"
+                    placeholder="Choisir une option"
+                    expanded
+                  >
+                    <option
+                      v-for="option in options"
+                      :key="option"
+                      :value="option"
+                      >{{ option }}</option
                     >
                   </b-select>
                 </b-field>
@@ -232,6 +252,7 @@
                   <b-numberinput
                     v-model="form.num_page"
                     controls-position="compact"
+                    :min="1"
                     placeholder="Numéro de page"
                     expanded
                   ></b-numberinput>
@@ -392,6 +413,7 @@ import usersService from '@/services/usersService'
 import exercicesService from '@/services/exercicesService'
 import chapitres from '@/data/chapitres.json'
 import classes from '@/data/niveaux.json'
+import options from '@/data/options.json'
 import livres from '@/data/livres.json'
 import ExercicePreview from '@/components/ExercicePreview.vue'
 
@@ -418,10 +440,12 @@ export default {
 
       chapitres: chapitres,
       classes: classes,
+      options: options,
       livres: livres,
 
       filter: {
         niveau: null,
+        option: null,
         chapitre: null,
         type: null,
         devoir: null,
@@ -437,6 +461,7 @@ export default {
 
       form: {
         niveau: null,
+        option: null,
         chapitre: null,
         type: null,
         devoir: null,

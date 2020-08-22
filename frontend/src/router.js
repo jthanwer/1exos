@@ -15,7 +15,11 @@ import Recharge from '@/views/Recharge.vue'
 import MyExercices from '@/views/MyExercices.vue'
 import MyCorrections from '@/views/MyCorrections.vue'
 
-import ConditionsGenerales from '@/views/ConditionsGenerales.vue'
+import MentionsLegales from '@/views/MentionsLegales.vue'
+import CGV from '@/views/CGV.vue'
+import CGU from '@/views/CGU.vue'
+import PDC from '@/views/PDC.vue'
+import Presentation from '@/views/Presentation.vue'
 
 import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
@@ -137,14 +141,37 @@ export default new Router({
       beforeEnter: ifNotAuthenticated
     },
     {
-      path: '/conditions-generales',
-      name: 'conditions-generales',
-      component: ConditionsGenerales
+      path: '/mentions-legales',
+      name: 'mentions-legales',
+      component: MentionsLegales
+    },
+    {
+      path: '/cgu',
+      name: 'cgu',
+      component: CGU
+    },
+    {
+      path: '/cgv',
+      name: 'cgv',
+      component: CGV
+    },
+    {
+      path: '/politique-de-confidentialite',
+      name: 'pdc',
+      component: PDC
+    },
+    {
+      path: '/presentation-du-site',
+      name: 'presentation',
+      component: Presentation
     },
     {
       path: '/*',
       name: 'others',
       component: Home
     }
-  ]
+  ],
+  scrollBehavior() {
+    return { x: 0, y: 0 }
+  }
 })

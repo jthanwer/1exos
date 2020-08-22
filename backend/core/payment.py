@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from users.serializers import PaymentIntentSerializer
 import core.constants as cst
+import os
 
 import stripe
 import decimal
@@ -13,26 +14,25 @@ def euros2points(amount_euros):
 
 
 def stripe_create_payment(request):
-    stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
+    stripe.api_key = os.environ.get('STRIPE_TEST_SECRET_KEY')
     serializer = PaymentIntentSerializer(data=request.data)
-    if serializer.is_valid():
-        intent = stripe.PaymentIntent.create(**serializer.validated_data,
-                                             receipt_email=request.user.email,
-                                             confirmation_method='manual')
-        return Response(intent)
-    else:
-        return Response(serializer.errors,
-                        status=status.HTTP_400_BAD_REQUEST)
+    serializer.is_valid(raise_exception=True)
+    intent = stripe.PaymentIntent.create(**serializer.validated_data,
+                                         confirmation_method='manual')
+    return Response(intent)
 
 
 def stripe_validate_payment(request):
-    stripe.api_key = 'sk_test_l0DVglzDUUdvrm4xthnZrf5300Lq3X7bez'
+    stripe.api_key = os.environ.get('STRIPE_TEST_SECRET_KEY')
     user = request.user
     payload = request.data
+    email = payload['email']
+    receipt_email = email if email else request.user.email
 
     if 'payment_method_id' in payload:
         intent = stripe.PaymentIntent.confirm(
             payload['payment_id'],
+            receipt_email=receipt_email,
             payment_method=payload['payment_method_id'],
         )
 

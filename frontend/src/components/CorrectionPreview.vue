@@ -112,11 +112,12 @@ export default {
       if (this.user.tirelire >= this.correc.prix) {
         this.$buefy.dialog.confirm({
           title: 'Confirmer le prélèvement',
-          message: `Es-tu sûr de vouloir prélever le montant de ${
+          message: `Es-tu sûr de vouloir prélever le montant de <strong>${
             this.correc.prix
-          } pts sur
-                  ta tirelire ? <br> Il te restera ${this.user.tirelire -
-                    this.correc.prix} pts.`,
+          } pt(s)</strong> sur ta tirelire ? <br> Il te restera <strong>${this
+            .user.tirelire -
+            this.correc
+              .prix} pt(s)</strong> et toutes les corrections de cet exo seront alors débloquées.`,
           confirmText: 'Confirmer',
           cancelText: 'Annuler',
           type: 'is-warning',

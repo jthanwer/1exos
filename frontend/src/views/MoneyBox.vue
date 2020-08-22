@@ -5,7 +5,11 @@
         <div class="card has-background-white-ter">
           <div class="card-content has-text-centered">
             <p class="title is-3">Ma tirelire</p>
-            <p class="title has-text-primary" style="font-size: 5em;">
+            <p
+              v-if="user"
+              class="title has-text-primary"
+              style="font-size: 5em;"
+            >
               {{ user.tirelire }} {{ user.tirelire > 1 ? 'pts' : 'pt' }}
             </p>
           </div>

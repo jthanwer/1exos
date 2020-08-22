@@ -51,4 +51,4 @@ def DEADLINE_POINTS():
 
 # -- Points données lorsque ce n'est pas la première correction
 def MULTIPLECORREC_POINTS():
-    return 3
+    return 1

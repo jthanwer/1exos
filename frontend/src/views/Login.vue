@@ -64,7 +64,7 @@
                     >Tu n'as pas encore de compte ?</span
                   >
                   <router-link class="pl-1" :to="{ name: 'register' }">
-                    <span @click="$parent.close()">Crées-en un ici</span>
+                    <span>Crées-en un ici</span>
                   </router-link>
                 </div>
               </footer>

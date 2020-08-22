@@ -9,6 +9,7 @@ class Exercice(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='posted_exos')
     niveau = models.IntegerField()
+    option = models.CharField(max_length=100, blank=True, null=True)
     prefix_prof = models.BooleanField(default=True)
     nom_prof = models.CharField(max_length=100, default="Admin")
     ville_etablissement = models.CharField(max_length=40, default="Admin")
@@ -38,6 +39,8 @@ class Correction(models.Model):
     file = models.FileField(null=True, blank=True, max_length=255,
                             storage=PrivateMediaStorage())
     prix = models.IntegerField(default=1)
+    gain = models.IntegerField(blank=True, default=1)
+    is_favorite = models.BooleanField(blank=True, default=False)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

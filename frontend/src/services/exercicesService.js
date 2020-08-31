@@ -17,19 +17,8 @@ export default {
   searchExercices(text_query) {
     return api.get(`exercices/${text_query}`).then(response => response.data)
   },
-  postExercice(file) {
-    const config = {
-      // onUploadProgress(e) {
-      //   var percentCompleted = Math.round((e.loaded * 5000) / e.total)
-      // }
-    }
-    return api
-      .post('exercices/', file, config, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then(response => response.data)
+  postExercice(file, config) {
+    return api.post('exercices/', file, config).then(response => response.data)
   },
   getExercice(id) {
     return api.get(`exercices/${id}/`).then(response => response.data)

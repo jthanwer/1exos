@@ -5,9 +5,17 @@ import decimal
 from django.db.models import Avg
 
 class PreviewCorrectionSerializer(serializers.ModelSerializer):
+    mean_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = Correction
-        fields = ('id', 'correcteur', 'prix')
+        fields = ('id', 'correcteur', 'prix', 'mean_rating')
+
+    def get_mean_rating(self, obj):
+        if obj.ratings.exists():
+            mean_value = obj.ratings.aggregate(Avg('value'))['value__avg']
+            return mean_value
+        return None
 
 
 class PreviewExerciceSerializer(serializers.ModelSerializer):
@@ -20,7 +28,6 @@ class PreviewExerciceSerializer(serializers.ModelSerializer):
 
 class ExerciceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
-    niveau = serializers.IntegerField(read_only=True)
     option = serializers.CharField(read_only=True)
     prefix_prof = serializers.BooleanField(read_only=True)
     nom_prof = serializers.CharField(read_only=True)

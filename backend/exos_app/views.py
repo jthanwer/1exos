@@ -1,9 +1,11 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 import core.constants as cst
 
 
 @api_view()
+@permission_classes([AllowAny])
 def fetch_constants(request):
     return Response({
         "START_POINTS": cst.START_POINTS(),
@@ -14,16 +16,6 @@ def fetch_constants(request):
         "MULTIPLECORREC_POINTS": cst.MULTIPLECORREC_POINTS(),
         "MEAN_PRICES": cst.MEAN_PRICES(),
     })
-
-
-# class IndexTemplateView(LoginRequiredMixin, TemplateView):
-# class IndexTemplateView(TemplateView):
-#     def get_template_names(self):
-#         if settings.DEBUG:
-#             template_name = 'index_dev.html'
-#         else:
-#             template_name = 'index.html'
-#         return template_name
 
 
 

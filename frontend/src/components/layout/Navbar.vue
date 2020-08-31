@@ -1,8 +1,12 @@
 <template>
   <b-navbar type="is-primary" shadow>
     <template slot="brand">
-      <b-navbar-item tag="router-link" :to="{ name: 'home' }">
-        <img src="~@/assets/images/logo_void.png" alt="1exo" />
+      <b-navbar-item
+        class="has-background-tertiary"
+        tag="router-link"
+        :to="{ name: 'home' }"
+      >
+        <img src="~@/assets/images/logo_void_white.png" alt="1exo" />
       </b-navbar-item>
     </template>
     <template v-if="user" slot="start">
@@ -22,9 +26,6 @@
         </template>
         <b-navbar-item tag="router-link" :to="{ name: 'presentation' }">
           Présentation du site
-        </b-navbar-item>
-        <b-navbar-item tag="router-link" :to="{ name: 'search' }">
-          L'équipe
         </b-navbar-item>
       </b-navbar-dropdown>
       <b-navbar-item tag="router-link" :to="{ name: 'search' }">

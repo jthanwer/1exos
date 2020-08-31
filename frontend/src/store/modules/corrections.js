@@ -45,12 +45,25 @@ const actions = {
         .catch(err => reject(err))
     })
   },
-  postCorrection({ commit }, newCorrection) {
+  postCorrection({ commit }, payload) {
+    let config = payload['config']
+    let correction = payload['fd']
     return new Promise((resolve, reject) => {
       correctionsService
-        .postCorrection(newCorrection)
+        .postCorrection(correction, config)
         .then(data => {
           commit('POST_CORRECTION', data)
+          resolve(data)
+        })
+        .catch(err => reject(err))
+    })
+  },
+  collectAndUnlock({ commit }, correc_id) {
+    return new Promise((resolve, reject) => {
+      correctionsService
+        .collectAndUnlock(correc_id)
+        .then(data => {
+          commit('UNLOCK_CORRECTION', data)
           resolve(data)
         })
         .catch(err => reject(err))

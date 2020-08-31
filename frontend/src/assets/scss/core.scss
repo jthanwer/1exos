@@ -27,16 +27,6 @@ $warning-invert: findColorInvert($warning);
 $success: #2E9E91;
 $success-invert: findColorInvert($success);
 
-// $primary: #0D47A1;
-// $primary-invert: findColorInvert($primary);
-// $secondary: #A13C50;
-// $secondary-invert: findColorInvert($secondary);
-// $warning: #e59d12 ;
-// $warning-invert: findColorInvert($warning);
-// $danger: #CC2727;
-// $danger-invert: findColorInvert($danger);
-// $success: #1B9426;
-// $success-invert: findColorInvert($success);
 
 // Setup $colors to use as bulma classes
 $colors: (
@@ -57,7 +47,20 @@ $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
 
+// Modal
+// $modal-card-head-background-color: $primary;
+// $modal-card-title-color: $white;
+
+// Card
+$card-shadow : 0 0.5em 1em -0.125em rgba($scheme-invert, 0.3), 0 0px 0 1px rgba($scheme-invert, 0.1);
+
+// Box
+$box-shadow : 0 0.5em 1em -0.125em rgba($scheme-invert, 0.3), 0 0px 0 1px rgba($scheme-invert, 0.1);
+
+// Menu
 $menu-item-active-background-color: $tertiary;
+
+// Rating
 $rate-color: $grey-lighter;
 $rate-color-active:  $secondary;
 

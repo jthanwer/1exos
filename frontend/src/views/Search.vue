@@ -30,6 +30,7 @@
 
                 <b-radio-button
                   v-model="form.is_corrected"
+                  type="is-success"
                   size="is-large"
                   :native-value="null"
                 >
@@ -40,7 +41,6 @@
                   v-model="form.is_corrected"
                   size="is-large"
                   :native-value="true"
-                  type="is-success"
                 >
                   <b-icon size="is-medium" icon="check"></b-icon>
                 </b-radio-button>
@@ -61,6 +61,7 @@
                 <b-radio-button
                   v-model="form.is_from_livre"
                   size="is-large"
+                  type="is-tertiary"
                   :native-value="null"
                 >
                   <b-icon size="is-medium" icon="minus"></b-icon>
@@ -70,7 +71,6 @@
                   v-model="form.is_from_livre"
                   size="is-large"
                   :native-value="true"
-                  type="is-tertiary"
                 >
                   <b-icon
                     size="is-medium"
@@ -81,22 +81,37 @@
               <p class="has-text-centered is-size-4 mb-4">
                 {{ text_is_from_livre }}
               </p>
-              <!-- <b-field class="mb-3">
-              <b-switch type="is-success"
-                        size="is-large"
-                        passive-type="is-danger"
-                        v-model="form.is_corrected">
-                {{form.is_corrected ? "AVEC correction" : "SANS correction"}}
-              </b-switch>
-            </b-field>
-            <b-field class="mb-3">
-              <b-switch type="is-primary"
-                        size="is-large"
-                        passive-type="is-secondary"
-                        v-model="form.is_from_livre">
-                {{form.is_from_livre ? "Sur livre" : "Sur feuille"}}
-              </b-switch>
-              </b-field>-->
+              <b-field position="is-centered">
+                <b-radio-button
+                  v-model="form.is_delai_depasse"
+                  size="is-large"
+                  :native-value="true"
+                  type="is-secondary"
+                >
+                  <b-icon size="is-medium" icon="clock-alert"></b-icon>
+                </b-radio-button>
+
+                <b-radio-button
+                  v-model="form.is_delai_depasse"
+                  size="is-large"
+                  :native-value="null"
+                  type="is-tertiary"
+                >
+                  <b-icon size="is-medium" icon="minus"></b-icon>
+                </b-radio-button>
+
+                <b-radio-button
+                  v-model="form.is_delai_depasse"
+                  size="is-large"
+                  :native-value="false"
+                >
+                  <b-icon size="is-medium" icon="clock-check"></b-icon>
+                </b-radio-button>
+              </b-field>
+              <p class="has-text-centered is-size-4 mb-4">
+                {{ text_is_delai_depasse }}
+              </p>
+
               <b-menu-list label="Général">
                 <b-field>
                   <b-checkbox v-model="filter.niveau" type="is-secondary"
@@ -456,7 +471,8 @@ export default {
         prefix_prof: null,
         nom_prof: null,
         is_from_livre: true,
-        is_corrected: true
+        is_corrected: true,
+        is_delai_depasse: true
       },
 
       form: {
@@ -472,7 +488,8 @@ export default {
         prefix_prof: null,
         nom_prof: null,
         is_from_livre: null,
-        is_corrected: this.isCorrected
+        is_corrected: this.isCorrected,
+        is_delai_depasse: null
       },
 
       etablissements: [],
@@ -507,6 +524,16 @@ export default {
           return 'Sur livre'
         default:
           return 'Sur feuille/Sur livre'
+      }
+    },
+    text_is_delai_depasse: function() {
+      switch (this.form.is_delai_depasse) {
+        case true:
+          return 'Délai dépassé'
+        case false:
+          return 'Délai non dépassé'
+        default:
+          return 'Délai dépassé/non dépassé'
       }
     },
     text_query: function() {

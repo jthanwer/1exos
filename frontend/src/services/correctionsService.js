@@ -14,26 +14,17 @@ export default {
   getCorrection(id) {
     return api.get(`corrections/${id}/`).then(response => response.data)
   },
-  postCorrection(file) {
-    const config = {
-      // onUploadProgress(e) {
-      //   var percentCompleted = Math.round((e.loaded * 5000) / e.total)
-      // }
-    }
+  postCorrection(correction, config) {
     return api
-      .post('corrections/', file, config, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      .post('corrections/', correction, config)
       .then(response => response.data)
   },
   deleteCorrection(id) {
     return api.delete(`corrections/${id}/`).then(response => response.data)
   },
-  collectAndUnlock(id, prix) {
+  collectAndUnlock(id) {
     return api
-      .post(`corrections/${id}/collect_unlock/`, prix)
+      .post(`corrections/${id}/collect_unlock/`)
       .then(response => response.data)
   },
   getRatings(id) {

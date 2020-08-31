@@ -173,14 +173,13 @@
                       <div ref="card-number"></div>
                     </b-field>
 
-                    <b-field grouped>
+                    <b-field>
                       <ValidationProvider
                         v-slot="{ errors, valid }"
                         slim
                         rules="required"
                       >
                         <b-field
-                          label="Nom (sur la carte bancaire)"
                           expanded
                           :message="errors"
                           :type="{
@@ -188,29 +187,22 @@
                             'is-success': valid
                           }"
                         >
+                          <template slot="label">
+                            Nom
+                            <b-tooltip
+                              type="is-dark"
+                              label="Nom associé à la carte bancaire"
+                              multilined
+                            >
+                              <b-icon
+                                size="is-small"
+                                icon="help-circle-outline"
+                              ></b-icon>
+                            </b-tooltip>
+                          </template>
                           <b-input
-                            v-model="last_name"
-                            placeholder="Dupont"
-                          ></b-input>
-                        </b-field>
-                      </ValidationProvider>
-                      <ValidationProvider
-                        v-slot="{ errors, valid }"
-                        slim
-                        rules="required"
-                      >
-                        <b-field
-                          label="Prénom"
-                          expanded
-                          :message="errors"
-                          :type="{
-                            'is-danger': errors[0],
-                            'is-success': valid
-                          }"
-                        >
-                          <b-input
-                            v-model="first_name"
-                            placeholder="Jean"
+                            v-model="name"
+                            placeholder="Jean Dupont"
                           ></b-input>
                         </b-field>
                       </ValidationProvider>
@@ -224,23 +216,6 @@
                     </ValidationProvider> -->
                     </b-field>
 
-                    <ValidationProvider
-                      v-slot="{ errors, valid }"
-                      slim
-                      rules="email"
-                    >
-                      <b-field
-                        label="Adresse e-mail"
-                        expanded
-                        :message="errors"
-                        :type="{
-                          'is-danger': errors[0]
-                        }"
-                      >
-                        <b-input v-model="email" expanded></b-input>
-                      </b-field>
-                    </ValidationProvider>
-
                     <b-field
                       label="Date d'expiration"
                       :message="stripeFinalErrors.card_expiry"
@@ -250,12 +225,53 @@
                     </b-field>
 
                     <b-field
-                      label="CVC"
                       :message="stripeFinalErrors.card_cvc"
                       :type="{ 'is-danger': stripeFinalErrors.card_cvc }"
                     >
+                      <template slot="label">
+                        CVC
+                        <b-tooltip
+                          type="is-dark"
+                          label="Série de 3 (ou parfois 4) chiffres au dos de la carte"
+                          multilined
+                        >
+                          <b-icon
+                            size="is-small"
+                            icon="help-circle-outline"
+                          ></b-icon>
+                        </b-tooltip>
+                      </template>
                       <div ref="card-cvc"></div>
                     </b-field>
+
+                    <ValidationProvider
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="email"
+                    >
+                      <b-field
+                        expanded
+                        :message="errors"
+                        :type="{
+                          'is-danger': errors[0]
+                        }"
+                      >
+                        <template slot="label">
+                          Adresse e-mail
+                          <b-tooltip
+                            type="is-dark"
+                            label="Adresse utilisée pour éditer et envoyer la facture de l'achat"
+                            multilined
+                          >
+                            <b-icon
+                              size="is-small"
+                              icon="help-circle-outline"
+                            ></b-icon>
+                          </b-tooltip>
+                        </template>
+                        <b-input v-model="email" expanded></b-input>
+                      </b-field>
+                    </ValidationProvider>
 
                     <b-field
                       class="mt-4"
@@ -343,7 +359,7 @@
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapState } from 'vuex'
 import usersService from '@/services/usersService'
-let stripe = Stripe('pk_test_IXadVylpLM9tE8ENmliIkZHB00vhacO7Tu')
+let stripe = Stripe('pk_test_d7oJWEZuJuHZ9L9EDgA2fz2O00LHJU09PY')
 
 var styles = {
   base: {
@@ -378,8 +394,7 @@ export default {
 
       specific_amount: null,
       choice_amount: 5,
-      last_name: null,
-      first_name: null,
+      name: null,
       email: null,
       postal_code: null,
       conditions_agreed: null,
@@ -492,6 +507,7 @@ export default {
         case 0:
           this.$refs.firstStep.validate().then(success => {
             if (success) {
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
               this.confirmAmount(next)
             }
           })
@@ -511,6 +527,7 @@ export default {
               return
             }
             if (success && cond) {
+              window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
               this.confirmPayment(next)
             }
           })
@@ -545,7 +562,7 @@ export default {
         type: 'card',
         card: this.card_number,
         billing_details: {
-          name: `${this.first_name} ${this.last_name}`
+          name: this.name
         }
       }
       stripe

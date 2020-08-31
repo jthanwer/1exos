@@ -11,8 +11,10 @@
               :style="{ 'min-height': height }"
               clickable
             >
-              <hr />
-              <h1 class="title has-text-centered">Caractéristiques de l'exo</h1>
+              <hr ref="scroll1" />
+              <h1 class="title has-text-centered">
+                Caractéristiques de l'exo
+              </h1>
               <hr />
               <div class="columns is-centered">
                 <div class="column is-half">
@@ -156,6 +158,33 @@
                     </ValidationProvider>
 
                     <ValidationProvider
+                      v-if="user && user.niveau == 100"
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="required"
+                    >
+                      <b-field
+                        v-if="user && user.niveau == 100"
+                        label="Niveau de l'exo"
+                        :message="errors"
+                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                      >
+                        <b-select
+                          v-model="form.niveau"
+                          placeholder="Choisir un niveau"
+                          expanded
+                        >
+                          <option
+                            v-for="(value, key) in classes"
+                            :key="value"
+                            :value="key"
+                            >{{ value }}</option
+                          ></b-select
+                        >
+                      </b-field>
+                    </ValidationProvider>
+
+                    <ValidationProvider
                       v-slot="{ errors, valid }"
                       slim
                       rules="required"
@@ -166,7 +195,7 @@
                         :type="{ 'is-danger': errors[0], 'is-success': valid }"
                       >
                         <b-select
-                          v-if="user"
+                          v-if="user && user.niveau != 100"
                           v-model="form.chapitre"
                           expanded
                           placeholder="Choisir un chapitre"
@@ -174,6 +203,19 @@
                           <option
                             v-for="(option, index) in chapitres[user.niveau]"
                             :key="index"
+                          >
+                            {{ option }}
+                          </option>
+                        </b-select>
+                        <b-select
+                          v-if="user && user.niveau == 100"
+                          v-model="form.chapitre"
+                          expanded
+                          placeholder="Choisir un chapitre"
+                        >
+                          <option
+                            v-for="option in chapitres[form.niveau]"
+                            :key="option"
                           >
                             {{ option }}
                           </option>
@@ -190,7 +232,7 @@
               label="Points et Délai"
               :style="{ 'min-height': height }"
             >
-              <hr />
+              <hr ref="scroll2" />
               <h1 class="title has-text-centered">Points et Délai</h1>
               <hr />
               <div class="notification is-tertiary is-light">
@@ -306,7 +348,7 @@
               :style="{ 'min-height': height }"
               label="Énoncé"
             >
-              <hr />
+              <hr ref="scroll3" />
               <h1 class="title has-text-centered">Énoncé</h1>
               <hr />
               <div class="notification is-warning is-light">
@@ -333,7 +375,7 @@
               :style="{ 'min-height': height }"
               label="Livre"
             >
-              <hr />
+              <hr ref="scroll3" />
               <h1 class="title has-text-centered">Livre</h1>
               <hr />
               <div class="columns">
@@ -351,6 +393,7 @@
                         :type="{ 'is-danger': errors[0], 'is-success': valid }"
                       >
                         <b-select
+                          v-if="user && user.niveau != 100"
                           v-model="form.livre.name"
                           expanded
                           placeholder="Choisir un livre"
@@ -363,10 +406,24 @@
                             {{ livre.split('_').join(' - ') }}
                           </option>
                         </b-select>
+                        <b-select
+                          v-if="user && user.niveau == 100"
+                          v-model="form.livre.name"
+                          expanded
+                          placeholder="Choisir un livre"
+                        >
+                          <option
+                            v-for="livre in livres[form.niveau]"
+                            :key="livre"
+                            :value="livre"
+                          >
+                            {{ livre.split('_').join(' - ') }}
+                          </option>
+                        </b-select>
                       </b-field>
                       <p class="mb-3">
                         Tu ne trouves pas ton livre dans la liste ?
-                        <b-tooltip label="profinou@gmail.com" dashed
+                        <b-tooltip label="support@1exo.fr" dashed
                           >Contacte-nous
                         </b-tooltip>
                         en envoyant la référence de ton livre !
@@ -436,7 +493,7 @@
               label="Récapitulatif"
               :style="{ 'min-height': height }"
             >
-              <hr />
+              <hr ref="scroll4" />
               <h1 class="title has-text-centered">Récapitulatif</h1>
               <hr />
               <div class="notification is-tertiary is-light">
@@ -450,6 +507,19 @@
                 </div>
               </div>
               <ExercicePreview :exo="exo" :activated="false"></ExercicePreview>
+              <b-progress
+                v-if="is_loading"
+                class="mt-2"
+                :value="uploadPercentage"
+                size="is-large"
+                show-value
+                format="percent"
+                type="is-tertiary"
+              ></b-progress>
+              <div v-if="is_loading" class="has-text-centered">
+                Ta correction est en train d'être soumise. Ne quitte pas la page
+                avant que le processus soit terminé !
+              </div>
             </b-step-item>
 
             <template slot="navigation" slot-scope="{ previous, next }">
@@ -513,6 +583,7 @@ export default {
       minDatetime: min,
 
       is_loading: false,
+      uploadPercentage: 0,
 
       datepicker_attrs: {
         'month-names': [
@@ -538,6 +609,7 @@ export default {
         type: null,
         is_from_livre: null,
         chapitre: null,
+        niveau: null,
         has_num: null,
         is_from_devoir: null,
         num_exo: null,
@@ -553,11 +625,23 @@ export default {
   computed: {
     ...mapState('authentication', ['user']),
     ...mapState('general', ['constants']),
+    all_chapitres() {
+      return [].concat.apply([], Object.values(this.chapitres))
+    },
     exo() {
+      if (!this.user) {
+        return
+      }
+      let niveau = null
+      if (this.user.niveau == 100) {
+        niveau = this.form.niveau
+      } else {
+        niveau = this.user.niveau
+      }
       return {
         id: 1,
         posteur: this.user,
-        niveau: this.user.niveau,
+        niveau: niveau,
         type: this.form.type,
         chapitre: this.form.chapitre,
         livre: this.form.livre.name,
@@ -584,6 +668,11 @@ export default {
       if (this.form.num_exo) {
         fd.append('num_exo', parseInt(this.form.num_exo))
       }
+      if (this.user.niveau == 100) {
+        fd.append('niveau', parseInt(this.form.niveau))
+      } else {
+        fd.append('niveau', parseInt(this.user.niveau))
+      }
       fd.append('prix', parseInt(this.form.prix))
       fd.append('date_limite', moment(this.form.date_limite).toISOString(true))
       if (this.form.is_from_livre) {
@@ -592,8 +681,19 @@ export default {
       } else {
         fd.append('file', this.drop_file)
       }
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        timeout: 30000,
+        onUploadProgress: function(progressEvent) {
+          this.uploadPercentage = parseInt(
+            Math.round((progressEvent.loaded / progressEvent.total) * 100)
+          )
+        }.bind(this)
+      }
       this.$store
-        .dispatch('exercices/postExercice', fd)
+        .dispatch('exercices/postExercice', { fd, config })
         .then(data => {
           this.is_loading = false
           this.$router.push({ name: 'exercice', params: { id: data.id } })
@@ -612,19 +712,38 @@ export default {
       switch (activeStep) {
         case 0:
           var ref = this.$refs.firstStep
+          var refscrollfw = this.$refs.scroll2
+          var refscrollbw = this.$refs.scroll1
           break
         case 1:
           ref = this.$refs.secondStep
+          refscrollfw = this.$refs.scroll3
+          refscrollbw = this.$refs.scroll2
           break
         case 2:
           ref = this.$refs.thirdStep
+          refscrollfw = this.$refs.scroll4
+          refscrollbw = this.$refs.scroll3
           break
         default:
           ref = this.$refs.firstStep
+          refscrollfw = this.$refs.scroll2
+          refscrollbw = this.$refs.scroll1
       }
       ref.validate().then(success => {
         if (success) {
           next.action()
+          this.$nextTick(() => {
+            let toscroll =
+              refscrollfw.getBoundingClientRect().top + window.pageYOffset
+            window.scrollTo({ top: toscroll, left: 0, behavior: 'smooth' })
+          })
+        } else {
+          this.$nextTick(() => {
+            let toscroll =
+              refscrollbw.getBoundingClientRect().top + window.pageYOffset
+            window.scrollTo({ top: toscroll, left: 0, behavior: 'smooth' })
+          })
         }
       })
     }

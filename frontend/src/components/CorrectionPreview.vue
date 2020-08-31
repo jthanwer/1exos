@@ -37,6 +37,10 @@
             <b-tag v-else type="is-warning" size="is-medium">
               <span class="has-text-white">À débloquer</span>
             </b-tag>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
             <b-rate
               v-model="correc.mean_rating"
               class="ml-3"
@@ -46,27 +50,6 @@
             ></b-rate>
           </div>
         </div>
-        <!-- <div class="media-right">
-          <b-button
-            v-if="unlocked"
-            type="is-primary"
-            size="is-medium"
-            icon-left="arrow-right"
-            @click="
-              $router.push({ name: 'correction', params: { id: correc.id } })
-            "
-          >
-            Voir
-          </b-button>
-          <b-button
-            v-else
-            type="is-warning"
-            icon-left="lock-open"
-            @click="confirmUnlock()"
-          >
-            Débloquer ({{ correc.prix }} {{ correc.prix > 1 ? 'pts' : 'pt' }})
-          </b-button>
-        </div> -->
       </div>
     </div>
   </div>
@@ -74,7 +57,6 @@
 
 <script>
 import classes from '@/data/niveaux.json'
-import correctionsService from '@/services/correctionsService'
 export default {
   name: 'CorrectionPreview',
   props: {
@@ -137,10 +119,15 @@ export default {
       }
     },
     collectAndUnlock() {
-      let payload = { prix: this.correc.prix }
-      correctionsService.collectAndUnlock(this.correc.id, payload).then(() => {
-        this.$store.dispatch('authentication/getProfileUser')
-      })
+      this.$store
+        .dispatch('corrections/collectAndUnlock', this.correc.id)
+        .then(() => {
+          this.$store.dispatch('authentication/getProfileUser')
+        })
+
+      // correctionsService.collectAndUnlock(this.correc.id, payload).then(() => {
+      //   this.$store.dispatch('authentication/getProfileUser')
+      // })
     }
   }
 }

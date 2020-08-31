@@ -1,5 +1,5 @@
 <template>
-  <div class="exercice-preview">
+  <div v-if="exo" class="exercice-preview">
     <b-modal v-if="exo.livre" :active.sync="isLivreModalActive" :width="320">
       <figure class="image is-3by4">
         <img
@@ -35,7 +35,7 @@
               <p v-if="exo.devoir">Fait partie d'un : {{ exo.devoir }}</p>
               <p v-if="exo.livre">
                 <span>Livre : </span>
-                <a @click="isLivreModalActive = true">
+                <a @click.stop="isLivreModalActive = true">
                   {{ exo.livre.split('_').join(' - ') }}
                 </a>
               </p>
@@ -65,20 +65,26 @@
                   <span class="has-text-white">{{ delai }}</span>
                 </b-tag>
                 <b-tag v-if="!has_correc" type="is-secondary" size="is-medium">
-                  {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à
-                  gagner
-                  <span v-if="activated && exo && user">
-                    {{
-                      exo.posteur.username !== user.username
-                        ? ''
-                        : '(posté par toi)'
-                    }}</span
-                  >
+                  {{ exo.prix }} {{ correc_points > 1 ? 'pts' : 'pt' }} à gagner
                 </b-tag>
-                <b-tag v-else type="is-primary" size="is-medium">
+                <b-tag v-if="has_correc" type="is-primary" size="is-medium">
+                  <span class="has-text-white">{{ delai }}</span>
+                </b-tag>
+                <b-tag v-if="has_correc" type="is-primary" size="is-medium">
                   Corrigé
                 </b-tag>
               </b-taglist>
+            </div>
+          </div>
+          <div v-if="has_correc" class="level-right">
+            <div class="level-item">
+              <b-rate
+                v-model="exo.correcs[0].mean_rating"
+                class="ml-3"
+                size="is-medium"
+                disabled
+                style="align-items: center;"
+              ></b-rate>
             </div>
           </div>
         </div>
@@ -119,6 +125,9 @@ export default {
     ...mapState('authentication', ['user']),
     ...mapState('general', ['constants']),
     has_correc() {
+      if (!this.exo) {
+        return
+      }
       return this.exo.correcs.length !== 0
     },
     diff_minutes() {
@@ -143,15 +152,11 @@ export default {
       if (this.diff_minutes < 0) {
         return 'Le délai est dépassé'
       } else if (this.diff_hours < 1) {
-        return (
-          'À corriger : il reste ' + this.diff_minutes.toString() + ' minute(s)'
-        )
+        return 'Il reste ' + this.diff_minutes.toString() + ' minute(s)'
       } else if (this.diff_days < 2) {
-        return (
-          'À corriger : il reste ' + this.diff_hours.toString() + ' heure(s)'
-        )
+        return 'Il reste ' + this.diff_hours.toString() + ' heure(s)'
       } else {
-        return 'À corriger : il reste ' + this.diff_days.toString() + ' jour(s)'
+        return 'Il reste ' + this.diff_days.toString() + ' jour(s)'
       }
     },
     correc_points() {

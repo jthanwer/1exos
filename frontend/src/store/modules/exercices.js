@@ -56,10 +56,12 @@ const actions = {
         .catch(err => reject(err))
     })
   },
-  postExercice({ commit }, newExercice) {
+  postExercice({ commit }, payload) {
+    let config = payload['config']
+    let exercice = payload['fd']
     return new Promise((resolve, reject) => {
       exercicesService
-        .postExercice(newExercice)
+        .postExercice(exercice, config)
         .then(data => {
           commit('POST_EXERCICE', data)
           resolve(data)

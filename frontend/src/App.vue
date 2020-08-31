@@ -24,7 +24,7 @@
         <div class="column is-3">
           <h1 class="title is-3 has-text-white-ter">Nous contacter</h1>
           <router-link class="has-text-white" :to="{ name: 'home' }">
-            <h2>profinou@gmail.com</h2>
+            <h2>support@1exo.fr</h2>
           </router-link>
         </div>
         <div class="column is-3">

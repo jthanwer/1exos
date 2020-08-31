@@ -15,7 +15,7 @@ from datetime import timedelta
 from . import *
 
 DEBUG = False
-ALLOWED_HOSTS = ['app.1exo.fr', '1exo.fr', '85.236.153.45', 'localhost', '0.0.0.0']
+ALLOWED_HOSTS = ['1exo.fr', 'localhost', '0.0.0.0']
 
 if os.environ.get('USE_S3') == "TRUE":
     # Amazon S3
@@ -52,12 +52,14 @@ else:
     MEDIA_URL = '/django_media/'
     MEDIA_ROOT = '/home/appeatqc/public_html/django_media/'
 
+DEFAULT_FROM_EMAIL = 'inscription@1exo.fr'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = 'node7-fr.n0c.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('MAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
 
 DATABASES = {
     'default': {

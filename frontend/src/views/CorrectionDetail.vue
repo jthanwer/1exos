@@ -216,7 +216,7 @@
               <b-button
                 class="mb-2 mt-6"
                 expanded
-                type="is-primary"
+                type="is-tertiary"
                 @click="confirmRating('post')"
               >
                 Noter
@@ -254,7 +254,7 @@
               <b-button
                 class="mb-2 mt-6"
                 expanded
-                type="is-primary"
+                type="is-tertiary"
                 @click="confirmRating('patch')"
               >
                 Modifier
@@ -352,7 +352,10 @@ export default {
           title: 'Confirmer la note',
           message: `Es-tu sûr de vouloir mettre une <strong>note aussi basse ?</strong>
           Cette correction sera supprimée. <br> Si une autre correction a été postée avant la date limite, 
-          les points seront transférés à son correcteur. <br> Sinon, tu récupéreras tes points.`,
+          les points seront transférés à son correcteur. <br> Sinon, tu récupéreras tes points.
+          <br>
+          Une mauvaise note doit être justifiée et en aucun cas ne doit seulement permettre de récupérer ses points.
+          La correction supprimée sera analysée. Si elle était d'une excellente qualité, tu risqueras d'être banni du site.`,
           confirmText: 'Confirmer',
           cancelText: 'Annuler',
           type: 'is-danger',

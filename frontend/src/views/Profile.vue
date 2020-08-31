@@ -1,7 +1,7 @@
 pychar<template>
   <div id="profile-container" class="container is-fluid">
-    <div class="columns is-gapless" style="min-height: 800px;">
-      <div class="column is-4 card">
+    <div class="columns" style="min-height: 800px;">
+      <div class="column is-3 card">
         <div class="card-content">
           <b-menu>
             <b-menu-list label="Profil">
@@ -25,15 +25,16 @@ pychar<template>
         </div>
       </div>
 
-      <div class="column is-8 card">
+      <div class="column is-offset-1 is-8 card">
         <div v-if="selected === 1">
-          <header class="card-header is-centered">
-            <p
-              class="card-header-title has-background-primary has-text-white is-size-3"
-            >
-              Identité
-            </p>
-          </header>
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <p class="card-header-title has-text-tertiary is-size-2">
+                Identité
+              </p>
+              <hr class="has-background-tertiary" />
+            </div>
+          </div>
           <div class="card-content">
             <div v-if="user" class="content">
               <div class="columns has-text-centered">
@@ -134,34 +135,35 @@ pychar<template>
         </div>
 
         <div v-if="selected === 2">
-          <header class="card-header">
-            <p
-              class="card-header-title has-background-primary has-text-white is-size-3"
-            >
-              Scolarité
-            </p>
-          </header>
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <p class="card-header-title has-text-tertiary is-size-2">
+                Scolarité
+              </p>
+              <hr class="has-background-tertiary" />
+            </div>
+          </div>
           <div class="card-content">
             <div v-if="user" class="content">
               <div class="columns is-multiline has-text-centered">
                 <div class="column is-half">
                   <div class="box">
                     <b-button
-                      :type="{ 'is-primary': form_user_active['classe'] }"
+                      :type="{ 'is-primary': form_user_active['niveau'] }"
                       icon-left="pencil"
                       :native-value="true"
                       class="mb-3 is-pulled-right"
                       @click="
-                        form_user_active['classe'] = !form_user_active['classe']
+                        form_user_active['niveau'] = !form_user_active['niveau']
                       "
                     >
                     </b-button>
                     <strong class="heading">Niveau</strong>
                     <p class="title is-5">{{ classes[user.niveau] }}</p>
-                    <ValidationObserver ref="classe">
+                    <ValidationObserver ref="niveau">
                       <form
-                        v-if="form_user_active['classe']"
-                        @submit.prevent="validateForm('classe')"
+                        v-if="form_user_active['niveau']"
+                        @submit.prevent="validateForm('niveau')"
                       >
                         <ValidationProvider
                           v-slot="{ errors, valid }"
@@ -177,8 +179,8 @@ pychar<template>
                               }"
                             >
                               <b-select
-                                v-model="form_user['classe']"
-                                placeholder="Choisis ta classe..."
+                                v-model="form_user['niveau']"
+                                placeholder="Choisis ton niveau..."
                               >
                                 <option
                                   v-for="(value, key) in classes"
@@ -191,7 +193,7 @@ pychar<template>
                             <b-button
                               class="mb-3 is-pulled-right"
                               type="is-success"
-                              @click="validateForm('classe')"
+                              @click="validateForm('niveau')"
                               >Valider</b-button
                             >
                           </b-field>
@@ -200,7 +202,7 @@ pychar<template>
                     </ValidationObserver>
                   </div>
                 </div>
-                <div class="column is-half">
+                <div v-if="user.niveau != 100" class="column is-half">
                   <div class="box">
                     <b-button
                       :type="{ 'is-primary': form_user_active['prof'] }"
@@ -239,7 +241,7 @@ pychar<template>
                             >
                               <b-select
                                 v-model="form_user['prefix_prof']"
-                                placeholder="M. ou Mme"
+                                placeholder="Titre"
                               >
                                 <option :value="true">M.</option>
                                 <option :value="false">Mme</option>
@@ -408,13 +410,14 @@ pychar<template>
           </div>
         </div>
         <div v-if="selected === 3">
-          <header class="card-header">
-            <p
-              class="card-header-title has-background-primary has-text-white is-size-3"
-            >
-              Mot de passe
-            </p>
-          </header>
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <p class="card-header-title has-text-tertiary is-size-2">
+                Scolarité
+              </p>
+              <hr class="has-background-tertiary" />
+            </div>
+          </div>
           <ValidationObserver ref="change_password">
             <form class="card-content" @submit.prevent="changePassword()">
               <b-field grouped>
@@ -499,13 +502,13 @@ export default {
     return {
       classes: classes,
 
-      selected: 2,
+      selected: 1,
       isActive: true,
       password: null,
       form_user_active: {
         username: false,
         email: false,
-        classe: false,
+        niveau: false,
         ville_etablissement: false,
         nom_etablissement: false,
         prof: false
@@ -513,7 +516,7 @@ export default {
       form_user: {
         username: null,
         email: null,
-        classe: null,
+        niveau: null,
         ville_etablissement: null,
         nom_etablissement: null,
         prefix_prof: null,

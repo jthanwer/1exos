@@ -161,15 +161,18 @@
                   </b-field>
                   <p class="mb-3 is-size-7">
                     Tu ne trouves pas ton établissement ?
-                    <b-tooltip label="profinou@gmail.com" dashed
+                    <b-tooltip label="support@1exo.fr" dashed
                       >Contacte-nous
                     </b-tooltip>
                     en envoyant le nom de ton établissement !
                   </p>
                 </ValidationProvider>
 
-                <b-field label="Professeur de mathématiques"></b-field>
-                <b-field grouped>
+                <b-field
+                  v-if="form.niveau != 100"
+                  label="Professeur de mathématiques"
+                ></b-field>
+                <b-field v-if="form.niveau != 100" grouped>
                   <ValidationProvider
                     v-slot="{ errors, valid }"
                     slim
@@ -241,7 +244,7 @@
                       :type="{ 'is-danger': errors[0], 'is-success': valid }"
                     >
                       <b-input
-                        v-model="form.email1"
+                        v-model.trim="form.email1"
                         expanded
                         placeholder="Example@domaine.fr"
                         @input="reset_validation_email(failed)"
@@ -259,7 +262,7 @@
                       :message="errors"
                       :type="{ 'is-danger': errors[0], 'is-success': valid }"
                     >
-                      <b-input v-model="form.email2" expanded></b-input>
+                      <b-input v-model.trim="form.email2" expanded></b-input>
                     </b-field>
                   </ValidationProvider>
                 </b-field>
@@ -474,11 +477,15 @@ export default {
       fd.append('password', this.form.password1)
       fd.append('niveau', parseInt(this.form.niveau))
       fd.append('option', parseInt(this.form.option))
-      console.log(parseInt(this.form.niveau))
       fd.append('nom_etablissement', this.form.nom_etablissement)
       fd.append('ville_etablissement', this.form.ville_etablissement)
+      if (this.form.niveau == 100) {
+        this.form.nom_prof = 'Enseignant'
+        this.form.prefix_prof = true
+      }
       fd.append('nom_prof', this.form.nom_prof)
       fd.append('prefix_prof', this.form.prefix_prof)
+
       this.$store
         .dispatch('authentication/registerUser', fd)
         .then(() => {

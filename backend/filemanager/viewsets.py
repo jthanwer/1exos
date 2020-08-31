@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from django.http import Http404, FileResponse
 from django.core import serializers
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -15,14 +16,18 @@ from .models import Exercice, Correction, Rating
 from .serializers import ExerciceSerializer, CorrectionSerializer, \
     PreviewCorrectionSerializer, RatingSerializer
 from .filters import ExerciceFilter
+from .permissions import IsBuyer
 
 import core.fluxes as fluxes
+import core.files as files
 
+import os
+import sys
 from PIL import Image
 from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import sys
-import os
+
+
+CONTENT_TYPES = {''}
 
 
 class PassthroughRenderer(renderers.BaseRenderer):
@@ -50,7 +55,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data.get('file', None)
-        exercice = serializer.save(posteur=user, niveau=user.niveau,
+        exercice = serializer.save(posteur=user,
                                    option=user.option,
                                    prefix_prof=user.prefix_prof,
                                    nom_prof=user.nom_prof,
@@ -59,24 +64,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
                                    file=None)
 
         if file:
-            old_filename = file.name
-            extension = old_filename.split('.')[-1].lower()
-            fileid = exercice.id
-            if extension != 'pdf':
-                image = Image.open(file)
-                output = BytesIO()
-                format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
-                image.save(output, format=format_file, quality=20)
-                output.seek(0)
-
-                filename = 'Exercice{}.'.format(fileid) + extension
-                file = InMemoryUploadedFile(output, 'ImageField', filename,
-                                            'image/{}'.format(format_file.lower()),
-                                            sys.getsizeof(output), None)
-            else:
-                file.name = 'Exercice{}.'.format(fileid) + extension
-
-            exercice.file = file
+            exercice.file = files.compress_file(file, exercice.id)
             exercice.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -164,8 +152,14 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     queryset = Correction.objects.all().order_by('-date_created')
     serializer_class = CorrectionSerializer
 
-    permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser)
+
+    def get_permissions(self):
+        if self.action in ['retrieve']:
+            permission_classes = [IsBuyer]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         correcteur = request.user
@@ -176,24 +170,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         correction = serializer.save(correcteur=correcteur, file=None)
 
         if file:
-            old_filename = file.name
-            extension = old_filename.split('.')[-1].lower()
-            fileid = correction.id
-            if extension != 'pdf':
-                image = Image.open(file)
-                output = BytesIO()
-                format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
-                image.save(output, format=format_file, quality=20)
-                output.seek(0)
-
-                filename = 'Correction{}-{}.'.format(enonceid, fileid) + extension
-                file = InMemoryUploadedFile(output, 'ImageField', filename,
-                                            'image/{}'.format(format_file.lower()),
-                                            sys.getsizeof(output), None)
-            else:
-                file.name = 'Correction{}.'.format(fileid) + extension
-
-            correction.file = file
+            correction.file = files.compress_file(file, correction.id, enonce_id=enonceid)
             fluxes.submit_correction(correction)
             correction.save()
 
@@ -261,7 +238,9 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         for elt in all_corrections:
             user.unlocked_correcs.add(elt)
 
-        return Response(status=status.HTTP_200_OK)
+        data = CorrectionSerializer(correction).data
+
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, permission_classes=[AllowAny],
             parser_classes=[JSONParser])

@@ -38,7 +38,7 @@
                   Glisse
                   <span v-if="exo">ton énoncé</span>
                   <span v-else>ta correction</span>
-                  (.pdf, .jpg, .png)
+                  (.pdf, .jpg, .jpeg, .png)
                 </strong>
                 dans cette zone <br />
                 ou <br />
@@ -50,55 +50,55 @@
 
               <div class="has-text-grey is-size-6">
                 <p>
-                  <span>1 énoncé = 1 fichier </span> <br />
+                  <span class="has-text-weight-bold">Conditions </span>
+                  <br />
+                  <span>Un exo = Un énoncé = Un fichier </span> <br />
                   <span>Bonne lisibilité </span> <br />
                   <span>Bon cadrage</span> <br />
                   <span>Dans le bon sens</span> <br />
                   <span>Taille maximale = 5 Mo</span> <br />
                 </p>
 
-                <p class="is-size-7">
-                  Si ces conditions ne sont pas remplies, ton exo ne sera
-                  sûrement pas corrigé, voire sera supprimé.
+                <p v-if="exo" class="is-size-7">
+                  Si ces conditions ne sont pas remplies, ton exo aura moins de
+                  chances d'être corrigé voire sera supprimé.
+                </p>
+                <p v-else class="is-size-7">
+                  Si ces conditions ne sont pas remplies, ta correction pourrait
+                  être supprimée et tes points gagnés te seront alors retirés.
                 </p>
               </div>
             </div>
 
-            <!-- <div class="has-text-grey is-size-7">
-              <p>
-                Si
-                <span v-if="exo">
-                  <strong :class="{'has-text-danger': error}">ton énoncé</strong>
-                  est composé
-                </span>
-                <span v-else>
-                  <strong :class="{'has-text-danger': error}">ta correction</strong>
-                  est composée
-                </span>
-                de plusieurs fichiers, groupe-les d'abord
-                <strong>sous un même pdf</strong>. <br>
-                Nous n'acceptons que les fichiers uniques.
-              </p>
+            <div v-else>
+              <b-tag
+                class="mb-5"
+                type="is-primary"
+                size="is-large"
+                closable
+                aria-close-label="Close tag"
+                @close.prevent="file = null"
+              >
+                {{ file.name }}
+              </b-tag>
+              <div v-if="!exo" class="media has-text-warning">
+                <div class="media-left">
+                  <b-icon icon="alert" size="is-large"></b-icon>
+                </div>
+                <div class="media-content">
+                  <p>
+                    Attention, si ta correction est jugée mauvaise (3 points ou
+                    moins) par le posteur de l'exo,
+                    <strong class="has-text-warning"
+                      >elle sera supprimée et tes points gagnés te seront
+                      retirés.</strong
+                    >
+                  </p>
+                </div>
+              </div>
 
-              <p>
-                Dans le cas d'une photo, elle doit être <strong>bien cadrée</strong>
-                et le <strong>texte parfaitement lisible.</strong> <br>
-                Sinon, ton exo risque de ne pas être corrigé. Merci !
-              </p>
+              <p></p>
             </div>
-          </div> -->
-
-            <b-tag
-              v-else
-              class="mb-3"
-              type="is-primary"
-              size="is-large"
-              closable
-              aria-close-label="Close tag"
-              @close.prevent="file = null"
-            >
-              {{ file.name }}
-            </b-tag>
           </div>
         </section>
       </b-upload>
@@ -107,6 +107,7 @@
 </template>
 
 <script>
+import extensions from '@/data/extensions.json'
 export default {
   name: 'Upload',
   props: {
@@ -125,7 +126,8 @@ export default {
   },
   data() {
     return {
-      file: this.value
+      file: this.value,
+      extensions: this.extensions
     }
   },
   computed: {
@@ -141,10 +143,19 @@ export default {
   },
   methods: {
     input(file) {
+      let file_extension = file.name.split('.').pop()
+      if (!extensions.includes(file_extension)) {
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: `Ce type de fichier n'est pas accepté.`,
+          type: 'is-danger'
+        })
+        return
+      }
       if (file.size > 5 * 1024 * 1024) {
         this.$buefy.toast.open({
           duration: 5000,
-          message: `La taille du fichier doit être inférieure à 5 Mo`,
+          message: `La taille du fichier doit être inférieure à 5 Mo.`,
           type: 'is-danger'
         })
         return

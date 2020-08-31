@@ -1,93 +1,148 @@
 <template>
-  <div class="container is-fluid">
+  <div>
+    <b-modal
+      v-if="exo"
+      :active.sync="modal_correc_points"
+      has-modal-card
+      trap-focus
+      aria-role="dialog"
+      aria-modal
+    >
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">
+            Calcul des points gagnés en soumettant une correction
+          </p>
+        </header>
+        <section class="modal-card-body content">
+          <p>
+            Les points que tu gagnes en soumettant une correction dépendent de
+            plusieurs facteurs:
+          </p>
+          <ul>
+            <li>
+              Si tu es le posteur de l'exo,
+              <strong>tu ne gagneras qu'un seul point. </strong> Bien sûr, les
+              points que tu promettais en échange d'une correction ne te seront
+              pas retirés.
+            </li>
+            <li>
+              Si la date limite renseignée par le posteur a déjà été dépassée,
+              <strong>tu ne gagneras qu'un seul point.</strong>
+            </li>
+            <li>
+              Si une autre correction a déjà été postée avant toi et qu'elle a
+              reçu une bonne note de la part du posteur de l'exo,
+              <strong>tu ne gagneras qu'un seul point.</strong>
+            </li>
+            <li>
+              Si aucune de ces conditions n'est vérifiée, tu gagneras le prix
+              concédé par le posteur de l'exo,
+              <strong>c'est à dire {{ exo.prix }} pt(s).</strong>
+            </li>
+          </ul>
+          Garde bien en tête deux choses :
+          <ol>
+            <li>
+              Si ta correction est jugée mauvaise (3 étoiles ou moins) par le
+              posteur de l'exo, elle sera supprimée et
+              <strong>les points que tu avais gagnés te seront retirés</strong>
+              . Donc n'utilise pas trop vite tes points gagnés et pense à
+              soumettre une correction de qualité !
+            </li>
+            <li>
+              Si tu n'est pas le premier à avoir posté une correction et que tu
+              l'as postée avant la date limite, tu ne gagneras qu'un seul point
+              sur le moment
+              <strong
+                >mais il est toujours possible pour toi de gagner les points
+                cédés par le posteur de l'exo ({{ exo.prix }} pts).
+              </strong>
+              Pour cela, il faut que le posteur de l'exo donne une mauvaise note
+              à toutes les corrections qui ont été postées avant la tienne. Si
+              c'est le cas, tu recevras les points à ce moment-là.
+            </li>
+          </ol>
+        </section>
+      </div>
+    </b-modal>
     <b-loading is-full-page :active.sync="is_loading"></b-loading>
-    <div class="columns is-centered is-vcentered mb-8">
-      <div class="column is-4">
+
+    <div class="columns is-centered is-vcentered">
+      <div class="column is-6">
         <b-button
-          v-if="correc"
+          v-if="has_correc"
           expanded
           class="big-button"
+          size="is-large"
           type="is-tertiary"
+          icon-left="arrow-right"
           @click="
             $router.push({ name: 'exo-corrections', params: { id: exo.id } })
           "
         >
-          Des corrections sont disponibles
+          Voir les corrections
         </b-button>
-        <div v-if="exo && !correc" class="card">
+        <div v-if="exo && !has_correc" class="card">
           <header class="card-header">
             <p
-              class="card-header-title has-background-secondary has-text-white"
+              class="card-header-title is-size-4 has-background-secondary has-text-white"
             >
               Aucune correction n'est disponible
             </p>
           </header>
         </div>
+      </div>
+    </div>
+
+    <div
+      v-if="display_submit"
+      class="columns is-centered is-vcentered is-multiline my-8 py-8 has-background-white-ter"
+    >
+      <!-- <div class="column is-10">
+        <hr class="has-background-primary" />
+      </div> -->
+      <div class="column is-6 has-text-centered ">
+        <div>
+          <div class="subtitle has-text-primary is-2">
+            Tu peux gagner
+            <strong class="has-text-primary"
+              >{{ correc_points }}
+              {{ correc_points > 1 ? ' points' : ' point' }}</strong
+            >
+            en soumettant une correction.
+          </div>
+          <div class="subtitle has-text-tertiary is-5">
+            <strong class="has-text-tertiary">Explication</strong> :
+            {{ correc_points_reason }}
+          </div>
+
+          <div class="mt-3" @click="modal_correc_points = true">
+            <a
+              ><b-icon size="is-small" icon="help-circle-outline"></b-icon>
+              Comment les points gagnés sont-ils calculés ?
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="column is-4 has-text-centered">
         <b-button
           v-if="display_submit"
-          class="big-button mt-2"
-          expanded
+          class="big-button"
           type="is-primary"
           size="is-large"
           icon-left="upload"
           @click="modal_correction = !modal_correction"
         >
-          Soumettre une correction (+ {{ correc_points }}
-          {{ correc_points > 1 ? 'pts' : 'pt' }})
+          Soumettre une correction
         </b-button>
-        <!-- <div class="exo-info box mt-6 pa-5 has-text-centered">
-          <div v-if="exo">
-            <div class="columns is-centered is-multiline">
-              <div class="column is-12 has-text-centered">
-                <p class="heading">Identifiant</p>
-                <p class="title is-6">{{ exo.id }}</p>
-              </div>
-              <div class="column is-12 has-text-centered">
-                <p class="heading">Nom</p>
-                <p v-if="exo.livre" class="title is-6">
-                  {{ exo.type === 'Exo' ? 'Exo ' : 'Act.' }}
-                  {{ exo.num_exo }} - Page {{ exo.num_page }} - Sur livre
-                </p>
-                <p v-else class="title is-6">
-                  {{ exo.type === 'Exo' ? 'Exo ' : 'Act.' }} {{ exo.num_exo }}
-                  - Sur feuille
-                </p>
-              </div>
-              <div class="column is-12 has-text-centered">
-                <p class="heading">Posté le</p>
-                <p class="title is-6">{{ exo.date_created | dateFormatter }}</p>
-              </div>
-              <div class="column is-12 has-text-centered">
-                <p class="heading">Niveau</p>
-                <p class="title is-6">{{ classes[exo.niveau] }}</p>
-              </div>
-              <div class="column is-12 has-text-centered">
-                <p class="heading">Chapitre</p>
-                <p class="title is-6">{{ exo.chapitre }}</p>
-              </div>
-              <div v-if="exo.devoir" class="column is-12 has-text-centered">
-                <p class="heading">Fait partie d'un</p>
-                <p class="title is-6">{{ exo.devoir }}</p>
-              </div>
-            </div>
-            <div>
-              <b-button
-                v-if="exo.file"
-                class="mt-6"
-                type="is-info"
-                expanded
-                icon-left="download"
-                @click="downloadFile()"
-              >
-                Télécharger l'énoncé
-              </b-button>
-            </div>
-          </div>
-        </div> -->
       </div>
+      <!-- <div class="column is-10">
+        <hr class="has-background-primary" />
+      </div> -->
     </div>
 
-    <div class="columns is-centered">
+    <div class="columns is-centered mt-5">
       <div class="column is-10">
         <div v-if="exo">
           <div v-if="exo.file">
@@ -194,14 +249,29 @@
       >
         <div class="modal-card">
           <header class="modal-card-head">
-            <p class="modal-card-title">Soumettre une correction</p>
+            <p class="modal-card-title">
+              Soumettre une correction
+            </p>
           </header>
           <div class="modal-card-body">
-            <Upload v-model="correction_file" :exo="false" />
+            <Upload v-if="!is_loading" v-model="correction_file" :exo="false" />
+            <b-progress
+              v-if="is_loading"
+              :value="uploadPercentage"
+              size="is-large"
+              show-value
+              format="percent"
+              type="is-tertiary"
+            ></b-progress>
+            <div v-if="is_loading" class="has-text-centered">
+              Ta correction est en train d'être soumise. Ne quitte pas la page
+              avant que le processus soit terminé !
+            </div>
             <b-button
+              v-if="!is_loading"
               class="my-2"
               expanded
-              type="is-primary"
+              type="is-tertiary"
               @click="submitCorrection()"
             >
               Soumettre
@@ -219,7 +289,6 @@ import pdf from 'vue-pdf'
 import moment from 'moment'
 import Upload from '@/components/Upload.vue'
 import classes from '@/data/niveaux.json'
-import correctionsService from '@/services/correctionsService'
 import exercicesService from '@/services/exercicesService'
 export default {
   name: 'ExerciceDetail',
@@ -238,13 +307,13 @@ export default {
       classes: classes,
       exo: null,
       modal_correction: false,
+      modal_correc_points: false,
       correction_file: null,
 
       is_loading: false,
+      uploadPercentage: 0,
 
-      correc: null,
-      correc_id: null,
-      correc_prix: null,
+      has_correc: null,
       mark: 3,
 
       page: 1,
@@ -256,10 +325,7 @@ export default {
     ...mapState('authentication', ['user']),
     ...mapState('general', ['constants']),
     display_submit() {
-      if (!this.user) {
-        return
-      }
-      if (!this.exo) {
+      if (!this.user || !this.exo) {
         return
       }
       let user_correcs = this.exo.correcs.filter(obj => {
@@ -270,11 +336,8 @@ export default {
       }
       return true
     },
-    correc_points() {
-      if (!this.user) {
-        return
-      }
-      if (!this.exo) {
+    condition() {
+      if (!this.user || !this.exo) {
         return
       }
       let delai_depasse = false
@@ -289,14 +352,40 @@ export default {
         delai_depasse === false &&
         this.exo.correcs.length === 0
       if (condition) {
-        return this.exo.prix
+        return 'PRIX'
       }
       if (this.exo.posteur.username === this.user.username) {
-        return this.constants['SELFCORREC_POINTS']
+        return 'SELFCORREC_POINTS'
       } else if (delai_depasse) {
-        return this.constants['DEADLINE_POINTS']
+        return 'DEADLINE_POINTS'
       } else {
-        return this.constants['MULTIPLECORREC_POINTS']
+        return 'MULTIPLECORREC_POINTS'
+      }
+    },
+    correc_points() {
+      switch (this.condition) {
+        case 'PRIX':
+          return this.constants['PRIX']
+        case 'SELFCORREC_POINTS':
+          return this.constants['SELFCORREC_POINTS']
+        case 'DEADLINE_POINTS':
+          return this.constants['DEADLINE_POINTS']
+        case 'MULTIPLECORREC_POINTS':
+          return this.constants['MULTIPLECORREC_POINTS']
+        default:
+          return this.constants['PRIX']
+      }
+    },
+    correc_points_reason() {
+      switch (this.condition) {
+        case 'SELFCORREC_POINTS':
+          return `tu es le posteur de l'exo.`
+        case 'DEADLINE_POINTS':
+          return `la date limite a été dépassée.`
+        case 'MULTIPLECORREC_POINTS':
+          return `une ou plusieurs corrections ont déjà été postées.`
+        default:
+          return null
       }
     }
   },
@@ -308,22 +397,30 @@ export default {
       exercicesService.getExercice(this.id).then(exo => {
         this.exo = exo
         if (exo.correcs.length > 0) {
-          correctionsService
-            .getCorrection(exo.correcs[0]['id'])
-            .then(correc => {
-              this.correc = correc
-            })
+          this.has_correc = true
         }
       })
     },
     submitCorrection() {
       if (this.correction_file) {
         this.is_loading = true
+        this.uploadPercentage = 0
         const fd = new FormData()
         fd.append('enonce_id', this.exo.id)
         fd.append('file', this.correction_file)
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+          timeout: 30000,
+          onUploadProgress: function(progressEvent) {
+            this.uploadPercentage = parseInt(
+              Math.round((progressEvent.loaded / progressEvent.total) * 100)
+            )
+          }.bind(this)
+        }
         this.$store
-          .dispatch('corrections/postCorrection', fd)
+          .dispatch('corrections/postCorrection', { fd, config })
           .then(() => {
             this.is_loading = false
             this.modal_correction = false
@@ -346,7 +443,11 @@ export default {
             })
           })
       } else {
-        alert('Aucun fichier sélectionné')
+        this.$buefy.toast.open({
+          duration: 5000,
+          message: `Aucun fichier sélectionné.`,
+          type: 'is-danger'
+        })
       }
     },
     downloadFile() {

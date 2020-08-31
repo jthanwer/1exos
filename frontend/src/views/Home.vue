@@ -8,23 +8,11 @@
               Bienvenue sur 1Exo !
             </h1>
 
-            <h2 class="subtitle is-size-4 mt-8 has-text-centered">
-              <p>
-                Ce site te permet d’avoir accès à la correction de tes exos de
-                maths.
-              </p>
-              <p>Chaque correction coûte un certain nombre de points.</p>
-              <p>
-                Tu peux gagner des points en mettant de l’argent sur ton compte
-                ou en corrigeant des exos.
-              </p>
-            </h2>
-
-            <div class="columns mt-5 is-centered is-multiline">
+            <div class="columns mt-10 is-centered is-multiline">
               <div class="column is-6">
                 <b-button
                   tag="router-link"
-                  class="has-radius-border"
+                  class="has-radius-border big-button"
                   type="is-primary"
                   expanded
                   size="is-large"
@@ -38,6 +26,18 @@
                 </b-button>
               </div>
             </div>
+
+            <h2 class="is-size-4 mt-8 has-text-centered">
+              <p>
+                Ce site te permet d’avoir accès à la correction de tes exos de
+                maths.
+              </p>
+              <p>Chaque correction coûte un certain nombre de points.</p>
+              <p>
+                Tu peux gagner des points soit en mettant de l’argent sur ton
+                compte soit en corrigeant des exos.
+              </p>
+            </h2>
           </section>
         </div>
       </div>

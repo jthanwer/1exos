@@ -37,7 +37,7 @@
             <div class="columns is-multiline">
               <div class="column">
                 <div
-                  v-for="exo in postedExercices"
+                  v-for="exo in displayedPostedExercices"
                   :key="exo.id"
                   class="column is-12"
                 >
@@ -48,6 +48,23 @@
                   </ExercicePreview>
                 </div>
               </div>
+            </div>
+            <div class="column is-12">
+              <b-pagination
+                :total="postedExercices.length"
+                :current.sync="current_page_posted"
+                range-before="1"
+                range-after="1"
+                order="is-right"
+                size="is-medium"
+                :per-page="elements_per_page"
+                icon-prev="chevron-left"
+                icon-next="chevron-right"
+                aria-next-label="Next page"
+                aria-previous-label="Previous page"
+                aria-page-label="Page"
+                aria-current-label="Current page"
+              ></b-pagination>
             </div>
           </div>
         </div>
@@ -64,7 +81,7 @@
             <div class="columns is-multiline">
               <div class="column">
                 <div
-                  v-for="exo in likedExercices"
+                  v-for="exo in displayedLikedExercices"
                   :key="exo.id"
                   class="column is-12"
                 >
@@ -76,6 +93,23 @@
                   </ExercicePreview>
                 </div>
               </div>
+            </div>
+            <div class="column is-12">
+              <b-pagination
+                :total="likedExercices.length"
+                :current.sync="current_page_liked"
+                range-before="1"
+                range-after="1"
+                order="is-right"
+                size="is-medium"
+                :per-page="elements_per_page"
+                icon-prev="chevron-left"
+                icon-next="chevron-right"
+                aria-next-label="Next page"
+                aria-previous-label="Previous page"
+                aria-page-label="Page"
+                aria-current-label="Current page"
+              ></b-pagination>
             </div>
           </div>
         </div>
@@ -95,11 +129,27 @@ export default {
   data() {
     return {
       isActive: true,
-      selected: 1
+      selected: 1,
+
+      elements_per_page: 10,
+      current_page_posted: 1,
+      current_page_liked: 1
     }
   },
   computed: {
-    ...mapState('exercices', ['postedExercices', 'likedExercices'])
+    ...mapState('exercices', ['postedExercices', 'likedExercices']),
+    displayedPostedExercices() {
+      return this.postedExercices.slice(
+        (this.current_page_posted - 1) * this.elements_per_page,
+        this.current_page_posted * this.elements_per_page
+      )
+    },
+    displayedLikedExercices() {
+      return this.likedExercices.slice(
+        (this.current_page_liked - 1) * this.elements_per_page,
+        this.current_page_liked * this.elements_per_page
+      )
+    }
   },
   methods: {}
 }

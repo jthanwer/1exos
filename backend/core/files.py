@@ -34,13 +34,16 @@ def compress_file(file, instance_id, enonce_id=None):
         output.seek(0)
 
         if enonce_id:
-            filename = '{}{}-{}.'.format(basename, enonce_id, fileid) + extension
+            filename = '{}_{}_{}.'.format(basename, enonce_id, fileid) + extension
         else:
-            filename = '{}-{}.'.format(basename, fileid) + extension
+            filename = '{}_{}.'.format(basename, fileid) + extension
         file = InMemoryUploadedFile(output, 'ImageField', filename,
                                     'image/{}'.format(format_file.lower()),
                                     sys.getsizeof(output), None)
     else:
-        file.name = '{}{}.'.format(basename, fileid) + extension
+        if enonce_id:
+            file.name = '{}_{}_{}.'.format(basename, enonce_id, fileid) + extension
+        else:
+            file.name = '{}_{}.'.format(basename, fileid) + extension
 
     return file

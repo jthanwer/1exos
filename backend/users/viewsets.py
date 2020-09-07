@@ -40,14 +40,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'set_password']:
-            # permission_classes = [IsAdminOrIsSelf]
-            permission_classes = [AllowAny]
+            permission_classes = [IsAdminOrIsSelf]
+            # permission_classes = [AllowAny]
         elif self.action == 'list':
-            # permission_classes = [IsAdminUser]
+            permission_classes = [IsAdminUser]
+            # permission_classes = [AllowAny]
+        elif self.action in ['create', 'check_credentials', 'etablissements', 'profs']:
             permission_classes = [AllowAny]
         else:
-            # permission_classes = [IsAuthenticated]
-            permission_classes = [AllowAny]
+            permission_classes = [IsAuthenticated]
+            # permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):

@@ -1,5 +1,8 @@
 todo.txt
 
+# virtualenv
+venv/
+
 # django files
 .idea/
 __pycache__/

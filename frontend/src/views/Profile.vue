@@ -149,6 +149,7 @@ pychar<template>
                 <div class="column is-half">
                   <div class="box">
                     <b-button
+                      v-if="user.niveau != 100"
                       :type="{ 'is-primary': form_user_active['niveau'] }"
                       icon-left="pencil"
                       :native-value="true"
@@ -159,7 +160,12 @@ pychar<template>
                     >
                     </b-button>
                     <strong class="heading">Niveau</strong>
-                    <p class="title is-5">{{ classes[user.niveau] }}</p>
+                    <p v-if="user.niveau != 100" class="title is-5">
+                      {{ classes[user.niveau] }}
+                    </p>
+                    <p v-else class="title is-5">
+                      Enseignant
+                    </p>
                     <ValidationObserver ref="niveau">
                       <form
                         v-if="form_user_active['niveau']"
@@ -310,6 +316,7 @@ pychar<template>
                         >
                           <b-field position="is-centered" grouped>
                             <b-field
+                              expanded
                               :message="errors"
                               :type="{
                                 'is-danger': errors[0],
@@ -373,26 +380,28 @@ pychar<template>
                           slim
                           rules="required"
                         >
-                          <b-field
-                            grouped
-                            :message="errors"
-                            :type="{
-                              'is-danger': errors[0],
-                              'is-success': valid
-                            }"
-                          >
-                            <b-autocomplete
-                              v-model="etablissement_input"
+                          <b-field position="is-centered" grouped>
+                            <b-field
                               expanded
-                              :loading="autocomplete_loading"
-                              placeholder="Cherche ton établissement..."
-                              :data="etablissement_items"
-                              keep-first
+                              :message="errors"
+                              :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }"
                             >
-                              <template slot="empty">
-                                Aucun résultat
-                              </template>
-                            </b-autocomplete>
+                              <b-autocomplete
+                                v-model="etablissement_input"
+                                expanded
+                                :loading="autocomplete_loading"
+                                placeholder="Cherche ton établissement..."
+                                :data="etablissement_items"
+                                keep-first
+                              >
+                                <template slot="empty">
+                                  Aucun résultat
+                                </template>
+                              </b-autocomplete>
+                            </b-field>
                             <b-button
                               class="mb-3 is-pulled-right"
                               type="is-success"

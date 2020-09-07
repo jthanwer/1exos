@@ -38,7 +38,7 @@
             <div class="columns is-multiline">
               <div class="column">
                 <div
-                  v-for="correc in postedCorrections"
+                  v-for="correc in displayedPostedCorrections"
                   :key="correc.id"
                   class="column is-12"
                 >
@@ -52,6 +52,23 @@
                   </CorrectionPreview>
                 </div>
               </div>
+            </div>
+            <div class="column is-12">
+              <b-pagination
+                :total="postedCorrections.length"
+                :current.sync="current_page_posted"
+                range-before="1"
+                range-after="1"
+                order="is-right"
+                size="is-medium"
+                :per-page="elements_per_page"
+                icon-prev="chevron-left"
+                icon-next="chevron-right"
+                aria-next-label="Next page"
+                aria-previous-label="Previous page"
+                aria-page-label="Page"
+                aria-current-label="Current page"
+              ></b-pagination>
             </div>
           </div>
         </div>
@@ -68,7 +85,7 @@
             <div class="columns is-multiline">
               <div class="column">
                 <div
-                  v-for="correc in unlockedCorrections"
+                  v-for="correc in displayedUnlockedCorrections"
                   :key="correc.id"
                   class="column is-12"
                 >
@@ -82,6 +99,23 @@
                   </CorrectionPreview>
                 </div>
               </div>
+            </div>
+            <div class="column is-12">
+              <b-pagination
+                :total="unlockedCorrections.length"
+                :current.sync="current_page_unlocked"
+                range-before="1"
+                range-after="1"
+                order="is-right"
+                size="is-medium"
+                :per-page="elements_per_page"
+                icon-prev="chevron-left"
+                icon-next="chevron-right"
+                aria-next-label="Next page"
+                aria-previous-label="Previous page"
+                aria-page-label="Page"
+                aria-current-label="Current page"
+              ></b-pagination>
             </div>
           </div>
         </div>
@@ -101,12 +135,29 @@ export default {
   data() {
     return {
       isActive: true,
-      selected: 1
+      selected: 1,
+
+      elements_per_page: 10,
+      current_page_posted: 1,
+      current_page_unlocked: 1
     }
   },
   computed: {
     ...mapState('corrections', ['postedCorrections', 'unlockedCorrections']),
-    ...mapState('authentication', ['user'])
+    ...mapState('authentication', ['user']),
+
+    displayedPostedCorrections() {
+      return this.postedCorrections.slice(
+        (this.current_page_posted - 1) * this.elements_per_page,
+        this.current_page_posted * this.elements_per_page
+      )
+    },
+    displayedUnlockedCorrections() {
+      return this.unlockedCorrections.slice(
+        (this.current_page_unlocked - 1) * this.elements_per_page,
+        this.current_page_unlocked * this.elements_per_page
+      )
+    }
   },
   methods: {}
 }

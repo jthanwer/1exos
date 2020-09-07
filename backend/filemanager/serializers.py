@@ -42,8 +42,9 @@ class ExerciceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_name(self, obj):
-        if obj.file and hasattr(obj.file, 'name'):
-            return obj.file.name
+        if obj.file:
+            if hasattr(obj.file, 'name'):
+                return obj.file.name
         return None
 
     def get_filetype(self, obj):

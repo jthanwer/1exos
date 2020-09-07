@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-loading is-full-page :active.sync="is_loading"></b-loading>
     <b-modal
       v-if="exo"
       :active.sync="modal_correc_points"
@@ -11,8 +12,13 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">
-            Calcul des points gagnés en soumettant une correction
+            Calcul des points gagnés
           </p>
+          <button
+            type="button"
+            class="delete"
+            @click="modal_correc_points = false"
+          />
         </header>
         <section class="modal-card-body content">
           <p>
@@ -22,9 +28,7 @@
           <ul>
             <li>
               Si tu es le posteur de l'exo,
-              <strong>tu ne gagneras qu'un seul point. </strong> Bien sûr, les
-              points que tu promettais en échange d'une correction ne te seront
-              pas retirés.
+              <strong>tu ne gagneras qu'un seul point. </strong>
             </li>
             <li>
               Si la date limite renseignée par le posteur a déjà été dépassée,
@@ -66,8 +70,6 @@
         </section>
       </div>
     </b-modal>
-    <b-loading is-full-page :active.sync="is_loading"></b-loading>
-
     <div class="columns is-centered is-vcentered">
       <div class="column is-6">
         <b-button
@@ -99,32 +101,6 @@
       v-if="display_submit"
       class="columns is-centered is-vcentered is-multiline my-8 py-8 has-background-white-ter"
     >
-      <!-- <div class="column is-10">
-        <hr class="has-background-primary" />
-      </div> -->
-      <div class="column is-6 has-text-centered ">
-        <div>
-          <div class="subtitle has-text-primary is-2">
-            Tu peux gagner
-            <strong class="has-text-primary"
-              >{{ correc_points }}
-              {{ correc_points > 1 ? ' points' : ' point' }}</strong
-            >
-            en soumettant une correction.
-          </div>
-          <div class="subtitle has-text-tertiary is-5">
-            <strong class="has-text-tertiary">Explication</strong> :
-            {{ correc_points_reason }}
-          </div>
-
-          <div class="mt-3" @click="modal_correc_points = true">
-            <a
-              ><b-icon size="is-small" icon="help-circle-outline"></b-icon>
-              Comment les points gagnés sont-ils calculés ?
-            </a>
-          </div>
-        </div>
-      </div>
       <div class="column is-4 has-text-centered">
         <b-button
           v-if="display_submit"
@@ -136,6 +112,28 @@
         >
           Soumettre une correction
         </b-button>
+      </div>
+      <div class="column is-4 has-text-centered ">
+        <div>
+          <div class="subtitle has-text-primary is-4">
+            Tu peux gagner
+            <strong class="has-text-primary"
+              >{{ correc_points }}
+              {{ correc_points > 1 ? ' points !' : ' point !' }}</strong
+            >
+          </div>
+          <div class="subtitle has-text-tertiary is-6">
+            <strong class="has-text-tertiary">Explication</strong> :
+            {{ correc_points_reason }}
+          </div>
+
+          <div class="mt-3 is-size-7" @click="modal_correc_points = true">
+            <a
+              ><b-icon size="is-small" icon="help-circle-outline"></b-icon>
+              Comment les points gagnés sont-ils calculés ?
+            </a>
+          </div>
+        </div>
       </div>
       <!-- <div class="column is-10">
         <hr class="has-background-primary" />
@@ -364,8 +362,6 @@ export default {
     },
     correc_points() {
       switch (this.condition) {
-        case 'PRIX':
-          return this.constants['PRIX']
         case 'SELFCORREC_POINTS':
           return this.constants['SELFCORREC_POINTS']
         case 'DEADLINE_POINTS':
@@ -373,7 +369,7 @@ export default {
         case 'MULTIPLECORREC_POINTS':
           return this.constants['MULTIPLECORREC_POINTS']
         default:
-          return this.constants['PRIX']
+          return this.exo.prix
       }
     },
     correc_points_reason() {
@@ -385,7 +381,7 @@ export default {
         case 'MULTIPLECORREC_POINTS':
           return `une ou plusieurs corrections ont déjà été postées.`
         default:
-          return null
+          return `ce sont les points cédés par le posteur de l'exo.`
       }
     }
   },
@@ -436,6 +432,7 @@ export default {
           })
           .catch(() => {
             this.is_loading = false
+            this.modal_correction = false
             this.$buefy.toast.open({
               duration: 5000,
               message: `La correction n'a pas pu être postée. Reéssaye plus tard.`,

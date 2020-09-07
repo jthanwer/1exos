@@ -20,6 +20,7 @@ from .permissions import IsBuyer
 
 import core.fluxes as fluxes
 import core.files as files
+import core.constants as cst
 
 import os
 import sys
@@ -64,8 +65,12 @@ class ExerciceViewSet(viewsets.ModelViewSet):
                                    file=None)
 
         if file:
-            exercice.file = files.compress_file(file, exercice.id)
-            exercice.save()
+            try:
+                exercice.file = files.compress_file(file, exercice.id)
+                exercice.save()
+            except:
+                exercice.delete()
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -123,10 +128,10 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         posteur = request.user
         queryset = Exercice.objects.filter(posteur=posteur)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.get_serializer(page, many=True)
+        #     return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -136,10 +141,10 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         posteur = request.user
         queryset = Exercice.objects.filter(liked_by=posteur)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.get_serializer(page, many=True)
+        #     return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -167,12 +172,17 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data.get('file', None)
         enonceid = serializer.validated_data.get('enonce_id', None)
-        correction = serializer.save(correcteur=correcteur, file=None)
+        correction = serializer.save(correcteur=correcteur,
+                                     prix=cst.START_CORREC_PRICE(), file=None)
 
         if file:
-            correction.file = files.compress_file(file, correction.id, enonce_id=enonceid)
-            fluxes.submit_correction(correction)
-            correction.save()
+            try:
+                correction.file = files.compress_file(file, correction.id, enonce_id=enonceid)
+                fluxes.submit_correction(correction)
+                correction.save()
+            except:
+                correction.delete()
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

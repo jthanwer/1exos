@@ -20,6 +20,9 @@ def BONUS():
 # -- Corrections
 # --------------
 
+def START_CORREC_PRICE():
+    return 1
+
 
 def MEAN_PRICES():
     prices = {niveau: 0 for niveau in range(7)}

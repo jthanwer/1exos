@@ -35,7 +35,7 @@ const actions = {
       exercicesService
         .getPostedExercices()
         .then(data => {
-          let postedExercices = data.results
+          let postedExercices = data
           commit('SET_POSTED_EXERCICES', postedExercices)
           resolve()
         })
@@ -49,7 +49,7 @@ const actions = {
       exercicesService
         .getLikedExercices()
         .then(data => {
-          let likedExercices = data.results
+          let likedExercices = data
           commit('SET_LIKED_EXERCICES', likedExercices)
           resolve()
         })

@@ -6,6 +6,24 @@
           Présentation du site
         </h1>
         <h2 class="subtitle has-text-tertiary">
+          1 - Pourquoi ce site ?
+        </h2>
+        <p>
+          L'idée de ce site vient d'un professeur particulier de mathématiques
+          et de physique-chimie.
+        </p>
+        <p>
+          <strong
+            >À sa grande surprise, il s'est rendu compte qu'une grande de ses
+            cours particuliers était consacrée à refaire des exercices queses
+            élèves avaient déjà faits pendant les cours "officiels".</strong
+          >
+          Malheureusement, ces exercices étaient souvent mal recopiés, mal
+          compris ou mal assimilés. Ses élèves ne pouvaient donc pas s'appuyer
+          sur ces exercices pour réviser leurs contrôles, notamment parce que
+          leur correction était de mauvaise qualité.
+        </p>
+        <h2 class="subtitle has-text-tertiary">
           1 - Comment ça marche ?
         </h2>
         <ol class="is-size-6" style="line-height: 1.5em;">
@@ -37,7 +55,7 @@
           <li>
             Si tu n’as pas assez de points, tu peux recharger ta tirelire :
             <ul>
-              <li>Soit avec de l’argent réel (1 € = 4 points).</li>
+              <li>Soit avec de l’argent réel : 1 € équivaut à 4 points.</li>
               <li>
                 Soit en corrigeant des exos postés par d'autres utilisateurs.
               </li>

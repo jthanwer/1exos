@@ -14,19 +14,22 @@ def compress_file(file, instance_id, enonce_id=None):
         image = Image.open(file)
 
         # -- Retrieve the good orientation of the photo
-        key_orientation = None
-        for orientation in ExifTags.TAGS.keys():
-            if ExifTags.TAGS[orientation] == 'Orientation':
-                key_orientation = orientation
-                break
-        exif = dict(image._getexif().items())
-        if key_orientation:
-            if exif[key_orientation] == 3:
-                image = image.rotate(180, expand=True)
-            elif exif[key_orientation] == 6:
-                image = image.rotate(270, expand=True)
-            elif exif[key_orientation] == 8:
-                image = image.rotate(90, expand=True)
+        img_exif = image.getexif()
+        if img_exif:
+            key_orientation = None
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation] == 'Orientation':
+                    key_orientation = orientation
+                    break
+
+            exif_items = dict(img_exif.items())
+            if key_orientation:
+                if exif_items[key_orientation] == 3:
+                    image = image.rotate(180, expand=True)
+                elif exif_items[key_orientation] == 6:
+                    image = image.rotate(270, expand=True)
+                elif exif_items[key_orientation] == 8:
+                    image = image.rotate(90, expand=True)
 
         output = BytesIO()
         format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()

@@ -21,18 +21,21 @@ def compress_file(file, instance_id, enonce_id=None):
                 if ExifTags.TAGS[orientation] == 'Orientation':
                     key_orientation = orientation
                     break
-
-            exif_items = dict(img_exif.items())
-            if key_orientation:
-                if exif_items[key_orientation] == 3:
-                    image = image.rotate(180, expand=True)
-                elif exif_items[key_orientation] == 6:
-                    image = image.rotate(270, expand=True)
-                elif exif_items[key_orientation] == 8:
-                    image = image.rotate(90, expand=True)
+            try:
+                exif_items = dict(img_exif.items())
+                if key_orientation:
+                    if exif_items[key_orientation] == 3:
+                        image = image.rotate(180, expand=True)
+                    elif exif_items[key_orientation] == 6:
+                        image = image.rotate(270, expand=True)
+                    elif exif_items[key_orientation] == 8:
+                        image = image.rotate(90, expand=True)
+            except:
+                pass
 
         output = BytesIO()
         format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
+
         try:
             image.save(output, format=format_file, quality=20)
         except OSError:

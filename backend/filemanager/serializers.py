@@ -49,7 +49,7 @@ class ExerciceSerializer(serializers.ModelSerializer):
 
     def get_filetype(self, obj):
         if obj.file:
-            filename = obj.file.namez
+            filename = obj.file.name
             return filename.split('.')[-1]
         return None
 

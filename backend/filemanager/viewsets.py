@@ -65,12 +65,12 @@ class ExerciceViewSet(viewsets.ModelViewSet):
                                    file=None)
 
         if file:
-            try:
-                exercice.file = files.compress_file(file, exercice.id)
-                exercice.save()
-            except:
-                exercice.delete()
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # try:
+            exercice.file = files.compress_file(file, exercice.id)
+            exercice.save()
+            # except:
+            #     exercice.delete()
+            #     return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

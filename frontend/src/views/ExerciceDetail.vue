@@ -97,49 +97,6 @@
       </div>
     </div>
 
-    <div
-      v-if="display_submit"
-      class="columns is-centered is-vcentered is-multiline my-8 py-8 has-background-white-ter"
-    >
-      <div class="column is-4 has-text-centered">
-        <b-button
-          v-if="display_submit"
-          class="big-button"
-          type="is-primary"
-          size="is-large"
-          icon-left="upload"
-          @click="modal_correction = !modal_correction"
-        >
-          Soumettre une correction
-        </b-button>
-      </div>
-      <div class="column is-4 has-text-centered ">
-        <div>
-          <div class="subtitle has-text-primary is-4">
-            Tu peux gagner
-            <strong class="has-text-primary"
-              >{{ correc_points }}
-              {{ correc_points > 1 ? ' points !' : ' point !' }}</strong
-            >
-          </div>
-          <div class="subtitle has-text-tertiary is-6">
-            <strong class="has-text-tertiary">Explication</strong> :
-            {{ correc_points_reason }}
-          </div>
-
-          <div class="mt-3 is-size-7" @click="modal_correc_points = true">
-            <a
-              ><b-icon size="is-small" icon="help-circle-outline"></b-icon>
-              Comment les points gagnés sont-ils calculés ?
-            </a>
-          </div>
-        </div>
-      </div>
-      <!-- <div class="column is-10">
-        <hr class="has-background-primary" />
-      </div> -->
-    </div>
-
     <div class="columns is-centered mt-5">
       <div class="column is-10">
         <div v-if="exo">
@@ -277,6 +234,48 @@
           </div>
         </div>
       </b-modal>
+    </div>
+
+    <div
+      v-if="display_submit"
+      class="columns is-centered is-vcentered is-multiline my-8 py-8 has-background-white-ter"
+    >
+      <div class="column is-4 has-text-centered">
+        <b-button
+          v-if="display_submit"
+          class="big-button"
+          type="is-primary"
+          size="is-large"
+          icon-left="upload"
+          @click="modal_correction = !modal_correction"
+        >
+          Soumettre une correction
+        </b-button>
+      </div>
+      <div class="column is-4 has-text-centered ">
+        <div>
+          <div class="subtitle has-text-primary is-4">
+            Tu peux gagner
+            <strong class="has-text-primary"
+              >{{ correc_points }}
+              {{ correc_points > 1 ? ' points !' : ' point !' }}</strong
+            >
+          </div>
+          <div class="mt-3 is-size-7" @click="modal_correc_points = true">
+            <a
+              ><b-icon size="is-small" icon="help-circle-outline"></b-icon>
+              Comment les points gagnés sont-ils calculés ?
+            </a>
+          </div>
+          <div class="subtitle has-text-tertiary is-7">
+            <strong class="has-text-tertiary">Explication</strong> :
+            {{ correc_points_reason }}
+          </div>
+        </div>
+      </div>
+      <!-- <div class="column is-10">
+        <hr class="has-background-primary" />
+      </div> -->
     </div>
   </div>
 </template>

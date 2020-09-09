@@ -33,7 +33,11 @@ def compress_file(file, instance_id, enonce_id=None):
 
         output = BytesIO()
         format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
-        image.save(output, format=format_file, quality=20)
+        try:
+            image.save(output, format=format_file, quality=20)
+        except OSError:
+            image = image.convert("RGB")
+            image.save(output, format=format_file, quality=20)
         output.seek(0)
 
         if enonce_id:

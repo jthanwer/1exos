@@ -169,10 +169,11 @@
                 </ValidationProvider>
 
                 <b-field
-                  v-if="form.niveau != 100"
-                  label="Professeur de mathématiques"
+                  :label="
+                    form.niveau != 100 ? 'Professeur de mathématiques' : 'Nom'
+                  "
                 ></b-field>
-                <b-field v-if="form.niveau != 100" grouped>
+                <b-field grouped>
                   <ValidationProvider
                     v-slot="{ errors, valid }"
                     slim
@@ -200,7 +201,11 @@
                     >
                       <b-autocomplete
                         v-model="prof_input"
-                        placeholder="Renseigne ton professeur..."
+                        :placeholder="
+                          form.niveau != 100
+                            ? 'Renseigne ton professeur...'
+                            : 'Renseigne ton nom'
+                        "
                         icon="magnify"
                         :data="prof_items"
                         field="nom_prof"
@@ -215,7 +220,7 @@
                         "
                       >
                         <template slot="empty"
-                          >Aucun résultat : ton professeur sera ajouté</template
+                          >Aucun résultat : ce nom sera ajouté</template
                         >
                         <template slot-scope="props">
                           <span class="mr-1">{{
@@ -479,10 +484,6 @@ export default {
       fd.append('option', parseInt(this.form.option))
       fd.append('nom_etablissement', this.form.nom_etablissement)
       fd.append('ville_etablissement', this.form.ville_etablissement)
-      if (this.form.niveau == 100) {
-        this.form.nom_prof = 'Enseignant'
-        this.form.prefix_prof = true
-      }
       fd.append('nom_prof', this.form.nom_prof)
       fd.append('prefix_prof', this.form.prefix_prof)
 

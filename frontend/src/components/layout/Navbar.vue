@@ -27,6 +27,9 @@
         <b-navbar-item tag="router-link" :to="{ name: 'presentation' }">
           Présentation du site
         </b-navbar-item>
+        <b-navbar-item tag="router-link" :to="{ name: 'standards-qualite' }">
+          Standards de qualité
+        </b-navbar-item>
       </b-navbar-dropdown>
       <b-navbar-item tag="router-link" :to="{ name: 'search' }">
         <b-icon class="mr-1" icon="magnify"></b-icon>

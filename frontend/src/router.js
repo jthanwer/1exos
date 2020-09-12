@@ -20,6 +20,7 @@ import CGV from '@/views/CGV.vue'
 import CGU from '@/views/CGU.vue'
 import PDC from '@/views/PDC.vue'
 import Presentation from '@/views/Presentation.vue'
+import StandardsQualite from '@/views/StandardsQualite.vue'
 
 import Register from '@/views/Register.vue'
 import Login from '@/views/Login.vue'
@@ -164,6 +165,11 @@ export default new Router({
       path: '/presentation-du-site',
       name: 'presentation',
       component: Presentation
+    },
+    {
+      path: '/standards-qualite',
+      name: 'standards-qualite',
+      component: StandardsQualite
     },
     {
       path: '/*',

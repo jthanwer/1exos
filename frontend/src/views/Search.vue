@@ -138,7 +138,7 @@
                     >Option</b-checkbox
                   >
                 </b-field>
-                <b-field v-if="filter.option">
+                <b-field v-if="form.niveau == 0 && filter.option">
                   <b-select
                     v-model="form.option"
                     placeholder="Choisir une option"
@@ -559,6 +559,9 @@ export default {
         if (!inputs.is_from_livre) {
           this.filter.livre = false
           this.filter.num_page = false
+        }
+        if (inputs.niveau != 0) {
+          this.filter.option = false
         }
         for (let [key, value] of Object.entries(inputs)) {
           if (value === '') {

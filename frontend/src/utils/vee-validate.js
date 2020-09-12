@@ -66,9 +66,9 @@ extend('max_value', {
   message: 'Le nombre entré doit être inférieur ou égal à {max}'
 })
 
-extend('max_cagnotte_value', {
+extend('max_tirelire_value', {
   ...max_value,
-  message: 'Le nombre entré ne doit pas dépasser les points de ta cagnotte.'
+  message: 'Le nombre entré ne doit pas dépasser les points de ta tirelire.'
 })
 
 extend('unique_username', {

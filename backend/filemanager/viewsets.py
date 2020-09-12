@@ -57,7 +57,6 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         file = serializer.validated_data.get('file', None)
         exercice = serializer.save(posteur=user,
-                                   option=user.option,
                                    prefix_prof=user.prefix_prof,
                                    nom_prof=user.nom_prof,
                                    ville_etablissement=user.ville_etablissement,

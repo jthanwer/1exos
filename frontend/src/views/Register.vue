@@ -98,10 +98,10 @@
                       placeholder="Choisis ton option..."
                     >
                       <option
-                        v-for="(value, key) in options"
-                        :key="value"
-                        :value="key"
-                        >{{ value }}</option
+                        v-for="option in options"
+                        :key="option"
+                        :value="option"
+                        >{{ option }}</option
                       >
                     </b-select>
                   </b-field>
@@ -481,7 +481,9 @@ export default {
       fd.append('email', email)
       fd.append('password', this.form.password1)
       fd.append('niveau', parseInt(this.form.niveau))
-      fd.append('option', parseInt(this.form.option))
+      if (this.form.option) {
+        fd.append('option', this.form.option)
+      }
       fd.append('nom_etablissement', this.form.nom_etablissement)
       fd.append('ville_etablissement', this.form.ville_etablissement)
       fd.append('nom_prof', this.form.nom_prof)

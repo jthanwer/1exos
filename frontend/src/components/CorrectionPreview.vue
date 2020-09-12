@@ -9,11 +9,12 @@
   >
     <div class="card-content">
       <div v-if="title" class="media">
-        <div class="media-content">
+        <div class="media-content is-clipped">
           <p v-if="correc.enonce.livre" class="subtitle">
             <span class="title is-5 has-text-grey"
               >{{ correc.enonce.id }}.</span
             >
+            {{ correc.enonce.type }}
             {{ correc.enonce.type === 'Exo' ? 'Exo' : 'Act.' }}
             {{ correc.enonce.num_exo }} - Page {{ correc.enonce.num_page }} -
             Sur livre
@@ -109,11 +110,11 @@ export default {
       } else {
         this.$buefy.dialog.confirm({
           title: 'Pas assez de crédit',
-          message: `Tu n'as pas assez de crédit sur ta cagnotte pour acheter cette correction.`,
+          message: `Tu n'as pas assez de crédit dans ta tirelire pour acheter cette correction.`,
           type: 'is-danger',
           hasIcon: true,
           cancelText: 'Fermer',
-          confirmText: 'Recharge ta cagnotte',
+          confirmText: 'Recharge ta tirelire',
           onConfirm: () => this.$router.push({ name: 'tirelire' })
         })
       }

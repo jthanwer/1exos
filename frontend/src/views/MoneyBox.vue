@@ -22,7 +22,7 @@
     </p>
 
     <div class="columns is-centered is-multiline">
-      <div class="column is-3">
+      <div class="column is-4">
         <b-button
           tag="router-link"
           type="is-primary"
@@ -34,7 +34,7 @@
           En argent réel
         </b-button>
       </div>
-      <div class="column is-3">
+      <div class="column is-4">
         <b-button
           tag="router-link"
           type="is-secondary"

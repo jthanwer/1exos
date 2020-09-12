@@ -14,7 +14,7 @@ def euros2points(amount_euros):
 
 
 def stripe_create_payment(request):
-    stripe.api_key = os.environ.get('STRIPE_TEST_SECRET_KEY')
+    stripe.api_key = os.environ.get('STRIPE_LIVE_SECRET_KEY')
     serializer = PaymentIntentSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     intent = stripe.PaymentIntent.create(**serializer.validated_data,
@@ -23,7 +23,7 @@ def stripe_create_payment(request):
 
 
 def stripe_validate_payment(request):
-    stripe.api_key = os.environ.get('STRIPE_TEST_SECRET_KEY')
+    stripe.api_key = os.environ.get('STRIPE_LIVE_SECRET_KEY')
     user = request.user
     payload = request.data
     email = payload['email']

@@ -37,10 +37,10 @@ def compress_file(file, instance_id, enonce_id=None):
         format_file = 'JPEG' if extension.lower() == 'jpg' else extension.upper()
 
         try:
-            image.save(output, format=format_file, quality=20)
+            image.save(output, format=format_file, quality=40)
         except OSError:
             image = image.convert("RGB")
-            image.save(output, format=format_file, quality=20)
+            image.save(output, format=format_file, quality=40)
         output.seek(0)
 
         if enonce_id:

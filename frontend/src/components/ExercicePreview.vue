@@ -31,13 +31,22 @@
               Posté par <strong>{{ exo.posteur.username }}</strong> le
               {{ exo.date_created | dateFormatter }}
             </p> -->
-              <p>Niveau : {{ classes[exo.niveau] }}</p>
-              <p v-if="exo.devoir">Fait partie d'un : {{ exo.devoir }}</p>
+              <p>
+                <strong> Niveau : </strong>{{ classes[exo.niveau] }}
+                <!-- <span v-if="exo.niveau == 0"> - {{ exo.option }}</span> -->
+              </p>
+              <p><strong>Chapitre :</strong> {{ exo.chapitre }}</p>
+              <p v-if="exo.devoir">
+                <strong>Fait partie d'un :</strong> {{ exo.devoir }}
+              </p>
               <p v-if="exo.livre">
-                <span>Livre : </span>
-                <a @click.stop="isLivreModalActive = true">
+                <span
+                  ><strong>Livre : </strong
+                  >{{ exo.livre.split('_').join(' - ') }}</span
+                >
+                <!-- <a @click.stop="isLivreModalActive = true">
                   {{ exo.livre.split('_').join(' - ') }}
-                </a>
+                </a> -->
               </p>
             </div>
           </div>

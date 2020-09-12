@@ -1,7 +1,7 @@
 <template>
   <div class="container is-fluid">
     <div class="columns" style="min-height: 800px;">
-      <div class="column is-3 card">
+      <div class="column is-3 card my-4">
         <div class="card-content">
           <b-menu>
             <b-menu-list label="Mes exercices">
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="column is-offset-1 is-8 card">
+      <div class="column is-offset-1 is-8 card my-4">
         <div v-if="selected === 1">
           <div class="columns is-centered">
             <div class="column is-8">

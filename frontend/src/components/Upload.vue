@@ -52,20 +52,30 @@
                 <p>
                   <span class="has-text-weight-bold">Conditions </span>
                   <br />
-                  <span>Un exo = Un énoncé = Un fichier </span> <br />
+                  <span v-if="exo">1 exo = 1 énoncé = 1 fichier </span>
+                  <span v-else>1 correction = 1 fichier </span> <br />
                   <span>Bonne lisibilité </span> <br />
                   <span>Bon cadrage</span> <br />
                   <span>Dans le bon sens</span> <br />
                   <span>Taille maximale = 5 Mo</span> <br />
                 </p>
 
-                <p v-if="exo" class="is-size-7">
-                  Si ces conditions ne sont pas remplies, ton exo aura moins de
-                  chances d'être corrigé voire sera supprimé.
+                <p
+                  v-if="exo"
+                  class="is-size-6 has-text-danger has-text-weight-bold"
+                >
+                  En postant cet énoncé, tu t’engages à respecter les standards
+                  de qualité de ce site (voir section “À propos”). <br />
+                  Dans le cas contraire, ton exo sera supprimée.
                 </p>
-                <p v-else class="is-size-7">
-                  Si ces conditions ne sont pas remplies, ta correction pourrait
-                  être supprimée et tes points gagnés te seront alors retirés.
+                <p
+                  v-else
+                  class="is-size-6 has-text-danger has-text-weight-bold"
+                >
+                  En postant cette correction, tu t’engages à respecter les
+                  standards de qualité de ce site (voir section “À propos”).
+                  <br />
+                  Dans le cas contraire, ta correction sera supprimée.
                 </p>
               </div>
             </div>

@@ -257,10 +257,10 @@
                         }"
                       >
                         <template slot="label">
-                          Adresse e-mail
+                          Adresse e-mail du possesseur de la carte bancaire
                           <b-tooltip
                             type="is-dark"
-                            label="Adresse utilisée pour éditer et envoyer la facture de l'achat"
+                            label="Elle est utilisée dans le seul but d'éditer et envoyer la facture de l'achat."
                             multilined
                           >
                             <b-icon
@@ -303,7 +303,7 @@
                 ></b-icon>
                 <p v-if="user" class="subtitle">
                   <span class="has-text-weight-bold">{{ user.username }}</span
-                  >, ta cagnotte a été créditée de {{ net_amount_points }} pts !
+                  >, ta tirelire a été créditée de {{ net_amount_points }} pts !
                 </p>
                 <p>Merci pour ton achat !</p>
                 <b-button
@@ -359,7 +359,7 @@
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapState } from 'vuex'
 import usersService from '@/services/usersService'
-let stripe = Stripe('pk_test_d7oJWEZuJuHZ9L9EDgA2fz2O00LHJU09PY')
+let stripe = Stripe('pk_live_eWzOsXjJO8uIOhdpm1sNCzMP00f4wYcQEC')
 
 var styles = {
   base: {
@@ -548,7 +548,7 @@ export default {
       this.$buefy.dialog.confirm({
         title: 'Confirmer le paiement',
         message: `Es-tu sûr de vouloir payer <strong>${this.amount} €</strong> ? <br>
-        Ta cagnotte sera créditée de <strong>${this.net_amount_points} pts.</strong> `,
+        Ta tirelire sera créditée de <strong>${this.net_amount_points} pts.</strong> `,
         cancelText: 'Annuler',
         confirmText: 'Confirmer',
         type: 'is-warning',

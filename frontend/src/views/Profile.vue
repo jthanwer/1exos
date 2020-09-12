@@ -178,6 +178,7 @@ pychar<template>
                         >
                           <b-field position="is-centered" grouped>
                             <b-field
+                              expanded
                               :message="errors"
                               :type="{
                                 'is-danger': errors[0],
@@ -186,6 +187,7 @@ pychar<template>
                             >
                               <b-select
                                 v-model="form_user['niveau']"
+                                expanded
                                 placeholder="Choisis ton niveau..."
                               >
                                 <option
@@ -208,9 +210,10 @@ pychar<template>
                     </ValidationObserver>
                   </div>
                 </div>
-                <div v-if="user.niveau != 100" class="column is-half">
+                <div class="column is-half">
                   <div class="box">
                     <b-button
+                      v-if="user.niveau != 100"
                       :type="{ 'is-primary': form_user_active['prof'] }"
                       icon-left="pencil"
                       :native-value="true"
@@ -220,7 +223,12 @@ pychar<template>
                       "
                     >
                     </b-button>
-                    <strong class="heading">Professeur de méthématiques</strong>
+                    <strong v-if="user.niveau == 100" class="heading"
+                      >Nom</strong
+                    >
+                    <strong v-else class="heading"
+                      >Professeur de méthématiques</strong
+                    >
                     <p class="title is-5">
                       <span class="mr-1">{{
                         user.prefix_prof ? 'M.' : 'Mme'
@@ -239,6 +247,7 @@ pychar<template>
                             rules="required"
                           >
                             <b-field
+                              expanded
                               :message="errors"
                               :type="{
                                 'is-danger': errors[0],
@@ -247,6 +256,7 @@ pychar<template>
                             >
                               <b-select
                                 v-model="form_user['prefix_prof']"
+                                expanded
                                 placeholder="Titre"
                               >
                                 <option :value="true">M.</option>
@@ -260,6 +270,7 @@ pychar<template>
                             rules="required"
                           >
                             <b-field
+                              expanded
                               :message="errors"
                               :type="{
                                 'is-danger': errors[0],
@@ -268,6 +279,7 @@ pychar<template>
                             >
                               <b-input
                                 v-model="form_user['nom_prof']"
+                                expanded
                                 type="text"
                                 placeholder="Dupont"
                               >
@@ -638,7 +650,7 @@ export default {
           payload[element] = this.form_user[element]
           this.askForPassword(payload, element)
         }
-        // Else is basic
+        // Else is easy
         else {
           payload[element] = this.form_user[element]
           this.updateProfile(payload, element)

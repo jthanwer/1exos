@@ -46,7 +46,7 @@
               <p>Chaque correction coûte un certain nombre de points.</p>
               <p>
                 Tu peux gagner des points soit en mettant de l’argent sur ton
-                compte soit en corrigeant des exos.
+                compte soit en corrigeant des exercices.
               </p>
             </h2>
           </section>

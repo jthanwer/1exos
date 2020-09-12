@@ -18,17 +18,18 @@ class PreviewCorrectionSerializer(serializers.ModelSerializer):
         return None
 
 
-class PreviewExerciceSerializer(serializers.ModelSerializer):
+class PreviewEnonceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
 
     class Meta:
         model = Exercice
-        fields = ('id', 'posteur', 'prix')
+        fields = ('id', 'niveau', 'type',
+                  'livre', 'num_page', 'num_exo',
+                  'posteur', 'prix')
 
 
 class ExerciceSerializer(serializers.ModelSerializer):
     posteur = BasicUserSerializer(read_only=True)
-    option = serializers.CharField(read_only=True)
     prefix_prof = serializers.BooleanField(read_only=True)
     nom_prof = serializers.CharField(read_only=True)
     ville_etablissement = serializers.CharField(read_only=True)
@@ -56,7 +57,7 @@ class ExerciceSerializer(serializers.ModelSerializer):
 
 class CorrectionSerializer(serializers.ModelSerializer):
     correcteur = serializers.StringRelatedField(read_only=True)
-    enonce = PreviewExerciceSerializer(read_only=True)
+    enonce = PreviewEnonceSerializer(read_only=True)
     enonce_id = serializers.IntegerField(write_only=True)
     name = serializers.SerializerMethodField()
     mean_rating = serializers.SerializerMethodField()

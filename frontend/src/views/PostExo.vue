@@ -175,12 +175,39 @@
                           expanded
                         >
                           <option
-                            v-for="(value, key) in classes"
+                            v-for="(value, key) in niveaux"
                             :key="value"
                             :value="key"
                             >{{ value }}</option
                           ></b-select
                         >
+                      </b-field>
+                    </ValidationProvider>
+
+                    <ValidationProvider
+                      v-if="user && form.niveau == 0 && user.niveau == 100"
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="required"
+                    >
+                      <b-field
+                        v-if="form.niveau == 0 && user.niveau == 100"
+                        label="Option"
+                        :message="errors"
+                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                      >
+                        <b-select
+                          v-model="form.option"
+                          expanded
+                          placeholder="Choisis ton option..."
+                        >
+                          <option
+                            v-for="option in options"
+                            :key="option"
+                            :value="option"
+                            >{{ option }}</option
+                          >
+                        </b-select>
                       </b-field>
                     </ValidationProvider>
 
@@ -248,7 +275,7 @@
                     "
                     class="media-content"
                   >
-                    Les exos de niveau {{ classes[user.niveau] }} valent en
+                    Les exos de niveau {{ niveaux[user.niveau] }} valent en
                     moyenne {{ constants['MEAN_PRICES'][user.niveau] }} points.
                   </div>
                   <div v-else class="media-content">
@@ -266,7 +293,7 @@
                       :rules="{
                         required: true,
                         min_value: 1,
-                        max_cagnotte_value: user.tirelire,
+                        max_tirelire_value: user.tirelire,
                         integer: true
                       }"
                     >
@@ -561,7 +588,8 @@ import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapState } from 'vuex'
 import moment from 'moment'
 import chapitres from '@/data/chapitres.json'
-import classes from '@/data/niveaux.json'
+import niveaux from '@/data/niveaux.json'
+import options from '@/data/options.json'
 import livres from '@/data/livres.json'
 import Upload from '@/components/Upload.vue'
 import ExercicePreview from '@/components/ExercicePreview.vue'
@@ -577,7 +605,8 @@ export default {
     const min = new Date(moment().toISOString(true))
     return {
       chapitres: chapitres,
-      classes: classes,
+      niveaux: niveaux,
+      options: options,
       livres: livres,
       height: '400px',
       minDatetime: min,
@@ -610,6 +639,7 @@ export default {
         is_from_livre: null,
         chapitre: null,
         niveau: null,
+        option: null,
         has_num: null,
         is_from_devoir: null,
         num_exo: null,
@@ -633,22 +663,26 @@ export default {
         return
       }
       let niveau = null
+      let option = null
       if (this.user.niveau == 100) {
         niveau = this.form.niveau
+        option = this.form.option
       } else {
         niveau = this.user.niveau
+        option = this.user.option
       }
       return {
         id: 1,
         posteur: this.user,
         niveau: niveau,
+        option: option,
         type: this.form.type,
         chapitre: this.form.chapitre,
-        livre: this.form.livre.name,
+        livre: this.form.is_from_livre ? this.form.livre.name : null,
         devoir: this.form.devoir,
         file: this.drop_file,
-        num_page: this.form.livre.num_page,
-        num_exo: this.form.num_exo,
+        num_page: this.form.is_from_livre ? this.form.livre.num_page : null,
+        num_exo: this.form.is_from_livre ? this.form.num_exo : null,
         prix: this.form.prix,
         date_limite: moment(this.form.date_limite).toISOString(true),
         date_created: moment(),
@@ -670,8 +704,10 @@ export default {
       }
       if (this.user.niveau == 100) {
         fd.append('niveau', parseInt(this.form.niveau))
+        fd.append('option', this.form.option)
       } else {
         fd.append('niveau', parseInt(this.user.niveau))
+        fd.append('option', this.user.option)
       }
       fd.append('prix', parseInt(this.form.prix))
       fd.append('date_limite', moment(this.form.date_limite).toISOString(true))

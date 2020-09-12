@@ -1,5 +1,6 @@
-from django.db.models import Avg
 from filemanager.models import Exercice
+from django.db.models import Avg
+from django.db.models import Count
 from django.db import connection
 
 # -- Points données s'être enregistré
@@ -27,11 +28,12 @@ def START_CORREC_PRICE():
 def MEAN_PRICES():
     prices = {niveau: 0 for niveau in range(7)}
     for niveau in range(7):
-        qs = Exercice.objects.filter(niveau=niveau)
+        qs = Exercice.objects.annotate(num_c=Count('correcs'))
+        qs = qs.filter(niveau=niveau, num_c__lte=0)
         count = qs.count()
         if count > 0:
             value = qs.aggregate(Avg('prix'))['prix__avg']
-            prices[niveau] = int(value)
+            prices[niveau] = round(value)
         else:
             prices[niveau] = -1
     return prices

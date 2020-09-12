@@ -8,7 +8,8 @@
     "Tableaux et graphiques",
     "Angles",
     "Aires et périmètres",
-    "Volumes"
+    "Volumes",
+    "Autres"
   ],
   "5": [
     "Nombres décimaux",
@@ -21,7 +22,8 @@
     "Angles et triangles",
     "Transformations et parallélogrammes",
     "Repérage",
-    "Espace"
+    "Espace",
+    "Autres"
   ],
   "4": [
     "Nombres relatifs",
@@ -34,7 +36,9 @@
     "Grandeurs et mesures",
     "Transformations et parallélogrammes",
     "Triangle rectangle",
-    "Repérage"
+    "Repérage",
+    "Autres"
+
   ],
   "3": [
     "Fractions",
@@ -49,7 +53,9 @@
     "Triangle rectangle",
     "Triangle et proportionnalité",
     "Repérage",
-    "Espace"
+    "Espace",
+    "Trigonométrie",
+    "Autres"
   ],
   "2": [
     "Algorithmique",
@@ -61,20 +67,24 @@
     "Fonctions",
     "Vecteurs et droites",
     "Taux d'évolutions",
-    "Statistiques"
+    "Probabilités",
+    "Statistiques",
+    "Autres"
   ],
   "1": [
     "Algorithmique",
     "Suites",
     "Second degré",
     "Dérivation",
-    "Variations de fonctions",
+    "Fonctions et variations",
     "Fonction exponentielle",
     "Fonctions trigonométriques",
     "Vecteurs",
     "Géométrie dans un repère",
     "Probabilités",
-    "Variables aléatoires"
+    "Variables aléatoires",
+    "Autres"
+
   ],
   "0": [
     "Combinatoire et dénombrement",
@@ -87,9 +97,13 @@
     "Fonctions trigonométriques",
     "Equations différentielles",
     "Calcul intégral",
-    "Arithmétique", 
+    "Loi binomiale",
+    "Sommes de variables aléatoires",
+    "Loi des grands nombres",
     "Nombres complexes", 
+    "Arithmétique", 
     "Matrices",
-    "Suites et Graphes"
+    "Graphes",
+    "Autres"
   ]
 }

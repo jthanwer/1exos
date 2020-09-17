@@ -40,7 +40,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_1.jpg"
                 alt="Image indisponible"
               />
@@ -90,7 +90,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_3.jpg"
                 alt="Image indisponible"
               />
@@ -111,7 +111,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_4.jpg"
                 alt="Image indisponible"
               />
@@ -140,7 +140,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_5.jpg"
                 alt="Image indisponible"
               />
@@ -161,7 +161,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_6.jpg"
                 alt="Image indisponible"
               />
@@ -189,7 +189,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_7.jpg"
                 alt="Image indisponible"
               />
@@ -210,7 +210,7 @@
             </p>
             <div class="img-standard my-3">
               <img
-                style="height:300px;"
+                style="height:200px;"
                 src="images/std_qualite/img_8.jpg"
                 alt="Image indisponible"
               />

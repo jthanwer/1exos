@@ -3,9 +3,9 @@ from django.db.models import Avg
 from django.db.models import Count
 from django.db import connection
 
-# -- Points données s'être enregistré
+# -- Points données après s'être enregistré
 def START_POINTS():
-    return 4
+    return 2
 
 
 # -- 1€ = 4 points

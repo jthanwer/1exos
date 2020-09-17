@@ -164,8 +164,12 @@
                     placeholder="Choisir un type d'exo"
                     expanded
                   >
-                    <option>Exo</option>
-                    <option>Activité</option>
+                    <option
+                      v-for="value in Object.keys(types)"
+                      :key="value"
+                      :value="value"
+                      >{{ value }}</option
+                    >
                   </b-select>
                 </b-field>
 
@@ -429,6 +433,7 @@ import exercicesService from '@/services/exercicesService'
 import chapitres from '@/data/chapitres.json'
 import classes from '@/data/niveaux.json'
 import options from '@/data/options.json'
+import types from '@/data/types.json'
 import livres from '@/data/livres.json'
 import ExercicePreview from '@/components/ExercicePreview.vue'
 
@@ -456,20 +461,21 @@ export default {
       chapitres: chapitres,
       classes: classes,
       options: options,
+      types: types,
       livres: livres,
 
       filter: {
-        niveau: null,
-        option: null,
-        chapitre: null,
-        type: null,
-        devoir: null,
-        livre: null,
-        num_page: null,
-        num_exo: null,
-        nom_etablissement: null,
-        prefix_prof: null,
-        nom_prof: null,
+        niveau: false,
+        option: false,
+        chapitre: false,
+        type: false,
+        devoir: false,
+        livre: false,
+        num_page: false,
+        num_exo: false,
+        nom_etablissement: false,
+        prefix_prof: false,
+        nom_prof: false,
         is_from_livre: true,
         is_corrected: true,
         is_delai_depasse: true
@@ -553,6 +559,9 @@ export default {
       if (to.name == 'search') {
         this.searchExercices()
       }
+      if (to.name == 'post-exo') {
+        this.$store.dispatch('authentication/getProfileUser')
+      }
     },
     form: {
       handler(inputs) {
@@ -577,8 +586,14 @@ export default {
       handler(inputs) {
         inputs.prefix_prof = inputs.nom_prof
         for (let [key, value] of Object.entries(inputs)) {
-          if (value === false) {
+          if (value == false) {
             this.form[key] = null
+            if (key == 'nom_etablissement') {
+              this.etablissement_input = null
+            }
+            if (key == 'nom_prof') {
+              this.prof_input = null
+            }
           }
         }
         this.current_page = 1

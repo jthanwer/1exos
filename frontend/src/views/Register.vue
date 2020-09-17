@@ -111,6 +111,7 @@
                   v-slot="{ errors, valid }"
                   slim
                   rules="required"
+                  name="ville"
                 >
                   <b-field
                     label="Ville"
@@ -124,6 +125,7 @@
                       placeholder="Cherche ta ville..."
                       :data="ville_items"
                       keep-first
+                      open-on-focus
                     >
                       <template slot="empty">
                         <span v-if="ville_input.length > 3"
@@ -139,7 +141,9 @@
                   v-slot="{ errors, valid }"
                   slim
                   rules="required"
+                  name="etablissement"
                 >
+                  <!-- etablissement:@ville -->
                   <b-field
                     label="Établissement"
                     :message="errors"
@@ -153,18 +157,22 @@
                       placeholder="Cherche ton établissement..."
                       :data="etablissement_items"
                       keep-first
+                      open-on-focus
                     >
-                      <template slot="empty">
+                      <template v-if="ville_input" slot="empty">
                         Aucun résultat
+                      </template>
+                      <template v-else slot="empty">
+                        Renseigne avant cela une ville
                       </template>
                     </b-autocomplete>
                   </b-field>
                   <p class="mb-3 is-size-7">
-                    Tu ne trouves pas ton établissement ?
+                    Tu ne trouves pas ta ville ou ton établissement dans les
+                    choix proposés ?
                     <b-tooltip label="support@1exo.fr" dashed
-                      >Contacte-nous
+                      >Contacte-nous !
                     </b-tooltip>
-                    en envoyant le nom de ton établissement !
                   </p>
                 </ValidationProvider>
 
@@ -192,8 +200,12 @@
                   <ValidationProvider
                     v-slot="{ errors, valid }"
                     slim
-                    rules="required"
+                    :rules="{
+                      required: true,
+                      prof: /^[0-9A-ZÀÂÇÉÈÊËÏÎÔa-zàâçéèêëïîô-]+$/
+                    }"
                   >
+                    <!-- /^[0-9A-ZÀÂÇÉÈÊËÏÎÔa-zàâçéèêëïîô\-]*$ -->
                     <b-field
                       :message="errors"
                       expanded
@@ -210,7 +222,7 @@
                         :data="prof_items"
                         field="nom_prof"
                         keep-first
-                        dropdown-position="top"
+                        dropdown-position="bottom"
                         expanded
                         @select="
                           option => {
@@ -232,6 +244,12 @@
                     </b-field>
                   </ValidationProvider>
                 </b-field>
+                <p class="mb-3 is-size-7 has-text-danger">
+                  Ces informations sont nécessaires pour classer correctement
+                  les exos sur ce site. <br />
+                  Si elles ne sont pas honnêtes, ton inscription sera rapidement
+                  annulée et tous tes exos seront supprimés.
+                </p>
 
                 <b-field grouped>
                   <ValidationProvider
@@ -473,7 +491,8 @@ export default {
       this.form.nom_etablissement = this.etablissement_input
       this.form.ville_etablissement = this.ville_input
       if (!this.form.nom_prof) {
-        this.form.nom_prof = this.prof_input
+        this.form.nom_prof =
+          this.prof_input.charAt(0).toUpperCase() + this.prof_input.slice(1)
       }
       let email = this.form.email1.toLowerCase()
       const fd = new FormData()
@@ -529,22 +548,24 @@ export default {
       })
     },
     filterEtablissements(v) {
-      this.etablissement_items = this.etablissements[this.ville_input].filter(
-        object => {
-          return (
-            (object || '')
-              .toLowerCase()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '')
-              .indexOf(
-                (v || '')
-                  .toLowerCase()
-                  .normalize('NFD')
-                  .replace(/[\u0300-\u036f]/g, '')
-              ) > -1
-          )
-        }
-      )
+      if (this.ville_input) {
+        this.etablissement_items = this.etablissements[this.ville_input].filter(
+          object => {
+            return (
+              (object || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .indexOf(
+                  (v || '')
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                ) > -1
+            )
+          }
+        )
+      }
     },
     filterProfs(v) {
       this.prof_items = this.profs_etablissement.filter(object => {

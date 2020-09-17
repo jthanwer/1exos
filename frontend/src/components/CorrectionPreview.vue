@@ -15,7 +15,7 @@
               >{{ correc.enonce.id }}.</span
             >
             {{ correc.enonce.type }}
-            {{ correc.enonce.type === 'Exo' ? 'Exo' : 'Act.' }}
+            {{ types[correc.enonce.type] }}
             {{ correc.enonce.num_exo }} - Page {{ correc.enonce.num_page }} -
             Sur livre
           </p>
@@ -23,7 +23,7 @@
             <span class="title is-5 has-text-grey"
               >{{ correc.enonce.id }}.</span
             >
-            {{ correc.enonce.type === 'Exo' ? 'Exo' : 'Act.' }}
+            {{ types[correc.enonce.type] }}
             {{ correc.enonce.num_exo }}
             - Sur feuille
           </p>
@@ -57,7 +57,8 @@
 </template>
 
 <script>
-import classes from '@/data/niveaux.json'
+import niveaux from '@/data/niveaux.json'
+import types from '@/data/types.json'
 export default {
   name: 'CorrectionPreview',
   props: {
@@ -80,7 +81,8 @@ export default {
   },
   data() {
     return {
-      classes: classes
+      niveaux: niveaux,
+      types: types
     }
   },
   methods: {

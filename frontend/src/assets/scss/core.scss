@@ -60,9 +60,16 @@ $box-shadow : 0 0.5em 1em -0.125em rgba($scheme-invert, 0.3), 0 0px 0 1px rgba($
 // Menu
 $menu-item-active-background-color: $tertiary;
 
+// Dropdown
+$dropdown-item-hover-background-color: lighten( $tertiary, 40%);
+$dropdown-content-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.3), 0 0px 0 1px rgba($scheme-invert, 0.1);
+
 // Rating
 $rate-color: $grey-lighter;
 $rate-color-active:  $secondary;
+
+$input-placeholder-color: rgba(122, 122, 122, 0.7);
+::-moz-placeholder{opacity:1}
 
 // Partials scss
 @import 'partials/main';

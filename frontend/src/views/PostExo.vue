@@ -34,8 +34,12 @@
                           expanded
                           placeholder="Choisir un type d'exo"
                         >
-                          <option> Exo </option>
-                          <option> Activité </option>
+                          <option
+                            v-for="value in Object.keys(types)"
+                            :key="value"
+                            :value="value"
+                            >{{ value }}</option
+                          >
                         </b-select>
                       </b-field>
                     </ValidationProvider>
@@ -271,12 +275,39 @@
                     v-if="
                       user &&
                         constants &&
-                        constants['MEAN_PRICES'][user.niveau] > 0
+                        constants['MEAN_PRICES'][user.niveau] > 0 &&
+                        user.niveau != 100
                     "
                     class="media-content"
                   >
-                    Les exos de niveau {{ niveaux[user.niveau] }} valent en
-                    moyenne {{ constants['MEAN_PRICES'][user.niveau] }} points.
+                    <strong>
+                      Les exos de niveau {{ niveaux[user.niveau] }} se corrigent
+                      actuellement pour
+                      {{ constants['MEAN_PRICES'][user.niveau] }}
+                      {{
+                        constants['MEAN_PRICES'][user.niveau] > 1 ? 'pts' : 'pt'
+                      }}
+                    </strong>
+                    (en moyenne).
+                  </div>
+                  <div
+                    v-else-if="
+                      user &&
+                        constants &&
+                        constants['MEAN_PRICES'][form.niveau] > 0 &&
+                        user.niveau == 100
+                    "
+                    class="media-content"
+                  >
+                    <strong
+                      >Les exos de niveau {{ niveaux[form.niveau] }} se
+                      corrigent actuellement pour
+                      {{ constants['MEAN_PRICES'][form.niveau] }}
+                      {{
+                        constants['MEAN_PRICES'][form.niveau] > 1 ? 'pts' : 'pt'
+                      }}</strong
+                    >
+                    (en moyenne).
                   </div>
                   <div v-else class="media-content">
                     Aucun exercice de ce niveau n'est en ligne pour le moment.
@@ -544,7 +575,7 @@
                 type="is-tertiary"
               ></b-progress>
               <div v-if="is_loading" class="has-text-centered">
-                Ta correction est en train d'être soumise. Ne quitte pas la page
+                Ton exercice est en train d'être soumis. Ne quitte pas la page
                 avant que le processus soit terminé !
               </div>
             </b-step-item>
@@ -590,6 +621,7 @@ import moment from 'moment'
 import chapitres from '@/data/chapitres.json'
 import niveaux from '@/data/niveaux.json'
 import options from '@/data/options.json'
+import types from '@/data/types.json'
 import livres from '@/data/livres.json'
 import Upload from '@/components/Upload.vue'
 import ExercicePreview from '@/components/ExercicePreview.vue'
@@ -602,11 +634,16 @@ export default {
     ValidationProvider
   },
   data() {
-    const min = new Date(moment().toISOString(true))
+    const min = new Date(
+      moment()
+        .add(1, 'hours')
+        .toISOString(true)
+    )
     return {
       chapitres: chapitres,
       niveaux: niveaux,
       options: options,
+      types: types,
       livres: livres,
       height: '400px',
       minDatetime: min,
@@ -629,7 +666,8 @@ export default {
           'Novembre',
           'Décembre'
         ],
-        'day-names': ['Lu', 'Ma', 'Mer', 'Jeu', 'Ven', 'Sa', 'Dim']
+        'day-names': ['Dim', 'Lu', 'Ma', 'Mer', 'Jeu', 'Ven', 'Sa'],
+        'first-day-of-week': 1
       },
 
       activeStep: 0,
@@ -679,16 +717,23 @@ export default {
         type: this.form.type,
         chapitre: this.form.chapitre,
         livre: this.form.is_from_livre ? this.form.livre.name : null,
-        devoir: this.form.devoir,
+        devoir: this.form.is_from_devoir ? this.form.devoir : null,
         file: this.drop_file,
         num_page: this.form.is_from_livre ? this.form.livre.num_page : null,
-        num_exo: this.form.is_from_livre ? this.form.num_exo : null,
+        num_exo:
+          this.form.is_from_livre ||
+          (!this.form.is_from_livre && this.form.has_num)
+            ? this.form.num_exo
+            : null,
         prix: this.form.prix,
         date_limite: moment(this.form.date_limite).toISOString(true),
         date_created: moment(),
         correcs: []
       }
     }
+  },
+  mounted() {
+    this.$store.dispatch('authentication/getProfileUser')
   },
   methods: {
     submit() {
@@ -699,7 +744,10 @@ export default {
       if (this.form.is_from_devoir) {
         fd.append('devoir', this.form.devoir)
       }
-      if (this.form.num_exo) {
+      if (
+        this.form.is_from_livre ||
+        (!this.form.is_from_livre && this.form.has_num)
+      ) {
         fd.append('num_exo', parseInt(this.form.num_exo))
       }
       if (this.user.niveau == 100) {
@@ -721,7 +769,7 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        timeout: 30000,
+        timeout: 60000,
         onUploadProgress: function(progressEvent) {
           this.uploadPercentage = parseInt(
             Math.round((progressEvent.loaded / progressEvent.total) * 100)
@@ -739,7 +787,7 @@ export default {
           this.$buefy.toast.open({
             duration: 5000,
             message: `L'exo n'a pas pu être posté.
-            Il manque sûrement des informations essentielles.`,
+            Il y a sûrement un problème avec le fichier joint. Contacte le support.`,
             type: 'is-danger'
           })
         })

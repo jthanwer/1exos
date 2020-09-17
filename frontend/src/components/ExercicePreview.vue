@@ -18,12 +18,12 @@
           <div class="media-content is-clipped">
             <p v-if="exo.livre" class="title is-4">
               <span class="title is-3 has-text-grey">{{ exo.id }}.</span>
-              {{ exo.type === 'Exo' ? 'Exo ' : 'Act.' }}
+              {{ types[exo.type] }}
               {{ exo.num_exo }} - Page {{ exo.num_page }} - Sur livre
             </p>
             <p v-else class="title is-4">
               <span class="title is-3 has-text-grey">{{ exo.id }}.</span>
-              {{ exo.type === 'Exo' ? 'Exo ' : 'Act.' }} {{ exo.num_exo }}
+              {{ types[exo.type] }} {{ exo.num_exo }}
               - Sur feuille
             </p>
             <div v-if="exo.posteur" class="subtitle is-size-6">
@@ -32,7 +32,7 @@
               {{ exo.date_created | dateFormatter }}
             </p> -->
               <p>
-                <strong> Niveau : </strong>{{ classes[exo.niveau] }}
+                <strong> Niveau : </strong>{{ niveaux[exo.niveau] }}
                 <!-- <span v-if="exo.niveau == 0"> - {{ exo.option }}</span> -->
               </p>
               <p><strong>Chapitre :</strong> {{ exo.chapitre }}</p>
@@ -71,13 +71,25 @@
             <div class="level-item">
               <b-taglist>
                 <b-tag v-if="!has_correc" type="is-secondary" size="is-medium">
-                  <span class="has-text-white">{{ delai }}</span>
+                  <span class="has-text-white">{{ delai_text }}</span>
                 </b-tag>
-                <b-tag v-if="!has_correc" type="is-secondary" size="is-medium">
-                  {{ exo.prix }} {{ correc_points > 1 ? 'pts' : 'pt' }} à gagner
+                <b-tag
+                  v-if="!has_correc && !delai_depasse"
+                  type="is-secondary"
+                  size="is-medium"
+                >
+                  {{ exo.prix }} {{ exo.prix > 1 ? 'pts' : 'pt' }} à gagner
+                </b-tag>
+                <b-tag
+                  v-if="!has_correc && delai_depasse"
+                  type="is-secondary"
+                  size="is-medium"
+                >
+                  {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à
+                  gagner
                 </b-tag>
                 <b-tag v-if="has_correc" type="is-primary" size="is-medium">
-                  <span class="has-text-white">{{ delai }}</span>
+                  <span class="has-text-white">{{ delai_text }}</span>
                 </b-tag>
                 <b-tag v-if="has_correc" type="is-primary" size="is-medium">
                   Corrigé
@@ -105,7 +117,8 @@
 <script>
 import { mapState } from 'vuex'
 import moment from 'moment'
-import classes from '@/data/niveaux.json'
+import niveaux from '@/data/niveaux.json'
+import types from '@/data/types.json'
 export default {
   name: 'ExercicePreview',
   props: {
@@ -124,9 +137,9 @@ export default {
   },
   data() {
     return {
-      classes: classes,
+      niveaux: niveaux,
+      types: types,
       isLivreModalActive: false,
-
       isLiked: this.liked
     }
   },
@@ -157,7 +170,7 @@ export default {
       let diffMinutes = date2.diff(date1, 'days')
       return diffMinutes
     },
-    delai() {
+    delai_text() {
       if (this.diff_minutes < 0) {
         return 'Le délai est dépassé'
       } else if (this.diff_hours < 1) {
@@ -168,25 +181,28 @@ export default {
         return 'Il reste ' + this.diff_days.toString() + ' jour(s)'
       }
     },
+    delai_depasse() {
+      if (this.diff_minutes < 0) {
+        return true
+      }
+      return false
+    },
     correc_points() {
-      if (!this.activated || !this.user || !this.exo.posteur) {
+      if (!this.activated) {
         return this.exo.prix
       }
-      let delai_depasse = false
-      if (this.diff_hours <= 0) {
-        delai_depasse = true
-      }
+
       let condition =
         this.exo.posteur.username !== this.user.username &&
-        delai_depasse === false &&
+        this.delai_depasse === false &&
         this.exo.correcs.length === 0
       if (condition) {
         return this.exo.prix
       }
-      if (this.exo.posteur.username === this.user.username) {
-        return this.constants['SELFCORREC_POINTS']
-      } else if (delai_depasse) {
+      if (this.delai_depasse) {
         return this.constants['DEADLINE_POINTS']
+      } else if (this.exo.posteur.username === this.user.username) {
+        return this.constants['SELFCORREC_POINTS']
       } else {
         return this.constants['MULTIPLECORREC_POINTS']
       }

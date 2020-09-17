@@ -98,22 +98,16 @@
     </div>
 
     <div class="columns is-centered mt-5">
-      <div class="column is-10">
+      <div class="column is-8">
         <div v-if="exo">
           <div v-if="exo.file">
-            <div
-              v-if="['png', 'jpg', 'jpeg'].includes(exo.filetype)"
-              class="exo-container"
-            >
-              <img :src="exo.file" />
-            </div>
-            <div v-else-if="exo.filetype == 'pdf'">
+            <div v-if="exo.filetype == 'pdf'">
               <div class="field is-grouped is-grouped-centered">
                 <div class="control">
                   <b-button
-                    type="is-secondary"
+                    type="is-tertiary"
                     icon-left="rotate-left"
-                    @click="rotate -= 90"
+                    @click="rotatePDF -= 90"
                   ></b-button>
                 </div>
                 <div class="field">
@@ -139,7 +133,7 @@
                     <p class="control">
                       <b-button
                         :disabled="page == numPages"
-                        type="is-primary"
+                        type="is-tertiary"
                         icon-left="chevron-right"
                         @click="page += 1"
                       />
@@ -150,7 +144,7 @@
                   <b-button
                     type="is-secondary"
                     icon-left="rotate-right"
-                    @click="rotate += 90"
+                    @click="rotatePDF += 90"
                   ></b-button>
                 </div>
               </div>
@@ -160,9 +154,12 @@
                 class="exo-container"
                 :src="exo.file"
                 :page="page"
-                :rotate="rotate"
+                :rotate="rotatePDF"
                 @num-pages="numPages = $event"
               ></pdf>
+            </div>
+            <div v-else>
+              <ImageContainer v-model="exo.file" />
             </div>
           </div>
           <div v-else class="exo-info pa-9 has-text-centered">
@@ -285,13 +282,15 @@ import { mapState } from 'vuex'
 import pdf from 'vue-pdf'
 import moment from 'moment'
 import Upload from '@/components/Upload.vue'
+import ImageContainer from '@/components/ImageContainer.vue'
 import classes from '@/data/niveaux.json'
 import exercicesService from '@/services/exercicesService'
 export default {
   name: 'ExerciceDetail',
   components: {
     pdf,
-    Upload
+    Upload,
+    ImageContainer
   },
   props: {
     id: {
@@ -315,7 +314,8 @@ export default {
 
       page: 1,
       numPages: 0,
-      rotate: 0
+      rotatePDF: 0,
+      rotateImage: 0
     }
   },
   computed: {
@@ -340,8 +340,8 @@ export default {
       let delai_depasse = false
       let date1 = moment()
       let date2 = moment(this.exo.date_limite)
-      let diffHours = date2.diff(date1, 'hours')
-      if (diffHours <= 0) {
+      let diffMin = date2.diff(date1, 'minutes')
+      if (diffMin < 0) {
         delai_depasse = true
       }
       let condition =
@@ -407,7 +407,7 @@ export default {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
-          timeout: 30000,
+          timeout: 60000,
           onUploadProgress: function(progressEvent) {
             this.uploadPercentage = parseInt(
               Math.round((progressEvent.loaded / progressEvent.total) * 100)

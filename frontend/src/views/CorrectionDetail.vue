@@ -8,17 +8,11 @@
       <div class="column is-8">
         <div v-if="correc">
           <div v-if="correc.file">
-            <div
-              v-if="['png', 'jpg', 'jpeg'].includes(correc.filetype)"
-              class="correc-container"
-            >
-              <img :src="correc.file" />
-            </div>
-            <div v-else>
+            <div v-if="correc.filetype == 'pdf'">
               <div class="field is-grouped is-grouped-centered">
                 <div class="control">
                   <b-button
-                    type="is-secondary"
+                    type="is-tertiary"
                     icon-left="rotate-left"
                     @click="rotate -= 90"
                   ></b-button>
@@ -55,7 +49,7 @@
                 </div>
                 <div class="control">
                   <b-button
-                    type="is-secondary"
+                    type="is-tertiary"
                     icon-left="rotate-right"
                     @click="rotate += 90"
                   ></b-button>
@@ -71,6 +65,9 @@
                 @progress="loadedRatio = $event"
                 @num-pages="numPages = $event"
               ></pdf>
+            </div>
+            <div v-else>
+              <ImageContainer v-model="correc.file" />
             </div>
           </div>
         </div>
@@ -270,13 +267,15 @@
 <script>
 import { mapState } from 'vuex'
 import pdf from 'vue-pdf'
+import ImageContainer from '@/components/ImageContainer.vue'
 import classes from '@/data/niveaux.json'
 import correctionsService from '@/services/correctionsService'
 import ratingsService from '@/services/ratingsService'
 export default {
   name: 'CorrectionDetail',
   components: {
-    pdf
+    pdf,
+    ImageContainer
   },
   props: {
     id: {

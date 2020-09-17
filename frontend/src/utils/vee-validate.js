@@ -4,7 +4,9 @@ import {
   min_value,
   max_value,
   email,
-  integer
+  integer,
+  alpha_dash,
+  regex
 } from 'vee-validate/dist/rules'
 import { extend } from 'vee-validate'
 import { setInteractionMode } from 'vee-validate'
@@ -36,9 +38,53 @@ const isUnique = function(type) {
     })
 }
 
+const isVille = function() {
+  return value =>
+    new Promise(resolve => {
+      fetch('data/villes.json')
+        .then(r => r.json())
+        .then(villes => {
+          if (villes.includes(value)) {
+            return resolve({
+              valid: true
+            })
+          }
+
+          return resolve({
+            valid: false
+          })
+        })
+    })
+}
+
+const isEtablissement = function() {
+  return (value, { target }) =>
+    new Promise(resolve => {
+      fetch('data/etablissements.json')
+        .then(r => r.json())
+        .then(etablissements => {
+          if (target && etablissements[target].includes(value)) {
+            return resolve({
+              valid: true
+            })
+          }
+
+          return resolve({
+            valid: false
+          })
+        })
+    })
+}
+
 extend('required', {
   ...required,
   message: 'Ce champ est requis'
+})
+
+extend('prof', {
+  ...regex,
+  message:
+    'Le nom ne doit contenir que des lettres et éventuellement des tirets.'
 })
 
 extend('integer', {
@@ -79,6 +125,17 @@ extend('unique_username', {
 extend('unique_email', {
   validate: isUnique('email'),
   message: 'Cette adresse e-mail est déjà prise par un autre utilisateur'
+})
+
+extend('ville', {
+  validate: isVille(),
+  message: `Cette ville n'est pas référencée dans notre base de données.`
+})
+
+extend('etablissement', {
+  params: ['target'],
+  validate: isEtablissement(),
+  message: `Cet établissement n'est pas référencée dans notre base de données.`
 })
 
 extend('same_password', {

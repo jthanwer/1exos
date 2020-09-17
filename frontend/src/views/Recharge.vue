@@ -594,6 +594,16 @@ export default {
         stripe
           .handleCardAction(response.data.payment_intent_client_secret)
           .then(this.handleStripeJsResult)
+          .catch(() => {
+            this.is_loading = false
+            this.$buefy.toast.open({
+              duration: 5000,
+              message: `Le paiment n'a pas abouti !
+                    Ta carte n'a pas été débitée. <br>
+                    Vérifie les informations données.`,
+              type: 'is-danger'
+            })
+          })
       } else {
         this.$store.dispatch('authentication/getProfileUser').then(() => {
           this.is_loading = false

@@ -3,18 +3,7 @@
     <div class="container">
       <div class="columns is-centered is-vcentered">
         <div class="column is-10">
-          <section class="is-bold">
-            <h1 class="title is-2 has-text-centered has-text-danger">
-              Ce site n'est pas encore utilisable !
-            </h1>
-
-            <h1 class="title is-4 has-text-centered has-text-danger">
-              La date de mise en fonctionnement est prévue pour le lundi
-              14/09/2020. <br />
-              Aucun exercice posté jusque là ne sera corrigé et les exercices
-              postés seront supprimés.
-            </h1>
-
+          <section>
             <h1 class="title is-1 has-text-centered">
               Bienvenue sur 1Exo !
             </h1>

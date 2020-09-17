@@ -191,19 +191,6 @@
             Tu as alors assez de points pour avoir accès à la correction que tu
             voulais au départ.
           </li>
-          <li>
-            Tu gagnes les points associés à l’exercice. Si ta correction est mal
-            notée (entre 0 et 3) par le posteur de l’énoncé, celui-ci
-            récupèreras ses points et tu les perdras. Si elle est bien notée, tu
-            conserveras tes points. Efforce-toi donc de t’appliquer pour ne pas
-            avoir de déception. De cette façon, le site grandira en quantité et
-            en qualité grâce à toi.
-          </li>
-          <li>
-            Si tu n’as toujours pas assez de points, tu répètes les étapes
-            précédentes jusqu’à avoir assez de points afin d'avoir accès à la
-            correction que tu veux.
-          </li>
         </ol>
 
         <h3>

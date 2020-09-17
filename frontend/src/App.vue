@@ -20,6 +20,12 @@
           <router-link class="has-text-white" :to="{ name: 'presentation' }">
             <h2>Présentation du site</h2>
           </router-link>
+          <router-link
+            class="has-text-white"
+            :to="{ name: 'standards-qualite' }"
+          >
+            <h2>Standards de qualité</h2>
+          </router-link>
         </div>
         <div class="column is-3">
           <h1 class="title is-3 has-text-white-ter">Nous contacter</h1>

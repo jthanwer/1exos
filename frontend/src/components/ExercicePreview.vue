@@ -188,17 +188,20 @@ export default {
       return false
     },
     correc_points() {
-      if (!this.exo && !this.user) {
-        return
+      if (!this.exo || !this.user) {
+        if (this.delai_depasse === false) {
+          return this.exo.prix
+        }
+        return this.constants['DEADLINE_POINTS']
       }
       if (!this.activated) {
         return this.exo.prix
       }
 
       let condition =
-        this.exo.posteur.username !== this.user.username &&
         this.delai_depasse === false &&
-        this.exo.correcs.length === 0
+        this.exo.correcs.length === 0 &&
+        this.exo.posteur.username !== this.user.username
       if (condition) {
         return this.exo.prix
       }

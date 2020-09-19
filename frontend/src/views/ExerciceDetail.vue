@@ -133,7 +133,7 @@
                     <p class="control">
                       <b-button
                         :disabled="page == numPages"
-                        type="is-tertiary"
+                        type="is-primary"
                         icon-left="chevron-right"
                         @click="page += 1"
                       />
@@ -142,7 +142,7 @@
                 </div>
                 <div class="control">
                   <b-button
-                    type="is-secondary"
+                    type="is-tertiary"
                     icon-left="rotate-right"
                     @click="rotatePDF += 90"
                   ></b-button>

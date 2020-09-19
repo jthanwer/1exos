@@ -402,6 +402,9 @@
                 >
                   <b-button
                     type="is-light"
+                    :class="{
+                      'has-text-tertiary': order['date_created'] !== null
+                    }"
                     :icon-right="order_icons['date_created']"
                     @click="changeOrder('date_created')"
                     >Date de création</b-button
@@ -413,6 +416,9 @@
                 >
                   <b-button
                     type="is-light"
+                    :class="{
+                      'has-text-tertiary': order['prix'] !== null
+                    }"
                     :icon-right="order_icons['prix']"
                     @click="changeOrder('prix')"
                     >Points cédés</b-button
@@ -424,6 +430,9 @@
                 >
                   <b-button
                     type="is-light"
+                    :class="{
+                      'has-text-tertiary': order['date_limite'] !== null
+                    }"
                     :icon-right="order_icons['date_limite']"
                     @click="changeOrder('date_limite')"
                     >Délai</b-button
@@ -446,7 +455,7 @@
             </div>
           </div>
 
-          <div v-if="result_files.length > 0" class="column is-12">
+          <div v-if="result_files.length > 0" class="column is-12 mt-4">
             <b-pagination
               :total="count_elements"
               :current.sync="current_page"

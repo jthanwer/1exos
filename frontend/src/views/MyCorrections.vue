@@ -8,13 +8,13 @@
               <b-menu-item
                 icon="account"
                 :active="isActive"
-                label="Mes corrections postées"
+                label="Mes corrections débloquées"
                 @click="selected = 1"
               >
               </b-menu-item>
               <b-menu-item
                 icon="account"
-                label="Mes corrections débloquées"
+                label="Mes corrections postées"
                 @click="selected = 2"
               >
               </b-menu-item>
@@ -25,6 +25,53 @@
 
       <div class="column is-offset-1 is-8 card my-4">
         <div v-if="selected === 1">
+          <div class="columns is-centered">
+            <div class="column is-8">
+              <p class="card-header-title has-text-tertiary is-size-2">
+                Mes corrections débloquées
+              </p>
+              <hr class="has-background-tertiary" />
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="columns is-multiline">
+              <div class="column">
+                <div
+                  v-for="correc in displayedUnlockedCorrections"
+                  :key="correc.id"
+                  class="column is-12"
+                >
+                  <CorrectionPreview
+                    :correc="correc"
+                    :user="user"
+                    :unlocked="
+                      correc.id && user.unlocked_correcs.includes(correc.id)
+                    "
+                  >
+                  </CorrectionPreview>
+                </div>
+              </div>
+            </div>
+            <div class="column is-12">
+              <b-pagination
+                :total="unlockedCorrections.length"
+                :current.sync="current_page_unlocked"
+                range-before="1"
+                range-after="1"
+                order="is-right"
+                size="is-medium"
+                :per-page="elements_per_page"
+                icon-prev="chevron-left"
+                icon-next="chevron-right"
+                aria-next-label="Next page"
+                aria-previous-label="Previous page"
+                aria-page-label="Page"
+                aria-current-label="Current page"
+              ></b-pagination>
+            </div>
+          </div>
+        </div>
+        <div v-if="selected === 2">
           <div class="columns is-centered">
             <div class="column is-8">
               <p class="card-header-title has-text-tertiary is-size-2">
@@ -57,53 +104,6 @@
               <b-pagination
                 :total="postedCorrections.length"
                 :current.sync="current_page_posted"
-                range-before="1"
-                range-after="1"
-                order="is-right"
-                size="is-medium"
-                :per-page="elements_per_page"
-                icon-prev="chevron-left"
-                icon-next="chevron-right"
-                aria-next-label="Next page"
-                aria-previous-label="Previous page"
-                aria-page-label="Page"
-                aria-current-label="Current page"
-              ></b-pagination>
-            </div>
-          </div>
-        </div>
-        <div v-if="selected === 2">
-          <div class="columns is-centered">
-            <div class="column is-8">
-              <p class="card-header-title has-text-tertiary is-size-2">
-                Mes corrections débloquées
-              </p>
-              <hr class="has-background-tertiary" />
-            </div>
-          </div>
-          <div class="card-content">
-            <div class="columns is-multiline">
-              <div class="column">
-                <div
-                  v-for="correc in displayedUnlockedCorrections"
-                  :key="correc.id"
-                  class="column is-12"
-                >
-                  <CorrectionPreview
-                    :correc="correc"
-                    :user="user"
-                    :unlocked="
-                      correc.id && user.unlocked_correcs.includes(correc.id)
-                    "
-                  >
-                  </CorrectionPreview>
-                </div>
-              </div>
-            </div>
-            <div class="column is-12">
-              <b-pagination
-                :total="unlockedCorrections.length"
-                :current.sync="current_page_unlocked"
                 range-before="1"
                 range-after="1"
                 order="is-right"

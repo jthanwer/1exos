@@ -8,6 +8,20 @@
       >
         <img src="~@/assets/images/logo_void_white.png" alt="1exo" />
       </b-navbar-item>
+      <b-navbar-item
+        v-if="isAuthenticated && user"
+        class="is-hidden-desktop"
+        style="margin-left: auto !important;"
+        tag="div"
+      >
+        <b-button
+          type="is-primary"
+          inverted
+          @click="$router.push({ name: 'tirelire' })"
+        >
+          {{ user.tirelire }} {{ user.tirelire > 1 ? 'pts' : 'pt' }}
+        </b-button>
+      </b-navbar-item>
     </template>
     <template v-if="user" slot="start">
       <b-navbar-item tag="div" class="ml-10 has-text-weight-bold">
@@ -70,7 +84,11 @@
           Se connecter
         </b-button>
       </b-navbar-item>
-      <b-navbar-item v-if="isAuthenticated && user" tag="div">
+      <b-navbar-item
+        v-if="isAuthenticated && user"
+        tag="div"
+        class="is-hidden-touch"
+      >
         <b-button
           type="is-primary"
           inverted

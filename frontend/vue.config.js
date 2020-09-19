@@ -20,7 +20,7 @@ module.exports = {
     }
   },
   chainWebpack: config => {
-    config.output.filename("bundle.js");
+    config.output.filename("[name].[hash].js");
 
     config.optimization.splitChunks(false);
 

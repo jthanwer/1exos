@@ -78,7 +78,6 @@ class ExerciceViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.file.delete(save=True)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -180,8 +179,6 @@ class CorrectionViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         correction = self.get_object()
-        fluxes.delete_correction(correction)
-        correction.file.delete(save=True)
         correction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -255,34 +252,16 @@ class RatingViewSet(viewsets.ModelViewSet):
         voter = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        rating = serializer.save(voter=voter)
-
-        # -- Si le posteur de l'exo met une note inférieure à 4,
-        # on supprime la correction et on fait des transferts de points
-        if voter == rating.correc.enonce.posteur and rating.value < 4:
-            correction = rating.correc
-            fluxes.delete_correction(correction)
-            correction.file.delete(save=True)
-            correction.delete()
+        serializer.save(voter=voter)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
-        voter = request.user
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        rating = serializer.save()
-
-        # -- Si le posteur de l'exo met une note inférieure à 4,
-        # on supprime la correction et on fait des transferts de points
-        if voter == rating.correc.enonce.posteur and rating.value < 4:
-            correction = rating.correc
-            fluxes.delete_correction(correction)
-            correction.file.delete(save=True)
-            correction.delete()
-
+        serializer.save()
         return Response(serializer.data)
 
     def partial_update(self, request, *args, **kwargs):

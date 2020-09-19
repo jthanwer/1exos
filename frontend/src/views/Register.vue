@@ -110,7 +110,7 @@
                 <ValidationProvider
                   v-slot="{ errors, valid }"
                   slim
-                  rules="required"
+                  rules="required|ville"
                   name="ville"
                 >
                   <b-field
@@ -140,10 +140,9 @@
                 <ValidationProvider
                   v-slot="{ errors, valid }"
                   slim
-                  rules="required"
+                  rules="required|etablissement:@ville"
                   name="etablissement"
                 >
-                  <!-- etablissement:@ville -->
                   <b-field
                     label="Établissement"
                     :message="errors"

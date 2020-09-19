@@ -49,8 +49,7 @@ const actions = {
       exercicesService
         .getLikedExercices()
         .then(data => {
-          let likedExercices = data
-          commit('SET_LIKED_EXERCICES', likedExercices)
+          commit('SET_LIKED_EXERCICES', data)
           resolve()
         })
         .catch(err => reject(err))

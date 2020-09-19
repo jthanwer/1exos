@@ -31,6 +31,7 @@ $success-invert: findColorInvert($success);
 // Setup $colors to use as bulma classes
 $colors: (
     "white": ($white, $black),
+    "light": ($light, $light-invert),
     "black": ($black, $white),
     "dark": ($dark, $dark-invert),
     "primary": ($primary, $primary-invert),
@@ -63,11 +64,15 @@ $menu-item-active-background-color: $tertiary;
 // Dropdown
 $dropdown-item-hover-background-color: lighten( $tertiary, 40%);
 $dropdown-content-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.3), 0 0px 0 1px rgba($scheme-invert, 0.1);
+a.dropdown-item{
+    white-space: normal !important;
+}
 
 // Rating
 $rate-color: $grey-lighter;
 $rate-color-active:  $secondary;
 
+// Inputs
 $input-placeholder-color: rgba(122, 122, 122, 0.7);
 ::-moz-placeholder{opacity:1}
 

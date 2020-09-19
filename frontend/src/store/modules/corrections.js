@@ -27,9 +27,9 @@ const actions = {
   loadPostedCorrections({ commit }) {
     return new Promise((resolve, reject) => {
       correctionsService
-        .getMyPostedCorrections()
+        .getPostedCorrections()
         .then(data => {
-          commit('SET_POSTED_CORRECTIONS', data.results)
+          commit('SET_POSTED_CORRECTIONS', data)
           resolve()
         })
         .catch(err => reject(err))
@@ -38,9 +38,9 @@ const actions = {
   loadUnlockedCorrections({ commit }) {
     return new Promise((resolve, reject) => {
       correctionsService
-        .getMyUnlockedCorrections()
+        .getUnlockedCorrections()
         .then(data => {
-          commit('SET_UNLOCKED_CORRECTIONS', data.results)
+          commit('SET_UNLOCKED_CORRECTIONS', data)
         })
         .catch(err => reject(err))
     })

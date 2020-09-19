@@ -135,7 +135,7 @@ extend('ville', {
 extend('etablissement', {
   params: ['target'],
   validate: isEtablissement(),
-  message: `Cet établissement n'est pas référencée dans notre base de données.`
+  message: `Cet établissement n'est pas référencé dans notre base de données.`
 })
 
 extend('same_password', {

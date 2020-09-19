@@ -188,6 +188,9 @@ export default {
       return false
     },
     correc_points() {
+      if (!this.exo && !this.user) {
+        return
+      }
       if (!this.activated) {
         return this.exo.prix
       }

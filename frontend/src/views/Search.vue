@@ -393,13 +393,56 @@
             </div>
           </div>
 
-          <div v-else class="columns is-multiline">
-            <div v-for="exo in result_files" :key="exo.id" class="column is-12">
-              <ExercicePreview
-                :exo="exo"
-                :liked="likedExercices.some(ex => ex.id === exo.id)"
+          <div v-else>
+            <div class="box has-background-light">
+              <div class="columns is-vcentered is-size-5">
+                <div
+                  class="column is-3 has-text-primary has-text-weight-bold is-flex"
+                  style="align-items: center;"
+                >
+                  <b-button
+                    type="is-light"
+                    :icon-right="order_icons['date_created']"
+                    @click="changeOrder('date_created')"
+                    >Date de création</b-button
+                  >
+                </div>
+                <div
+                  class="column is-3 has-text-primary has-text-weight-bold is-flex"
+                  style="align-items: center;"
+                >
+                  <b-button
+                    type="is-light"
+                    :icon-right="order_icons['prix']"
+                    @click="changeOrder('prix')"
+                    >Points cédés</b-button
+                  >
+                </div>
+                <div
+                  class="column is-3 has-text-primary has-text-weight-bold is-flex"
+                  style="align-items: center;"
+                >
+                  <b-button
+                    type="is-light"
+                    :icon-right="order_icons['date_limite']"
+                    @click="changeOrder('date_limite')"
+                    >Délai</b-button
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="columns is-multiline">
+              <div
+                v-for="exo in result_files"
+                :key="exo.id"
+                class="column is-12"
               >
-              </ExercicePreview>
+                <ExercicePreview
+                  :exo="exo"
+                  :liked="likedExercices.some(ex => ex.id === exo.id)"
+                >
+                </ExercicePreview>
+              </div>
             </div>
           </div>
 
@@ -463,6 +506,18 @@ export default {
       options: options,
       types: types,
       livres: livres,
+
+      order: {
+        date_created: false,
+        prix: null,
+        date_limite: null
+      },
+
+      order_icons: {
+        date_created: 'chevron-up-circle',
+        prix: 'chevron-up',
+        date_limite: 'chevron-up'
+      },
 
       filter: {
         niveau: false,
@@ -542,14 +597,33 @@ export default {
           return 'Délai dépassé/non dépassé'
       }
     },
-    text_query: function() {
-      let text = '?'
+    text_query_order: function() {
+      let text = ''
+      for (let [key, value] of Object.entries(this.order)) {
+        if (value !== null) {
+          if (value === true) {
+            text += 'ordering=' + key + '&'
+          } else {
+            text += 'ordering=-' + key + '&'
+          }
+        }
+      }
+      return text
+    },
+    text_query_filter: function() {
+      let text = ''
       for (let [key, value] of Object.entries(this.form)) {
         if (value !== null && this.filter[key]) {
           let encoded_value = encodeURI(value)
           text += `${key}=${encoded_value}&`
         }
       }
+      return text
+    },
+    text_query: function() {
+      let text = '?'
+      text += this.text_query_filter
+      text += this.text_query_order
       text += `page=${this.current_page}`
       return text
     }
@@ -562,6 +636,25 @@ export default {
       if (to.name == 'post-exo') {
         this.$store.dispatch('authentication/getProfileUser')
       }
+    },
+    filter: {
+      handler(inputs) {
+        inputs.prefix_prof = inputs.nom_prof
+        for (let [key, value] of Object.entries(inputs)) {
+          if (value == false) {
+            this.form[key] = null
+            if (key == 'nom_etablissement') {
+              this.etablissement_input = null
+            }
+            if (key == 'nom_prof') {
+              this.prof_input = null
+            }
+          }
+        }
+        this.current_page = 1
+        this.searchExercices()
+      },
+      deep: true
     },
     form: {
       handler(inputs) {
@@ -582,20 +675,8 @@ export default {
       },
       deep: true
     },
-    filter: {
-      handler(inputs) {
-        inputs.prefix_prof = inputs.nom_prof
-        for (let [key, value] of Object.entries(inputs)) {
-          if (value == false) {
-            this.form[key] = null
-            if (key == 'nom_etablissement') {
-              this.etablissement_input = null
-            }
-            if (key == 'nom_prof') {
-              this.prof_input = null
-            }
-          }
-        }
+    order: {
+      handler() {
         this.current_page = 1
         this.searchExercices()
       },
@@ -641,6 +722,27 @@ export default {
         .catch(() => {
           this.is_loading = false
         })
+    },
+    changeOrder(value) {
+      let formerValue = this.order[value]
+      for (let key of Object.keys(this.order)) {
+        this.order[key] = null
+        this.order_icons[key] = 'chevron-up'
+      }
+      console.log(formerValue)
+      if (formerValue === null) {
+        this.order[value] = false
+        this.order_icons[value] = 'chevron-up-circle'
+      } else if (formerValue === false) {
+        this.order[value] = true
+        this.order_icons[value] = 'chevron-down-circle'
+      } else {
+        this.order[value] = false
+        this.order_icons[value] = 'chevron-up-circle'
+      }
+
+      console.log(this.order[value])
+      console.log(this.order_icons[value])
     },
     filterEtablissements(v) {
       this.etablissement_items = this.etablissements.filter(object => {

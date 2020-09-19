@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404, FileResponse
@@ -43,10 +44,12 @@ class PassthroughRenderer(renderers.BaseRenderer):
 # -- Exercice
 # -----------
 class ExerciceViewSet(viewsets.ModelViewSet):
-    queryset = Exercice.objects.all().order_by('-date_created')
+    queryset = Exercice.objects.all()
     serializer_class = ExerciceSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = ExerciceFilter
+    ordering_fields = ['date_created', 'prix', 'date_limite']
+    ordering = ['-date_created']
 
     permission_classes = (AllowAny,)
     parser_classes = (JSONParser, MultiPartParser, FormParser)
@@ -127,11 +130,6 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         posteur = request.user
         queryset = Exercice.objects.filter(posteur=posteur)
 
-        # page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     return self.get_paginated_response(serializer.data)
-
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -139,11 +137,6 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     def my_liked_exercices(self, request):
         posteur = request.user
         queryset = Exercice.objects.filter(liked_by=posteur)
-
-        # page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -207,11 +200,6 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         user = request.user
         queryset = Correction.objects.filter(correcteur=user)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -219,11 +207,6 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     def my_unlocked_corrections(self, request):
         user = request.user
         queryset = Correction.objects.filter(buyers=user).exclude(correcteur=user)
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

@@ -26,6 +26,34 @@
                 </b-button>
               </div>
             </div>
+            <div class="columns is-centered is-multiline">
+              <div class="column is-half">
+                <b-button
+                  tag="router-link"
+                  class="has-radius-border big-button"
+                  icon-left="hand"
+                  type="is-tertiary"
+                  expanded
+                  size="is-large"
+                  :to="{ name: 'post-exo' }"
+                >
+                  Demander une correction
+                </b-button>
+              </div>
+              <div v-if="isAuthenticated" class="column is-half">
+                <b-button
+                  tag="router-link"
+                  class="has-radius-border big-button"
+                  icon-left="plus-circle-multiple-outline"
+                  type="is-secondary"
+                  expanded
+                  size="is-large"
+                  :to="{ name: 'tirelire' }"
+                >
+                  Recharger ta tirelire
+                </b-button>
+              </div>
+            </div>
 
             <h2 class="is-size-4 mt-8 has-text-centered">
               <p>

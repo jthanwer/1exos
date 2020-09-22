@@ -26,7 +26,7 @@ class Exercice(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return str(self.file.name)
+        return 'Exercice_{}'.format(self.id)
 
 
 class Correction(models.Model):
@@ -44,7 +44,7 @@ class Correction(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return str(self.file.name)
+        return 'Correction_{}_{}'.format(self.enonce.id, self.id)
 
 
 class Rating(models.Model):

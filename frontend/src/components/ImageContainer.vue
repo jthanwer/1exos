@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="field is-grouped is-grouped-centered">
+    <div v-if="imgIsLoaded" class="field is-grouped is-grouped-centered">
       <div class="control">
         <b-button
           type="is-tertiary"
@@ -29,6 +29,7 @@
           `transform: rotate(${rotationImage}deg); height: ${heightImage}px; width: ${widthImage}px;`
         "
         :src="value"
+        @load="getDimensions()"
       />
     </div>
   </div>
@@ -46,6 +47,7 @@ export default {
   data() {
     return {
       rotationImage: 0,
+      imgIsLoaded: false,
       initialWidthImage: null,
       initialHeightImage: null,
       heightImage: null,
@@ -56,9 +58,6 @@ export default {
       initialWidthContainer: null,
       aspectRatio: null
     }
-  },
-  mounted() {
-    this.getDimensions()
   },
   methods: {
     rotateRight() {
@@ -113,6 +112,8 @@ export default {
       this.initialHeightImage = this.heightImage
       this.initialHeightContainer = this.heightContainer
       this.initialWidthContainer = this.widthContainer
+
+      this.imgIsLoaded = true
     }
   }
 }

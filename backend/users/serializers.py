@@ -14,7 +14,7 @@ class BasicUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'niveau', 'is_active',
+        fields = ('username', 'niveau', 'is_active', 'is_new',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'username', 'email',
-                  'is_active', 'niveau', 'option',
+                  'is_active', 'is_new', 'niveau', 'option',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof',
                   'tirelire',
@@ -43,11 +43,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     is_active = serializers.BooleanField(read_only=True)
+    is_new = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'is_active', 'option',
-                  'niveau', 'nom_etablissement', 'ville_etablissement',
+        fields = ('username', 'email', 'password', 'is_active', 'is_new',
+                  'option', 'niveau', 'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
     def save(self, **kwargs):

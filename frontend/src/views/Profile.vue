@@ -1,7 +1,7 @@
 pychar<template>
   <div id="profile-container" class="container is-fluid">
     <div class="columns" style="min-height: 800px;">
-      <div class="column is-3 card">
+      <div class="column is-3 card  my-4">
         <div class="card-content">
           <b-menu>
             <b-menu-list label="Profil">
@@ -25,7 +25,7 @@ pychar<template>
         </div>
       </div>
 
-      <div class="column is-offset-1 is-8 card">
+      <div class="column is-offset-1 is-8 card my-4">
         <div v-if="selected === 1">
           <div class="columns is-centered">
             <div class="column is-8">
@@ -267,7 +267,10 @@ pychar<template>
                           <ValidationProvider
                             v-slot="{ errors, valid }"
                             slim
-                            rules="required"
+                            :rules="{
+                              required: true,
+                              prof: /^[0-9A-ZÀÂÇÉÈÊËÏÎÔa-zàâçéèêëïîô-]+$/
+                            }"
                           >
                             <b-field
                               expanded
@@ -324,7 +327,8 @@ pychar<template>
                         <ValidationProvider
                           v-slot="{ errors, valid }"
                           slim
-                          rules="required"
+                          name="ville"
+                          rules="required|ville"
                         >
                           <b-field position="is-centered" grouped>
                             <b-field
@@ -390,6 +394,7 @@ pychar<template>
                         <ValidationProvider
                           v-slot="{ errors, valid }"
                           slim
+                          name="etablissement"
                           rules="required"
                         >
                           <b-field position="is-centered" grouped>
@@ -642,7 +647,9 @@ export default {
         // Prof is split in two parts
         if (element == 'prof') {
           payload['prefix_prof'] = this.form_user['prefix_prof']
-          payload['nom_prof'] = this.form_user['nom_prof']
+          payload['nom_prof'] =
+            this.form_user['nom_prof'].charAt(0).toUpperCase() +
+            this.form_user['nom_prof'].slice(1)
           this.updateProfile(payload, element)
         }
         // Username and email require password

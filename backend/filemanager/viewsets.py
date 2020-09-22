@@ -140,6 +140,12 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False)
+    def profs(self, request):
+        queryset = Exercice.objects.values('prefix_prof', 'nom_prof')\
+            .distinct()
+        return Response({'results': queryset})
+
 
 # -------------
 # -- Correction

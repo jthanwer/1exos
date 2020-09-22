@@ -2,8 +2,36 @@
   <div class="container is-fluid">
     <b-loading is-full-page :active.sync="is_loading"></b-loading>
     <div class="columns is-centered">
-      <div class="column is-10">
-        <div class="box">
+      <div class="column is-8">
+        <div v-if="user && user.is_new" class="card has-text-centered">
+          <div class="card-content">
+            <div class="is-size-5">
+              <p>
+                Avant de demander une correction pour la première fois, nous te
+                demandons de
+                <strong>cliquer sur le bouton ci-dessous</strong> afin
+                <strong
+                  >d'apprendre à poster un énoncé de bonne qualité.</strong
+                >
+              </p>
+              <p class="mt-3 has-text-danger has-text-weight-bold">
+                Un énoncé ne respectant pas ces recommandations se verra
+                supprimé.
+              </p>
+            </div>
+
+            <b-button
+              class="has-radius-border big-button mt-5"
+              icon-left="hand"
+              type="is-tertiary"
+              size="is-large"
+              @click="redirectStandards()"
+            >
+              Comment bien poster ?
+            </b-button>
+          </div>
+        </div>
+        <div v-else-if="user && !user.is_new" class="box">
           <b-steps v-model="activeStep" animated has-navigation>
             <b-step-item
               id="firstStep"
@@ -379,15 +407,23 @@
                           </b-tooltip>
                         </template>
                         <b-datetimepicker
+                          ref="datetimepicker"
                           v-model="form.date_limite"
-                          inline
                           expanded
                           placeholder="Choisir une date limite"
                           :datepicker="datepicker_attrs"
                           :min-datetime="minDatetime"
                           icon="calendar-today"
-                          horizontal-time-picker
                         >
+                          <template slot="right">
+                            <button
+                              class="button is-primary"
+                              @click="$refs.datetimepicker.toggle()"
+                            >
+                              <b-icon icon="check"></b-icon>
+                              <span>Valider</span>
+                            </button>
+                          </template>
                         </b-datetimepicker>
                       </b-field>
                     </ValidationProvider>
@@ -736,6 +772,9 @@ export default {
     this.$store.dispatch('authentication/getProfileUser')
   },
   methods: {
+    redirectStandards() {
+      this.$router.push({ name: 'standards-qualite' })
+    },
     submit() {
       this.is_loading = true
       const fd = new FormData()
@@ -769,7 +808,7 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
-        timeout: 60000,
+        timeout: 120000,
         onUploadProgress: function(progressEvent) {
           this.uploadPercentage = parseInt(
             Math.round((progressEvent.loaded / progressEvent.total) * 100)

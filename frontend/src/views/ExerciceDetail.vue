@@ -407,7 +407,7 @@ export default {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
-          timeout: 60000,
+          timeout: 120000,
           onUploadProgress: function(progressEvent) {
             this.uploadPercentage = parseInt(
               Math.round((progressEvent.loaded / progressEvent.total) * 100)

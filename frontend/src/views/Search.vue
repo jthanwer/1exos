@@ -706,7 +706,7 @@ export default {
       .getEtablissements()
       .then(etablissements => {
         this.etablissements = etablissements
-        return usersService.getProfs()
+        return exercicesService.getProfs()
       })
       .then(profs => {
         this.profs = profs

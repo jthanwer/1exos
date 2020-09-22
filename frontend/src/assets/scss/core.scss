@@ -76,6 +76,11 @@ $rate-color-active:  $secondary;
 $input-placeholder-color: rgba(122, 122, 122, 0.7);
 ::-moz-placeholder{opacity:1}
 
+// Titles
+h1.title.is-1 {
+    margin-bottom: 4.5rem !important;
+}
+
 // Partials scss
 @import 'partials/main';
 @import 'partials/cards';

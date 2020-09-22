@@ -41,15 +41,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'set_password']:
             permission_classes = [IsAdminOrIsSelf]
-            # permission_classes = [AllowAny]
         elif self.action == 'list':
             permission_classes = [IsAdminUser]
-            # permission_classes = [AllowAny]
         elif self.action in ['create', 'check_credentials', 'etablissements', 'profs']:
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
-            # permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
@@ -115,6 +112,15 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(request.user)
         return Response(serializer.data,
                         status=status.HTTP_200_OK)
+
+    @action(detail=False)
+    def set_is_new(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user.is_new = False
+        user.save()
+        return Response(status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def check_credentials(self, request):

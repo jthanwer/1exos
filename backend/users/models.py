@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
                               error_messages={
                                   'unique': _("A user with that email already exists.")
                               })
+    is_new = models.BooleanField(default=True)
     tirelire = models.IntegerField(default=cst.START_POINTS, blank=True)
     niveau = models.IntegerField(default=0)
     option = models.CharField(max_length=100, blank=True, null=True)

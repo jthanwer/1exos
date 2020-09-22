@@ -26,7 +26,8 @@
         <b-button
           tag="router-link"
           type="is-primary"
-          class="mt-3"
+          icon-left="credit-card"
+          class="mt-3 has-radius-border big-button"
           expanded
           size="is-large"
           :to="{ name: 'recharge' }"
@@ -38,12 +39,28 @@
         <b-button
           tag="router-link"
           type="is-secondary"
-          class="mt-3"
+          icon-left="pencil"
+          class="mt-3 has-radius-border big-button"
           expanded
           size="is-large"
           :to="{ name: 'search', params: { id: 2, isCorrected: false } }"
         >
-          En corrigeant des exos
+          En corrigeant un exo
+        </b-button>
+      </div>
+    </div>
+    <div class="columns is-centered is-multiline">
+      <div class="column is-4">
+        <b-button
+          tag="router-link"
+          type="is-tertiary"
+          icon-left="pencil"
+          class="mt-3 has-radius-border big-button"
+          expanded
+          size="is-large"
+          :to="{ name: 'post-exo' }"
+        >
+          En postant un exo et sa correction
         </b-button>
       </div>
     </div>

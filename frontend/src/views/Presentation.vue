@@ -2,7 +2,7 @@
   <section class="section">
     <div class="container">
       <div class="content">
-        <h1 class="title has-text-primary has-text-centered is-2">
+        <h1 class="title has-text-primary has-text-centered is-1">
           Présentation du site
         </h1>
         <h2 class="subtitle has-text-tertiary">

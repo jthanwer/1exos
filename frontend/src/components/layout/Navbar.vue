@@ -42,7 +42,7 @@
           Présentation du site
         </b-navbar-item>
         <b-navbar-item tag="router-link" :to="{ name: 'standards-qualite' }">
-          Standards de qualité
+          Comment bien poster ?
         </b-navbar-item>
       </b-navbar-dropdown>
       <b-navbar-item tag="router-link" :to="{ name: 'search' }">

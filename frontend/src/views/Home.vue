@@ -50,7 +50,7 @@
                   size="is-large"
                   :to="{ name: 'tirelire' }"
                 >
-                  Recharger ta tirelire
+                  Recharger ma tirelire
                 </b-button>
               </div>
             </div>

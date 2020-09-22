@@ -24,7 +24,7 @@
             class="has-text-white"
             :to="{ name: 'standards-qualite' }"
           >
-            <h2>Standards de qualité</h2>
+            <h2>Comment bien poster ?</h2>
           </router-link>
         </div>
         <div class="column is-3">

@@ -2,8 +2,8 @@
   <section class="section">
     <div class="container">
       <div class="content">
-        <h1 class="title has-text-primary has-text-centered is-2">
-          Standards de qualité
+        <h1 class="title has-text-primary has-text-centered is-1">
+          Comment bien poster ?
         </h1>
         <p>
           Sur ce site, nous privilégions la qualité: qualité des énoncés,
@@ -26,8 +26,8 @@
         <h3
           class="has-background-primary has-text-white has-text-centered pa-2 my-7"
         >
-          <b-icon icon="checkbox-marked-outline"></b-icon> 1 exo = 1 énoncé = 1
-          fichier
+          <b-icon icon="checkbox-marked-outline"></b-icon> 1 fichier = 1 seul
+          exo
         </h3>
         <div class="columns is-centered my-4">
           <div
@@ -36,7 +36,7 @@
             <p
               class="has-background-success has-text-weight-bold is-size-4 has-text-white"
             >
-              1 fichier = 1 exo
+              1 fichier = 1 seul exo
             </p>
             <div class="img-standard my-3">
               <img
@@ -404,12 +404,27 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import usersService from '@/services/usersService'
 export default {
   name: 'StandardsQualite',
   data() {
     return {}
   },
-  computed: {}
+  beforeRouteEnter(to, from, next) {
+    if (from.name == 'post-exo') {
+      usersService.setIsNew().then(() => {
+        next(vm => {
+          vm.$store.dispatch('authentication/getProfileUser')
+        })
+      })
+    } else {
+      next()
+    }
+  },
+  computed: {
+    ...mapState('authentication', ['user'])
+  }
 }
 </script>
 

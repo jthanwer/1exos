@@ -5,6 +5,7 @@ from .models import CustomUser
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     fields = ('username', 'email', 'niveau', 'option', 'tirelire',
+              'is_active', 'is_new',
               'prefix_prof', 'nom_prof', 'ville_etablissement', 'nom_etablissement')
     list_display = ('username', 'id', 'email', 'niveau', 'tirelire')
     list_filter = ()

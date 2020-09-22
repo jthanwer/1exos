@@ -39,5 +39,8 @@ export default {
   },
   getProfs() {
     return api.get(`users/profs/`).then(response => response.data.results)
+  },
+  setIsNew() {
+    return api.get(`users/set_is_new/`)
   }
 }

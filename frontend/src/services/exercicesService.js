@@ -43,5 +43,8 @@ export default {
   },
   dislikeExercice(id) {
     return api.get(`exercices/${id}/dislike/`)
+  },
+  getProfs() {
+    return api.get(`exercices/profs/`).then(response => response.data.results)
   }
 }

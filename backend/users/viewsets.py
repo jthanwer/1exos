@@ -10,6 +10,7 @@ from .models import CustomUser
 from .permissions import IsAdminOrIsSelf
 from .serializers import RegistrationSerializer, UserSerializer, \
     PasswordChangeSerializer, UpdateUserSerializer, PasswordResetSerializer
+from filemanager.serializers import NotificationSerializer
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
@@ -43,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAdminOrIsSelf]
         elif self.action == 'list':
             permission_classes = [IsAdminUser]
-        elif self.action in ['create', 'check_credentials', 'etablissements', 'profs']:
+        elif self.action in ['create', 'check_credentials', 'etablissements', 'profs', 'notifications']:
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
@@ -145,6 +146,13 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def stripe_validate_payment(self, request):
         return stripe_validate_payment(request)
+
+    @action(detail=False)
+    def notifications(self, request):
+        user = request.user
+        qs = user.notifications.all()
+        serializer = NotificationSerializer(qs, many=True)
+        return Response(serializer.data)
 
     @action(detail=False)
     def etablissements(self, request):

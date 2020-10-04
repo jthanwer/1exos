@@ -5,7 +5,8 @@ import usersService from '@/services/usersService'
 const state = {
   token: localStorage.getItem('user-token') || '',
   status: '',
-  user: null
+  user: null,
+  notifications: null
 }
 
 const getters = {
@@ -16,6 +17,15 @@ const getters = {
 const mutations = {
   SET_USER(state, user) {
     state.user = user
+  },
+  SET_NOTIFICATIONS(state, notifications) {
+    state.notifications = notifications
+  },
+  SET_NOTIFICATION_READ(state, notif_id) {
+    const data_index = state.notifications.findIndex(
+      element => element.id == notif_id
+    )
+    state.notifications[data_index].unread = false
   },
   AUTH_REQUEST(state) {
     state.status = 'pending'
@@ -88,6 +98,22 @@ const actions = {
   },
   updateProfileUser({ commit }, updated_user) {
     commit('SET_USER', updated_user)
+  },
+  getNotifications({ commit }) {
+    return new Promise(resolve => {
+      usersService.getNotifications().then(data => {
+        commit('SET_NOTIFICATIONS', data)
+        resolve(data)
+      })
+    })
+  },
+  setNotificationRead({ commit }, notif_id) {
+    return new Promise(resolve => {
+      usersService.setNotificationRead(notif_id).then(data => {
+        commit('SET_NOTIFICATION_READ', notif_id)
+        resolve(data)
+      })
+    })
   }
 }
 export default {

@@ -12,6 +12,24 @@
             >
               {{ user.tirelire }} {{ user.tirelire > 1 ? 'pts' : 'pt' }}
             </p>
+            <p
+              v-if="user && user.tirelire_avail != user.tirelire"
+              class="has-text-warning"
+              style="font-size: 2em;"
+            >
+              {{ user.tirelire_avail }}
+              {{ user.tirelire_avail > 1 ? 'pts' : 'pt' }}
+              <b-tooltip class="mx-4" type="is-warning" multilined>
+                <template v-slot:content>
+                  <p>
+                    Représente les points de ta tirelire ({{ user.tirelire }})
+                    moins ceux que tu as promis de céder pour obtenir des
+                    corrections ({{ user.tirelire - user.tirelire_avail }}).
+                  </p>
+                </template>
+                <b-icon size="is-small" icon="help-circle-outline"></b-icon>
+              </b-tooltip>
+            </p>
           </div>
         </div>
       </div>

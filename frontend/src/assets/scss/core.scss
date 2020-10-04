@@ -43,6 +43,15 @@ $colors: (
     "danger": ($danger, $danger-invert),
 );
 
+
+@function shade($color, $percentage) {
+    @return mix(black, $color, $percentage);
+  }
+
+@function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+}
+
 // Links
 $link: $primary;
 $link-invert: $primary-invert;

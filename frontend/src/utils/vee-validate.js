@@ -5,7 +5,6 @@ import {
   max_value,
   email,
   integer,
-  alpha_dash,
   regex
 } from 'vee-validate/dist/rules'
 import { extend } from 'vee-validate'
@@ -113,8 +112,17 @@ extend('max_value', {
 })
 
 extend('max_tirelire_value', {
-  ...max_value,
-  message: 'Le nombre entré ne doit pas dépasser les points de ta tirelire.'
+  validate(value, { tirelire_avail, tirelire }) {
+    if (value > tirelire) {
+      return "Tu n'as pas assez de points dans ta tirelire"
+    } else if (value > tirelire_avail) {
+      return `Tu ne peux pas céder autant de points car tu as 
+      déjà promis trop de points en échange de corrections.`
+    } else {
+      return true
+    }
+  },
+  params: ['tirelire_avail', 'tirelire']
 })
 
 extend('unique_username', {

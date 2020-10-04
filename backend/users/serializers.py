@@ -9,6 +9,14 @@ from django.conf import settings
 
 from .models import CustomUser
 
+from datetime import datetime, timezone
+now = datetime.now(timezone.utc)
+
+
+# --------------------------------
+# -- BasicUser, CorrectionPreview
+# -- and ExercicePreview serializers
+# --------------------------------
 
 class BasicUserSerializer(serializers.ModelSerializer):
 
@@ -19,7 +27,12 @@ class BasicUserSerializer(serializers.ModelSerializer):
                   'nom_prof', 'prefix_prof')
 
 
+# -------------------
+# -- User serializer
+# -------------------
+
 class UserSerializer(serializers.ModelSerializer):
+    tirelire_avail = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
@@ -27,15 +40,23 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_active', 'is_new', 'niveau', 'option',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof',
-                  'tirelire',
+                  'tirelire', 'tirelire_avail',
                   'unlocked_correcs', 'posted_correcs',
                   'posted_exos', 'liked_exos')
+
+    def get_tirelire_avail(self, obj):
+        exos = obj.posted_exos.all()
+        tirelire_avail = obj.tirelire
+        for exo in exos:
+            if exo.date_limite > now and exo.correcs.count() == 0:
+                tirelire_avail -= exo.prix
+        return tirelire_avail
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'niveau', 'option',
+        fields = ('username', 'email', 'niveau', 'option', 'voie',
                   'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
@@ -48,7 +69,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password', 'is_active', 'is_new',
-                  'option', 'niveau', 'nom_etablissement', 'ville_etablissement',
+                  'option', 'voie', 'niveau', 'nom_etablissement', 'ville_etablissement',
                   'nom_prof', 'prefix_prof')
 
     def save(self, **kwargs):
@@ -58,6 +79,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'password': self.validated_data.get('password', ''),
             'niveau': self.validated_data.get('niveau', ''),
             'option': self.validated_data.get('option', ''),
+            'voie': self.validated_data.get('voie', ''),
             'nom_etablissement': self.validated_data.get('nom_etablissement', ''),
             'ville_etablissement': self.validated_data.get('ville_etablissement', ''),
             'prefix_prof': self.validated_data.get('prefix_prof', ''),

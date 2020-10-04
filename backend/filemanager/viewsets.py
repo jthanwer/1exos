@@ -15,9 +15,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Exercice, Correction, Rating
 from .serializers import ExerciceSerializer, CorrectionSerializer, \
-    PreviewCorrectionSerializer, RatingSerializer
+    PreviewCorrectionSerializer, RatingSerializer, NotificationSerializer
 from .filters import ExerciceFilter
 from .permissions import IsBuyer
+from notifications.models import Notification
 
 import core.fluxes as fluxes
 import core.files as files
@@ -27,7 +28,6 @@ import os
 import sys
 from PIL import Image
 from io import BytesIO
-
 
 CONTENT_TYPES = {''}
 
@@ -58,21 +58,11 @@ class ExerciceViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        file = serializer.validated_data.get('file', None)
-        exercice = serializer.save(posteur=user,
-                                   prefix_prof=user.prefix_prof,
-                                   nom_prof=user.nom_prof,
-                                   ville_etablissement=user.ville_etablissement,
-                                   nom_etablissement=user.nom_etablissement,
-                                   file=None)
-
-        if file:
-            try:
-                exercice.file = files.compress_file(file, exercice.id)
-                exercice.save()
-            except:
-                exercice.delete()
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer.save(posteur=user,
+                        prefix_prof=user.prefix_prof,
+                        nom_prof=user.nom_prof,
+                        ville_etablissement=user.ville_etablissement,
+                        nom_etablissement=user.nom_etablissement)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -127,7 +117,7 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
     def my_posted_exercices(self, request):
         posteur = request.user
-        queryset = Exercice.objects.filter(posteur=posteur)
+        queryset = Exercice.objects.filter(posteur=posteur).order_by('-date_created')
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -135,14 +125,14 @@ class ExerciceViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
     def my_liked_exercices(self, request):
         posteur = request.user
-        queryset = Exercice.objects.filter(liked_by=posteur)
+        queryset = Exercice.objects.filter(liked_by=posteur).order_by('-date_created')
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @action(detail=False)
     def profs(self, request):
-        queryset = Exercice.objects.values('prefix_prof', 'nom_prof')\
+        queryset = Exercice.objects.values('prefix_prof', 'nom_prof') \
             .distinct()
         return Response({'results': queryset})
 
@@ -167,19 +157,10 @@ class CorrectionViewSet(viewsets.ModelViewSet):
         correcteur = request.user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        file = serializer.validated_data.get('file', None)
-        enonceid = serializer.validated_data.get('enonce_id', None)
         correction = serializer.save(correcteur=correcteur,
-                                     prix=cst.START_CORREC_PRICE(), file=None)
+                                     prix=cst.START_CORREC_PRICE())
 
-        if file:
-            try:
-                correction.file = files.compress_file(file, correction.id, enonce_id=enonceid)
-                fluxes.submit_correction(correction)
-                correction.save()
-            except:
-                correction.delete()
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        fluxes.submit_correction(correction)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -201,7 +182,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, permission_classes=[AllowAny])
     def my_posted_corrections(self, request):
         user = request.user
-        queryset = Correction.objects.filter(correcteur=user)
+        queryset = Correction.objects.filter(correcteur=user).order_by('-date_created')
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -210,6 +191,7 @@ class CorrectionViewSet(viewsets.ModelViewSet):
     def my_unlocked_corrections(self, request):
         user = request.user
         queryset = Correction.objects.filter(buyers=user).exclude(correcteur=user)
+        queryset = queryset.order_by('-date_created')
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -273,3 +255,18 @@ class RatingViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+
+# ----------------
+# -- Notification
+# ----------------
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all().order_by('-date_created')
+    serializer_class = NotificationSerializer
+
+    @action(methods=['get'], detail=True)
+    def read(self, request, pk=None):
+        notification = self.get_object()
+        notification.unread = False
+        notification.save()
+        return Response(status=status.HTTP_200_OK)

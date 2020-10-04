@@ -8,6 +8,9 @@
         />
       </figure>
     </b-modal>
+    <b-modal has-modal-card full-screen :active.sync="isExoModalActive">
+      <ModalExerciceComponent :id="exo.id" />
+    </b-modal>
     <div
       :class="[has_correc ? 'border-primary' : 'border-danger', 'card']"
       style="border-radius: 20px;"
@@ -116,11 +119,15 @@
 
 <script>
 import { mapState } from 'vuex'
+import ModalExerciceComponent from '@/components/ModalExercice.vue'
 import moment from 'moment'
 import niveaux from '@/data/niveaux.json'
 import types from '@/data/types.json'
 export default {
   name: 'ExercicePreview',
+  components: {
+    ModalExerciceComponent
+  },
   props: {
     exo: {
       type: Object,
@@ -133,6 +140,10 @@ export default {
     activated: {
       type: Boolean,
       default: true
+    },
+    showModal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -140,7 +151,8 @@ export default {
       niveaux: niveaux,
       types: types,
       isLivreModalActive: false,
-      isLiked: this.liked
+      isLiked: this.liked,
+      isExoModalActive: false
     }
   },
   computed: {
@@ -216,6 +228,10 @@ export default {
   },
   methods: {
     redirectExo() {
+      if (this.showModal) {
+        this.isExoModalActive = true
+        return
+      }
       if (this.activated) {
         this.$router.push({ name: 'exercice', params: { id: this.exo.id } })
       }

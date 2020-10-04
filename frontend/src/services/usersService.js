@@ -40,6 +40,12 @@ export default {
   getProfs() {
     return api.get(`users/profs/`).then(response => response.data.results)
   },
+  getNotifications() {
+    return api.get(`users/notifications/`).then(response => response.data)
+  },
+  setNotificationRead(id) {
+    return api.get(`notifications/${id}/read/`)
+  },
   setIsNew() {
     return api.get(`users/set_is_new/`)
   }

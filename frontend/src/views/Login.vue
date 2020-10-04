@@ -59,13 +59,23 @@
                 </form>
               </section>
               <footer class="card-footer">
-                <div class="card-footer-item has-text-centered">
-                  <span class="has-text-black"
-                    >Tu n'as pas encore de compte ?</span
-                  >
-                  <router-link class="pl-1" :to="{ name: 'register' }">
-                    <span>Crées-en un ici</span>
-                  </router-link>
+                <div
+                  class="card-footer-item has-text-centered"
+                  style="flex-wrap: wrap;"
+                >
+                  <div class="has-text-black">
+                    Tu n'as pas encore de compte ?
+                  </div>
+                  <div class="break"></div>
+                  <div>
+                    <b-button
+                      class="my-3"
+                      icon-left="account-plus"
+                      type="is-tertiary"
+                      @click="$router.push({ name: 'register' })"
+                      >Créer un compte</b-button
+                    >
+                  </div>
                 </div>
               </footer>
             </div>
@@ -174,5 +184,10 @@ export default {
   padding: 10px 20px;
   color: red;
   background-color: Snow;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
 }
 </style>

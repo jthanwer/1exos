@@ -1,21 +1,28 @@
 from rest_framework import serializers
 from .models import Exercice, Correction, Rating
+from notifications.models import Notification
 from users.serializers import BasicUserSerializer
-import decimal
 from django.db.models import Avg
+
+import decimal
 
 class PreviewCorrectionSerializer(serializers.ModelSerializer):
     mean_rating = serializers.SerializerMethodField()
+    before_deadline = serializers.SerializerMethodField()
 
     class Meta:
         model = Correction
-        fields = ('id', 'correcteur', 'prix', 'mean_rating')
+        fields = ('id', 'correcteur', 'prix', 'mean_rating', 'before_deadline')
 
     def get_mean_rating(self, obj):
         if obj.ratings.exists():
             mean_value = obj.ratings.aggregate(Avg('value'))['value__avg']
             return mean_value
         return None
+
+    def get_before_deadline(self, obj):
+        before_deadline = obj.date_created <= obj.enonce.date_limite
+        return before_deadline
 
 
 class PreviewEnonceSerializer(serializers.ModelSerializer):
@@ -93,3 +100,28 @@ class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
         fields = '__all__'
+
+
+# ----------------------------
+# -- Notification serializer
+# ----------------------------
+
+class GenericNotificationRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        if isinstance(value, Correction):
+            serializer = PreviewCorrectionSerializer(value)
+        if isinstance(value, Exercice):
+            serializer = PreviewEnonceSerializer(value)
+
+        return serializer.data
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    recipient = BasicUserSerializer()
+    target = GenericNotificationRelatedField(read_only=True)
+    action_object = GenericNotificationRelatedField(read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = ('id', 'unread', 'recipient', 'verb', 'target', 'action_object')

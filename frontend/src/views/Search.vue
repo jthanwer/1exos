@@ -133,6 +133,25 @@
                   </b-select>
                 </b-field>
 
+                <b-field v-if="[0, 1].includes(parseInt(form.niveau))">
+                  <b-checkbox v-model="filter.voie" type="is-secondary"
+                    >Voie</b-checkbox
+                  >
+                </b-field>
+                <b-field
+                  v-if="[0, 1].includes(parseInt(form.niveau)) && filter.voie"
+                >
+                  <b-select
+                    v-model="form.voie"
+                    placeholder="Choisir une voie"
+                    expanded
+                  >
+                    <option v-for="voie in voies" :key="voie" :value="voie">{{
+                      voie
+                    }}</option>
+                  </b-select>
+                </b-field>
+
                 <b-field v-if="form.niveau == 0">
                   <b-checkbox v-model="filter.option" type="is-secondary"
                     >Option</b-checkbox
@@ -485,6 +504,7 @@ import exercicesService from '@/services/exercicesService'
 import chapitres from '@/data/chapitres.json'
 import classes from '@/data/niveaux.json'
 import options from '@/data/options.json'
+import voies from '@/data/voies.json'
 import types from '@/data/types.json'
 import livres from '@/data/livres.json'
 import ExercicePreview from '@/components/ExercicePreview.vue'
@@ -513,6 +533,7 @@ export default {
       chapitres: chapitres,
       classes: classes,
       options: options,
+      voies: voies,
       types: types,
       livres: livres,
 
@@ -531,6 +552,7 @@ export default {
       filter: {
         niveau: false,
         option: false,
+        voie: false,
         chapitre: false,
         type: false,
         devoir: false,
@@ -548,6 +570,7 @@ export default {
       form: {
         niveau: null,
         option: null,
+        voie: null,
         chapitre: null,
         type: null,
         devoir: null,
@@ -673,6 +696,9 @@ export default {
         }
         if (inputs.niveau != 0) {
           this.filter.option = false
+        }
+        if (inputs.niveau != 0 && inputs.niveau != 1) {
+          this.filter.voie = false
         }
         for (let [key, value] of Object.entries(inputs)) {
           if (value === '') {

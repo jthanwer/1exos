@@ -9,7 +9,7 @@
               <p
                 class="card-header-title is-centered has-background-primary has-text-white"
               >
-                Crée ton compte
+                Créer un compte
               </p>
             </header>
             <section class="card-content">
@@ -81,13 +81,37 @@
                 </ValidationProvider>
 
                 <ValidationProvider
-                  v-if="form.niveau == 0"
+                  v-if="[0, 1].includes(parseInt(form.niveau))"
                   v-slot="{ errors, valid }"
                   slim
                   rules="required"
                 >
                   <b-field
-                    v-if="form.niveau == 0"
+                    v-if="[0, 1].includes(parseInt(form.niveau))"
+                    label="Voie"
+                    :message="errors"
+                    :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                  >
+                    <b-select
+                      v-model="form.voie"
+                      expanded
+                      placeholder="Choisis ta voie..."
+                    >
+                      <option v-for="voie in voies" :key="voie" :value="voie">{{
+                        voie
+                      }}</option>
+                    </b-select>
+                  </b-field>
+                </ValidationProvider>
+
+                <ValidationProvider
+                  v-if="form.niveau == 0 && form.voie == 'Générale'"
+                  v-slot="{ errors, valid }"
+                  slim
+                  rules="required"
+                >
+                  <b-field
+                    v-if="form.niveau == 0 && form.voie == 'Générale'"
                     label="Option"
                     :message="errors"
                     :type="{ 'is-danger': errors[0], 'is-success': valid }"
@@ -369,6 +393,7 @@
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import niveaux from '@/data/niveaux.json'
 import options from '@/data/options.json'
+import voies from '@/data/voies.json'
 import usersService from '@/services/usersService'
 
 export default {
@@ -381,6 +406,7 @@ export default {
     return {
       niveaux: niveaux,
       options: options,
+      voies: voies,
       input_username: null,
       is_loading: false,
 
@@ -394,6 +420,7 @@ export default {
         password1: null,
         password2: null,
         niveau: null,
+        voie: null,
         option: null,
         ville_etablissement: null,
         nom_etablissement: null,
@@ -499,7 +526,14 @@ export default {
       fd.append('email', email)
       fd.append('password', this.form.password1)
       fd.append('niveau', parseInt(this.form.niveau))
-      if (this.form.option) {
+      if (this.form.voie && [0, 1].includes(parseInt(this.form.niveau))) {
+        fd.append('voie', this.form.voie)
+      }
+      if (
+        this.form.option &&
+        this.form.voie == 'Générale' &&
+        this.form.niveau == 0
+      ) {
         fd.append('option', this.form.option)
       }
       fd.append('nom_etablissement', this.form.nom_etablissement)

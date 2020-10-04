@@ -5,75 +5,7 @@
     <!-- </div> -->
     <div class="mt-2"></div>
     <div class="columns">
-      <div class="column is-8">
-        <div v-if="correc">
-          <div v-if="correc.file">
-            <div v-if="correc.filetype == 'pdf'">
-              <div class="field is-grouped is-grouped-centered">
-                <div class="control">
-                  <b-button
-                    type="is-tertiary"
-                    icon-left="rotate-left"
-                    @click="rotate -= 90"
-                  ></b-button>
-                </div>
-                <div class="field">
-                  <div class="b-numberinput field has-addons ">
-                    <p class="control">
-                      <b-button
-                        :disabled="page == 1"
-                        type="is-primary"
-                        icon-left="chevron-left"
-                        @click="page -= 1"
-                      />
-                    </p>
-                    <div class="control clear-fix">
-                      <input
-                        v-model.number="page"
-                        class="input"
-                        type="number"
-                        placeholder="Text input"
-                        min="1"
-                        :max="numPages"
-                      />
-                    </div>
-                    <p class="control">
-                      <b-button
-                        :disabled="page == numPages"
-                        type="is-primary"
-                        icon-left="chevron-right"
-                        @click="page += 1"
-                      />
-                    </p>
-                  </div>
-                </div>
-                <div class="control">
-                  <b-button
-                    type="is-tertiary"
-                    icon-left="rotate-right"
-                    @click="rotate += 90"
-                  ></b-button>
-                </div>
-              </div>
-
-              <pdf
-                ref="pdf"
-                class="correc-container"
-                :src="correc.file"
-                :page="page"
-                :rotate="rotate"
-                @progress="loadedRatio = $event"
-                @num-pages="numPages = $event"
-              ></pdf>
-            </div>
-            <div v-else>
-              <ImageContainer v-model="correc.file" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="column is-3 is-offset-1">
+      <div class="column is-3">
         <div class="correc-info box pa-5 mb-8 has-text-centered">
           <div v-if="correc">
             <div class="columns is-centered is-multiline">
@@ -259,6 +191,74 @@
             </div>
           </div>
         </b-modal>
+      </div>
+
+      <div class="column is-offset-1 is-8">
+        <div v-if="correc">
+          <div v-if="correc.file">
+            <div v-if="correc.filetype == 'pdf'">
+              <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                  <b-button
+                    type="is-tertiary"
+                    icon-left="rotate-left"
+                    @click="rotate -= 90"
+                  ></b-button>
+                </div>
+                <div class="field">
+                  <div class="b-numberinput field has-addons ">
+                    <p class="control">
+                      <b-button
+                        :disabled="page == 1"
+                        type="is-primary"
+                        icon-left="chevron-left"
+                        @click="page -= 1"
+                      />
+                    </p>
+                    <div class="control clear-fix">
+                      <input
+                        v-model.number="page"
+                        class="input"
+                        type="number"
+                        placeholder="Text input"
+                        min="1"
+                        :max="numPages"
+                      />
+                    </div>
+                    <p class="control">
+                      <b-button
+                        :disabled="page == numPages"
+                        type="is-primary"
+                        icon-left="chevron-right"
+                        @click="page += 1"
+                      />
+                    </p>
+                  </div>
+                </div>
+                <div class="control">
+                  <b-button
+                    type="is-tertiary"
+                    icon-left="rotate-right"
+                    @click="rotate += 90"
+                  ></b-button>
+                </div>
+              </div>
+
+              <pdf
+                ref="pdf"
+                class="correc-container"
+                :src="correc.file"
+                :page="page"
+                :rotate="rotate"
+                @progress="loadedRatio = $event"
+                @num-pages="numPages = $event"
+              ></pdf>
+            </div>
+            <div v-else>
+              <ImageContainer v-model="correc.file" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

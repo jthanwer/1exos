@@ -45,7 +45,7 @@
 
 <script>
 export default {
-  name: "AuthModal",
+  name: 'AuthModal',
   data() {
     return {
       form: {
@@ -53,23 +53,23 @@ export default {
         password: null
       },
       error: false
-    };
+    }
   },
   methods: {
     validate() {
-      let { username, password } = this.form;
+      let { username, password } = this.form
       this.$store
-        .dispatch("authentication/authRequest", { username, password })
+        .dispatch('authentication/authRequest', { username, password })
         .then(() => {
-          this.$parent.close();
+          this.$parent.close()
         })
         .then(() => {
-          this.$router.push("/");
+          this.$router.push('/')
         })
         .catch(() => {
-          this.error = true;
-        });
+          this.error = true
+        })
     }
   }
-};
+}
 </script>

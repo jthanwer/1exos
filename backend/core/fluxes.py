@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
-from users.models import CustomUser
-from .constants import *
+import core.constants as cst
 
 
 # ----------------------------
@@ -25,11 +24,11 @@ def submit_correction(correction):
     # -- Sinon, applique un prix différent selon la situation
     else:
         if posteur == correcteur:
-            correction.gain = SELFCORREC_POINTS()
+            correction.gain = cst.SELFCORREC_POINTS()
         elif now > exercice.date_limite:
-            correction.gain = DEADLINE_POINTS()
+            correction.gain = cst.DEADLINE_POINTS()
         else:
-            correction.gain = MULTIPLECORREC_POINTS()
+            correction.gain = cst.MULTIPLECORREC_POINTS()
         correcteur.tirelire += correction.gain
         correction.is_favorite = False
 
@@ -102,11 +101,11 @@ def delete_correction(correction):
     # -- Sinon, retire les points gagnés
     else:
         if posteur == correcteur:
-            correcteur.tirelire -= SELFCORREC_POINTS()
+            correcteur.tirelire -= cst.SELFCORREC_POINTS()
         elif date_created > exercice.date_limite:
-            correcteur.tirelire -= DEADLINE_POINTS()
+            correcteur.tirelire -= cst.DEADLINE_POINTS()
         else:
-            correcteur.tirelire -= MULTIPLECORREC_POINTS()
+            correcteur.tirelire -= cst.MULTIPLECORREC_POINTS()
 
     # -- Si la correction était la seule disponible,
     # rembourse les acheteurs

@@ -227,7 +227,7 @@ pychar<template>
                       >Nom</strong
                     >
                     <strong v-else class="heading"
-                      >Professeur de méthématiques</strong
+                      >Professeur de mathématiques</strong
                     >
                     <p class="title is-5">
                       <span class="mr-1">{{
@@ -297,6 +297,121 @@ pychar<template>
                             >Valider</b-button
                           >
                         </b-field>
+                      </form>
+                    </ValidationObserver>
+                  </div>
+                </div>
+                <div v-if="[0, 1].includes(user.niveau)" class="column is-12">
+                  <div class="box">
+                    <b-button
+                      :type="{
+                        'is-primary': form_user_active['voie']
+                      }"
+                      icon-left="pencil"
+                      :native-value="true"
+                      class="mb-3 is-pulled-right"
+                      @click="
+                        form_user_active['voie'] = !form_user_active['voie']
+                      "
+                    >
+                    </b-button>
+                    <strong class="heading">Voie</strong>
+                    <p class="title is-5">{{ user.voie }}</p>
+                    <ValidationObserver ref="voie">
+                      <form
+                        v-if="form_user_active['voie']"
+                        @submit.prevent="validateForm('voie')"
+                      >
+                        <ValidationProvider v-slot="{ errors, valid }" slim>
+                          <b-field position="is-centered" grouped>
+                            <b-field
+                              expanded
+                              :message="errors"
+                              :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }"
+                            >
+                              <b-select
+                                v-model="form_user['voie']"
+                                expanded
+                                placeholder="Choisis ta voie..."
+                              >
+                                <option
+                                  v-for="voie in voies"
+                                  :key="voie"
+                                  :value="voie"
+                                  >{{ voie }}</option
+                                >
+                              </b-select>
+                            </b-field>
+                            <b-button
+                              class="mb-3 is-pulled-right"
+                              type="is-success"
+                              @click="validateForm('voie')"
+                              >Valider</b-button
+                            >
+                          </b-field>
+                        </ValidationProvider>
+                      </form>
+                    </ValidationObserver>
+                  </div>
+                </div>
+                <div
+                  v-if="user.niveau == 0 && user.voie == 'Générale'"
+                  class="column is-12"
+                >
+                  <div class="box">
+                    <b-button
+                      :type="{
+                        'is-primary': form_user_active['option']
+                      }"
+                      icon-left="pencil"
+                      :native-value="true"
+                      class="mb-3 is-pulled-right"
+                      @click="
+                        form_user_active['option'] = !form_user_active['option']
+                      "
+                    >
+                    </b-button>
+                    <strong class="heading">Option</strong>
+                    <p class="title is-5">{{ user.option }}</p>
+                    <ValidationObserver ref="option">
+                      <form
+                        v-if="form_user_active['option']"
+                        @submit.prevent="validateForm('option')"
+                      >
+                        <ValidationProvider v-slot="{ errors, valid }" slim>
+                          <b-field position="is-centered" grouped>
+                            <b-field
+                              expanded
+                              :message="errors"
+                              :type="{
+                                'is-danger': errors[0],
+                                'is-success': valid
+                              }"
+                            >
+                              <b-select
+                                v-model="form_user['option']"
+                                expanded
+                                placeholder="Choisis ton option..."
+                              >
+                                <option
+                                  v-for="option in options"
+                                  :key="option"
+                                  :value="option"
+                                  >{{ option }}</option
+                                >
+                              </b-select>
+                            </b-field>
+                            <b-button
+                              class="mb-3 is-pulled-right"
+                              type="is-success"
+                              @click="validateForm('option')"
+                              >Valider</b-button
+                            >
+                          </b-field>
+                        </ValidationProvider>
                       </form>
                     </ValidationObserver>
                   </div>
@@ -439,7 +554,7 @@ pychar<template>
           <div class="columns is-centered">
             <div class="column is-8">
               <p class="card-header-title has-text-tertiary is-size-2">
-                Scolarité
+                Mot de passe
               </p>
               <hr class="has-background-tertiary" />
             </div>
@@ -465,7 +580,7 @@ pychar<template>
                   </b-field>
                 </ValidationProvider>
               </b-field>
-              <b-field grouped>
+              <b-field grouped expanded>
                 <ValidationProvider
                   v-slot="{ errors, valid }"
                   slim
@@ -473,6 +588,7 @@ pychar<template>
                   name="new_password"
                 >
                   <b-field
+                    expanded
                     label="Nouveau mot de passe"
                     :message="errors"
                     :type="{ 'is-danger': errors[0], 'is-success': valid }"
@@ -489,7 +605,8 @@ pychar<template>
                   rules="required|same_password:@new_password"
                 >
                   <b-field
-                    label="Confirmation"
+                    expanded
+                    label="Confirmation du nouveau mot de passe"
                     :message="errors"
                     :type="{ 'is-danger': errors[0], 'is-success': valid }"
                   >
@@ -518,6 +635,8 @@ import { mapState } from 'vuex'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import usersService from '@/services/usersService'
 import classes from '@/data/niveaux.json'
+import voies from '@/data/voies.json'
+import options from '@/data/options.json'
 export default {
   name: 'Profile',
   components: {
@@ -527,6 +646,8 @@ export default {
   data() {
     return {
       classes: classes,
+      voies: voies,
+      options: options,
 
       selected: 1,
       isActive: true,
@@ -535,6 +656,8 @@ export default {
         username: false,
         email: false,
         niveau: false,
+        voie: false,
+        option: false,
         ville_etablissement: false,
         nom_etablissement: false,
         prof: false
@@ -543,6 +666,8 @@ export default {
         username: null,
         email: null,
         niveau: null,
+        voie: null,
+        option: null,
         ville_etablissement: null,
         nom_etablissement: null,
         prefix_prof: null,
@@ -659,6 +784,19 @@ export default {
         }
         // Else is easy
         else {
+          if (element == 'niveau' && this.form_user[element] != 0) {
+            payload['option'] = null
+          }
+          if (element == 'voie' && this.form_user[element] != 'Générale') {
+            payload['option'] = null
+          }
+          if (
+            element == 'niveau' &&
+            ![0, 1].includes(parseInt(this.form_user[element]))
+          ) {
+            payload['voie'] = null
+            payload['option'] = null
+          }
           payload[element] = this.form_user[element]
           this.updateProfile(payload, element)
         }

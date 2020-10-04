@@ -46,7 +46,7 @@
 
                   <div class="column is-8">
                     <div>
-                      <b-field position="is-centered">
+                      <b-field grouped group-multiline position="is-centered">
                         <b-radio-button
                           v-model="choice_amount"
                           :native-value="5"
@@ -94,43 +94,50 @@
                         </b-radio-button>
                       </b-field>
 
-                      <div
-                        class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold"
-                      >
-                        Autre montant ?
-                      </div>
-                      <ValidationProvider
-                        v-slot="{ errors }"
-                        slim
-                        rules="integer|min_value:5"
-                      >
-                        <b-field position="is-centered" grouped>
-                          <b-field
-                            :message="errors"
-                            :type="{ 'is-danger': errors[0] }"
+                      <div class="columns is-centered">
+                        <div class="column is-half">
+                          <div
+                            class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold"
                           >
-                            <b-input
-                              v-model="specific_amount"
-                              size="is-medium"
-                              @input="typeSpecificAmount()"
-                            >
-                            </b-input>
-                          </b-field>
-                          <p class="control">
-                            <span class="button is-medium is-static">€</span>
+                            Autre montant ?
+                          </div>
+                          <ValidationProvider
+                            v-slot="{ errors }"
+                            slim
+                            rules="integer|min_value:5"
+                          >
+                            <b-field expanded position="is-centered" grouped>
+                              <b-field
+                                expanded
+                                :message="errors"
+                                :type="{ 'is-danger': errors[0] }"
+                              >
+                                <b-input
+                                  v-model="specific_amount"
+                                  size="is-medium"
+                                  @input="typeSpecificAmount()"
+                                >
+                                </b-input>
+                              </b-field>
+                              <p class="control">
+                                <span class="button is-medium is-static"
+                                  >€</span
+                                >
+                              </p>
+                            </b-field>
+                          </ValidationProvider>
+                          <p class=" mb-1 mt-4 has-text-centered subtitle">
+                            <span class="has-text-weight-bold">
+                              {{ amount }} €
+                            </span>
+                            = {{ gross_amount_points }} pts +
+                            {{ bonus_points }} pts bonus =
+                            <span class="has-text-weight-bold has-text-danger">
+                              {{ net_amount_points }} pts
+                            </span>
                           </p>
-                        </b-field>
-                      </ValidationProvider>
-                      <p class=" mb-1 mt-4 has-text-centered subtitle">
-                        <span class="has-text-weight-bold">
-                          {{ amount }} €
-                        </span>
-                        = {{ gross_amount_points }} pts + {{ bonus_points }} pts
-                        bonus =
-                        <span class="has-text-weight-bold has-text-danger">
-                          {{ net_amount_points }} pts
-                        </span>
-                      </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

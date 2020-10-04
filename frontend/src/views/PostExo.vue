@@ -2,7 +2,7 @@
   <div class="container is-fluid">
     <b-loading is-full-page :active.sync="is_loading"></b-loading>
     <div class="columns is-centered">
-      <div class="column is-8">
+      <div class="column is-12">
         <div v-if="user && user.is_new" class="card has-text-centered">
           <div class="card-content">
             <div class="is-size-5">
@@ -217,13 +217,58 @@
                     </ValidationProvider>
 
                     <ValidationProvider
-                      v-if="user && form.niveau == 0 && user.niveau == 100"
+                      v-if="
+                        user &&
+                          [0, 1].includes(parseInt(form.niveau)) &&
+                          user.niveau == 100
+                      "
                       v-slot="{ errors, valid }"
                       slim
                       rules="required"
                     >
                       <b-field
-                        v-if="form.niveau == 0 && user.niveau == 100"
+                        v-if="
+                          user &&
+                            [0, 1].includes(parseInt(form.niveau)) &&
+                            user.niveau == 100
+                        "
+                        label="Voie"
+                        :message="errors"
+                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                      >
+                        <b-select
+                          v-model="form.voie"
+                          expanded
+                          placeholder="Choisis la voie..."
+                        >
+                          <option
+                            v-for="voie in voies"
+                            :key="voie"
+                            :value="voie"
+                            >{{ voie }}</option
+                          >
+                        </b-select>
+                      </b-field>
+                    </ValidationProvider>
+
+                    <ValidationProvider
+                      v-if="
+                        user &&
+                          form.niveau == 0 &&
+                          form.voie == 'Générale' &&
+                          user.niveau == 100
+                      "
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="required"
+                    >
+                      <b-field
+                        v-if="
+                          user &&
+                            form.niveau == 0 &&
+                            form.voie == 'Générale' &&
+                            user.niveau == 100
+                        "
                         label="Option"
                         :message="errors"
                         :type="{ 'is-danger': errors[0], 'is-success': valid }"
@@ -231,7 +276,7 @@
                         <b-select
                           v-model="form.option"
                           expanded
-                          placeholder="Choisis ton option..."
+                          placeholder="Choisis l'option..."
                         >
                           <option
                             v-for="option in options"
@@ -287,162 +332,12 @@
             </b-step-item>
 
             <b-step-item
-              id="secondStep"
-              label="Points et Délai"
-              :style="{ 'min-height': height }"
-            >
-              <hr ref="scroll2" />
-              <h1 class="title has-text-centered">Points et Délai</h1>
-              <hr />
-              <div class="notification is-tertiary is-light">
-                <div class="media">
-                  <div class="media-left">
-                    <b-icon icon="information"></b-icon>
-                  </div>
-                  <div
-                    v-if="
-                      user &&
-                        constants &&
-                        constants['MEAN_PRICES'][user.niveau] > 0 &&
-                        user.niveau != 100
-                    "
-                    class="media-content"
-                  >
-                    <strong>
-                      Les exos de niveau {{ niveaux[user.niveau] }} se corrigent
-                      actuellement pour
-                      {{ constants['MEAN_PRICES'][user.niveau] }}
-                      {{
-                        constants['MEAN_PRICES'][user.niveau] > 1 ? 'pts' : 'pt'
-                      }}
-                    </strong>
-                    (en moyenne).
-                  </div>
-                  <div
-                    v-else-if="
-                      user &&
-                        constants &&
-                        constants['MEAN_PRICES'][form.niveau] > 0 &&
-                        user.niveau == 100
-                    "
-                    class="media-content"
-                  >
-                    <strong
-                      >Les exos de niveau {{ niveaux[form.niveau] }} se
-                      corrigent actuellement pour
-                      {{ constants['MEAN_PRICES'][form.niveau] }}
-                      {{
-                        constants['MEAN_PRICES'][form.niveau] > 1 ? 'pts' : 'pt'
-                      }}</strong
-                    >
-                    (en moyenne).
-                  </div>
-                  <div v-else class="media-content">
-                    Aucun exercice de ce niveau n'est en ligne pour le moment.
-                    Calcul de la moyenne impossible.
-                  </div>
-                </div>
-              </div>
-              <div v-if="user" class="columns is-centered">
-                <div class="column is-half">
-                  <ValidationObserver ref="secondStep">
-                    <ValidationProvider
-                      v-slot="{ errors, valid }"
-                      slim
-                      :rules="{
-                        required: true,
-                        min_value: 1,
-                        max_tirelire_value: user.tirelire,
-                        integer: true
-                      }"
-                    >
-                      <b-field
-                        :message="errors"
-                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
-                      >
-                        <template slot="label">
-                          Points
-                          <b-tooltip
-                            type="is-dark"
-                            label="Quel est le nombre de points que tu es prêt à céder pour obtenir la correction de ton exo ?"
-                            multilined
-                          >
-                            <b-icon
-                              size="is-small"
-                              icon="help-circle-outline"
-                            ></b-icon>
-                          </b-tooltip>
-                        </template>
-                        <b-numberinput
-                          v-model="form.prix"
-                          :min="1"
-                          :max="user.tirelire"
-                          placeholder="Choisir un nombre de points"
-                        >
-                        </b-numberinput>
-                      </b-field>
-                    </ValidationProvider>
-
-                    <ValidationProvider
-                      v-slot="{ errors, valid }"
-                      slim
-                      rules="required"
-                    >
-                      <b-field
-                        :message="errors"
-                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
-                      >
-                        <template slot="label">
-                          À faire pour...
-                          <b-tooltip
-                            type="is-dark"
-                            label="Quelle est la date avant laquelle tu aimerais obtenir ta correction ? 
-                            "
-                            multilined
-                          >
-                            <b-icon
-                              size="is-small"
-                              icon="help-circle-outline"
-                            ></b-icon>
-                          </b-tooltip>
-                        </template>
-                        <b-datetimepicker
-                          ref="datetimepicker"
-                          v-model="form.date_limite"
-                          expanded
-                          placeholder="Choisir une date limite"
-                          :datepicker="datepicker_attrs"
-                          :min-datetime="minDatetime"
-                          icon="calendar-today"
-                        >
-                          <template slot="right">
-                            <button
-                              class="button is-primary"
-                              @click="$refs.datetimepicker.toggle()"
-                            >
-                              <b-icon icon="check"></b-icon>
-                              <span>Valider</span>
-                            </button>
-                          </template>
-                        </b-datetimepicker>
-                      </b-field>
-                    </ValidationProvider>
-                    <div class="has-text-grey is-size-6">
-                      Si tu n’obtiens pas de correction à la fin de ton délai,
-                      tu ne perds pas de points.
-                    </div>
-                  </ValidationObserver>
-                </div>
-              </div>
-            </b-step-item>
-
-            <b-step-item
               v-if="!form.is_from_livre"
-              id="thirdStep1"
+              id="secondStep1"
               :style="{ 'min-height': height }"
               label="Énoncé"
             >
-              <hr ref="scroll3" />
+              <hr ref="scroll2" />
               <h1 class="title has-text-centered">Énoncé</h1>
               <hr />
               <div class="notification is-warning is-light">
@@ -456,7 +351,7 @@
                   </div>
                 </div>
               </div>
-              <ValidationObserver ref="thirdStep">
+              <ValidationObserver ref="secondStep">
                 <ValidationProvider v-slot="{ errors }" slim rules="required">
                   <Upload v-model="drop_file" :error="errors[0]" />
                 </ValidationProvider>
@@ -465,16 +360,16 @@
 
             <b-step-item
               v-else
-              id="thirdStep2"
+              id="secondStep2"
               :style="{ 'min-height': height }"
               label="Livre"
             >
-              <hr ref="scroll3" />
+              <hr ref="scroll2" />
               <h1 class="title has-text-centered">Livre</h1>
               <hr />
               <div class="columns">
                 <div class="column is-half">
-                  <ValidationObserver ref="thirdStep" slim>
+                  <ValidationObserver ref="secondStep" slim>
                     <ValidationProvider
                       v-slot="{ errors, valid }"
                       slim
@@ -584,10 +479,202 @@
             </b-step-item>
 
             <b-step-item
-              label="Récapitulatif"
+              id="thirdStep"
+              label="Vérification"
+              :style="{ 'min-height': height }"
+            >
+              <hr ref="scroll3" />
+              <h1 class="title has-text-centered">Vérification</h1>
+              <hr />
+              <div class="notification is-tertiary is-light">
+                <div class="media">
+                  <div class="media-left">
+                    <b-icon icon="information"></b-icon>
+                  </div>
+                  <div
+                    v-if="count_elements > 0"
+                    class="media-content has-text-weight-bold"
+                  >
+                    Des exos semblables au tien ont déjà été corrigés. Vérifie
+                    qu'il ne figure pas parmi eux.
+                  </div>
+                  <div v-else class="media-content has-text-weight-bold">
+                    Aucun exo semblable au tien n'a encore été corrigé. Tu peux
+                    continuer.
+                  </div>
+                </div>
+              </div>
+              <div class="columns is-multiline">
+                <ValidationObserver ref="thirdStep" />
+                <div
+                  v-for="result_exo in result_exos"
+                  :key="result_exo.id"
+                  class="column is-12"
+                >
+                  <ExercicePreview :exo="result_exo" :show-modal="true">
+                  </ExercicePreview>
+                </div>
+              </div>
+            </b-step-item>
+
+            <b-step-item
+              id="fourthStep"
+              label="Points et Délai"
               :style="{ 'min-height': height }"
             >
               <hr ref="scroll4" />
+              <h1 class="title has-text-centered">Points et Délai</h1>
+              <hr />
+              <div class="notification is-tertiary is-light">
+                <div class="media">
+                  <div class="media-left">
+                    <b-icon icon="information"></b-icon>
+                  </div>
+                  <div
+                    v-if="
+                      user &&
+                        constants &&
+                        constants['MEAN_PRICES'][user.niveau] > 0 &&
+                        user.niveau != 100
+                    "
+                    class="media-content"
+                  >
+                    <strong>
+                      Les exos de niveau {{ niveaux[user.niveau] }} se corrigent
+                      actuellement pour
+                      {{ constants['MEAN_PRICES'][user.niveau] }}
+                      {{
+                        constants['MEAN_PRICES'][user.niveau] > 1 ? 'pts' : 'pt'
+                      }}
+                    </strong>
+                    (en moyenne).
+                  </div>
+                  <div
+                    v-else-if="
+                      user &&
+                        constants &&
+                        constants['MEAN_PRICES'][form.niveau] > 0 &&
+                        user.niveau == 100
+                    "
+                    class="media-content"
+                  >
+                    <strong
+                      >Les exos de niveau {{ niveaux[form.niveau] }} se
+                      corrigent actuellement pour
+                      {{ constants['MEAN_PRICES'][form.niveau] }}
+                      {{
+                        constants['MEAN_PRICES'][form.niveau] > 1 ? 'pts' : 'pt'
+                      }}</strong
+                    >
+                    (en moyenne).
+                  </div>
+                  <div v-else class="media-content">
+                    Aucun exercice de ce niveau n'est en ligne pour le moment.
+                    Calcul de la moyenne impossible.
+                  </div>
+                </div>
+              </div>
+              <div v-if="user" class="columns is-centered">
+                <div class="column is-half">
+                  <ValidationObserver ref="fourthStep">
+                    <ValidationProvider
+                      v-slot="{ errors, valid }"
+                      slim
+                      :rules="{
+                        required: true,
+                        min_value: 1,
+                        max_tirelire_value: [
+                          user.tirelire_avail,
+                          user.tirelire
+                        ],
+                        integer: true
+                      }"
+                    >
+                      <b-field
+                        :message="errors"
+                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                      >
+                        <template slot="label">
+                          Points
+                          <b-tooltip
+                            type="is-dark"
+                            label="Quel est le nombre de points que tu es prêt à céder pour obtenir la correction de ton exo ?"
+                            multilined
+                          >
+                            <b-icon
+                              size="is-small"
+                              icon="help-circle-outline"
+                            ></b-icon>
+                          </b-tooltip>
+                        </template>
+                        <b-numberinput
+                          v-model="form.prix"
+                          :min="1"
+                          :max="user.tirelire_avail"
+                          placeholder="Choisir un nombre de points"
+                        >
+                        </b-numberinput>
+                      </b-field>
+                    </ValidationProvider>
+
+                    <ValidationProvider
+                      v-slot="{ errors, valid }"
+                      slim
+                      rules="required"
+                    >
+                      <b-field
+                        :message="errors"
+                        :type="{ 'is-danger': errors[0], 'is-success': valid }"
+                      >
+                        <template slot="label">
+                          À faire pour...
+                          <b-tooltip
+                            type="is-dark"
+                            label="Quelle est la date avant laquelle tu aimerais obtenir ta correction ? 
+                            "
+                            multilined
+                          >
+                            <b-icon
+                              size="is-small"
+                              icon="help-circle-outline"
+                            ></b-icon>
+                          </b-tooltip>
+                        </template>
+                        <b-datetimepicker
+                          ref="datetimepicker"
+                          v-model="form.date_limite"
+                          expanded
+                          placeholder="Choisir une date limite"
+                          :datepicker="datepicker_attrs"
+                          :min-datetime="minDatetime"
+                          icon="calendar-today"
+                        >
+                          <template slot="right">
+                            <button
+                              class="button is-primary"
+                              @click="$refs.datetimepicker.toggle()"
+                            >
+                              <b-icon icon="check"></b-icon>
+                              <span>Valider</span>
+                            </button>
+                          </template>
+                        </b-datetimepicker>
+                      </b-field>
+                    </ValidationProvider>
+                    <div class="has-text-grey is-size-6">
+                      Si tu n’obtiens pas de correction à la fin de ton délai,
+                      tu ne perds pas de points.
+                    </div>
+                  </ValidationObserver>
+                </div>
+              </div>
+            </b-step-item>
+
+            <b-step-item
+              label="Récapitulatif"
+              :style="{ 'min-height': height }"
+            >
+              <hr ref="scroll5" />
               <h1 class="title has-text-centered">Récapitulatif</h1>
               <hr />
               <div class="notification is-tertiary is-light">
@@ -631,7 +718,7 @@
                   Revenir en arrière
                 </b-button>
                 <b-button
-                  v-if="activeStep < 3"
+                  v-if="activeStep < 4"
                   type="is-tertiary"
                   :disabled="next.disabled"
                   @click.prevent="goNext(next, activeStep)"
@@ -653,9 +740,11 @@
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import { mapState } from 'vuex'
+import exercicesService from '@/services/exercicesService'
 import moment from 'moment'
 import chapitres from '@/data/chapitres.json'
 import niveaux from '@/data/niveaux.json'
+import voies from '@/data/voies.json'
 import options from '@/data/options.json'
 import types from '@/data/types.json'
 import livres from '@/data/livres.json'
@@ -678,12 +767,16 @@ export default {
     return {
       chapitres: chapitres,
       niveaux: niveaux,
+      voies: voies,
       options: options,
       types: types,
       livres: livres,
       height: '400px',
       minDatetime: min,
 
+      result_exos: [],
+      count_elements: 0,
+      current_page: 1,
       is_loading: false,
       uploadPercentage: 0,
 
@@ -713,6 +806,7 @@ export default {
         is_from_livre: null,
         chapitre: null,
         niveau: null,
+        voie: null,
         option: null,
         has_num: null,
         is_from_devoir: null,
@@ -737,18 +831,22 @@ export default {
         return
       }
       let niveau = null
+      let voie = null
       let option = null
       if (this.user.niveau == 100) {
         niveau = this.form.niveau
+        voie = this.form.voie
         option = this.form.option
       } else {
         niveau = this.user.niveau
+        voie = this.user.voie
         option = this.user.option
       }
       return {
-        id: 1,
+        id: 'ID',
         posteur: this.user,
         niveau: niveau,
+        voie: voie,
         option: option,
         type: this.form.type,
         chapitre: this.form.chapitre,
@@ -766,6 +864,27 @@ export default {
         date_created: moment(),
         correcs: []
       }
+    },
+    text_query() {
+      let lookup_keys = [
+        'niveau',
+        'option',
+        'type',
+        'chapitre',
+        'livre',
+        'devoir',
+        'num_page',
+        'num_exo'
+      ]
+      let text = '?'
+      for (let [key, value] of Object.entries(this.exo)) {
+        if (value !== null && lookup_keys.includes(key)) {
+          let encoded_value = encodeURI(value)
+          text += `${key}=${encoded_value}&`
+        }
+      }
+      text += 'is_corrected=true'
+      return text
     }
   },
   mounted() {
@@ -774,6 +893,16 @@ export default {
   methods: {
     redirectStandards() {
       this.$router.push({ name: 'standards-qualite' })
+    },
+    searchExercices() {
+      return new Promise((resolve, reject) => {
+        exercicesService.searchExercices(this.text_query).then(data => {
+          this.count_elements = data.count
+          this.result_exos = []
+          this.result_exos.push(...data.results)
+          resolve(this.count_elements)
+        })
+      })
     },
     submit() {
       this.is_loading = true
@@ -791,9 +920,11 @@ export default {
       }
       if (this.user.niveau == 100) {
         fd.append('niveau', parseInt(this.form.niveau))
+        fd.append('voie', this.form.voie)
         fd.append('option', this.form.option)
       } else {
         fd.append('niveau', parseInt(this.user.niveau))
+        fd.append('voie', this.user.voie)
         fd.append('option', this.user.option)
       }
       fd.append('prix', parseInt(this.form.prix))
@@ -819,7 +950,11 @@ export default {
         .dispatch('exercices/postExercice', { fd, config })
         .then(data => {
           this.is_loading = false
-          this.$router.push({ name: 'exercice', params: { id: data.id } })
+          this.$store
+            .dispatch('authentication/getProfileUser')
+            .then(
+              this.$router.push({ name: 'exercice', params: { id: data.id } })
+            )
         })
         .catch(() => {
           this.is_loading = false
@@ -848,6 +983,11 @@ export default {
           refscrollfw = this.$refs.scroll4
           refscrollbw = this.$refs.scroll3
           break
+        case 3:
+          ref = this.$refs.fourthStep
+          refscrollfw = this.$refs.scroll5
+          refscrollbw = this.$refs.scroll4
+          break
         default:
           ref = this.$refs.firstStep
           refscrollfw = this.$refs.scroll2
@@ -855,7 +995,16 @@ export default {
       }
       ref.validate().then(success => {
         if (success) {
-          next.action()
+          if (activeStep == 1) {
+            this.searchExercices().then(count => {
+              next.action()
+              if (count == 0) {
+                next.action()
+              }
+            })
+          } else {
+            next.action()
+          }
           this.$nextTick(() => {
             let toscroll =
               refscrollfw.getBoundingClientRect().top + window.pageYOffset

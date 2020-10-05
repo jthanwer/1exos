@@ -44,7 +44,7 @@
               notifications && notifications.some(element => element.unread)
             "
             class="bell-button"
-            type="is-tertiary"
+            type="is-danger"
             :icon-left="open_notifs_mobile ? 'bell-ring-outline' : 'bell-ring'"
             @click="open_notifs_mobile = !open_notifs_mobile"
           ></b-button>
@@ -166,7 +166,7 @@
                 notifications && notifications.some(element => element.unread)
               "
               class="bell-button"
-              type="is-tertiary"
+              type="is-danger"
               :icon-left="open_notifs ? 'bell-ring-outline' : 'bell-ring'"
               @click="open_notifs = !open_notifs"
             ></b-button>

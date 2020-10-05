@@ -18,7 +18,7 @@
         <b-icon icon="check" type="is-primary"></b-icon>
       </div>
       <div class="media-content">
-        <div class="content is-size-5">
+        <div class="content is-size-5" style="line-height: 1em;">
           <p>
             Ton exo n°{{ notif.target.id }} a été corrigé
             <span
@@ -27,6 +27,8 @@
               >avant la date limite</span
             >
             <span v-else>après la date limite</span>.
+            <br />
+            <span class="is-size-7 has-text-grey">{{ elapsed_time_text }}</span>
           </p>
         </div>
       </div>
@@ -44,6 +46,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   name: 'NotificationComponent',
   props: {
@@ -55,7 +58,43 @@ export default {
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    diff_secondes() {
+      let date1 = moment()
+      let date2 = moment(this.notif.timestamp)
+      let diffSecondes = date1.diff(date2, 'seconds')
+      return diffSecondes
+    },
+    diff_minutes() {
+      let date1 = moment()
+      let date2 = moment(this.notif.timestamp)
+      let diffMinutes = date1.diff(date2, 'minutes')
+      return diffMinutes
+    },
+    diff_hours() {
+      let date1 = moment()
+      let date2 = moment(this.notif.timestamp)
+      let diffHours = date1.diff(date2, 'hours')
+      return diffHours
+    },
+    diff_days() {
+      let date1 = moment()
+      let date2 = moment(this.notif.timestamp)
+      let diffDays = date1.diff(date2, 'days')
+      return diffDays
+    },
+    elapsed_time_text() {
+      if (this.diff_minutes < 1) {
+        return 'Il y a ' + this.diff_secondes.toString() + ' seconde(s)'
+      } else if (this.diff_hours < 1) {
+        return 'Il y a ' + this.diff_minutes.toString() + ' minute(s)'
+      } else if (this.diff_days < 2) {
+        return 'Il y a ' + this.diff_hours.toString() + ' heure(s)'
+      } else {
+        return 'Il y a ' + this.diff_days.toString() + ' jour(s)'
+      }
+    }
+  },
   methods: {
     redirect() {
       let verb = this.notif.verb

@@ -36,52 +36,20 @@
           </div>
         </div>
         <div v-if="correc">
-          <div
-            v-if="correc.enonce.livre"
-            class="has-text-centered correc-info box "
+          <b-button
+            class="mt-6"
+            type="is-primary"
+            expanded
+            icon-left="book-open-page-variant"
+            @click="
+              $router.push({
+                name: 'exercice',
+                params: { id: correc.enonce.id }
+              })
+            "
           >
-            <div class="level">
-              <div class="level-item has-text-centered">
-                <div>
-                  <p>
-                    <span class="title is-size-4"
-                      >N° {{ correc.enonce.num_exo }} Page
-                      {{ correc.enonce.num_page }}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="level">
-              <div class="level-item has-text-centered">
-                <img
-                  style="height: 400px;"
-                  :src="
-                    require('@/assets/images/livres/' +
-                      correc.enonce.livre +
-                      '.jpg')
-                  "
-                  alt="Image indisponible"
-                />
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <b-button
-              class="mt-6"
-              type="is-primary"
-              expanded
-              icon-left="book-open-page-variant"
-              @click="
-                $router.push({
-                  name: 'exercice',
-                  params: { id: correc.enonce.id }
-                })
-              "
-            >
-              Voir l'énoncé
-            </b-button>
-          </div>
+            Voir l'énoncé
+          </b-button>
         </div>
         <div v-if="user && correc">
           <b-button

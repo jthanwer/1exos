@@ -66,6 +66,7 @@ const actions = {
           api.defaults.headers['Authorization'] = 'Bearer ' + token
           commit('AUTH_SUCCESS', token)
           dispatch('getProfileUser')
+          dispatch('getNotifications')
           dispatch('exercices/loadPostedExercices', null, { root: true })
           dispatch('exercices/loadLikedExercices', null, { root: true })
           dispatch('corrections/loadPostedCorrections', null, { root: true })
@@ -102,6 +103,7 @@ const actions = {
   getNotifications({ commit }) {
     return new Promise(resolve => {
       usersService.getNotifications().then(data => {
+        data = data.filter(notif => notif.action_object)
         commit('SET_NOTIFICATIONS', data)
         resolve(data)
       })

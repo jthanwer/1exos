@@ -124,4 +124,6 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ('id', 'unread', 'recipient', 'verb', 'target', 'action_object')
+        fields = ('id', 'unread', 'recipient',
+                  'verb', 'target', 'action_object',
+                  'timestamp')

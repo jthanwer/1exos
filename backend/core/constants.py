@@ -5,7 +5,7 @@ from django.db import connection
 
 # -- Points données après s'être enregistré
 def START_POINTS():
-    return 2
+    return 20
 
 
 # -- 1€ = 4 points

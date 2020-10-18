@@ -1,6 +1,50 @@
 <template>
   <div>
     <b-loading is-full-page :active.sync="is_loading"></b-loading>
+    <div class="container mb-10">
+      <div class="columns is-centered is-vcentered">
+        <div class="column is-10">
+          <section>
+            <p class="title is-1 has-text-centered">
+              Bienvenue sur 1Exo !
+            </p>
+            <p class="subtitle is-4 has-text-centered">
+              Le site où tu as le plus de chances d'obtenir des corrections de
+              maths de qualité !
+            </p>
+
+            <div class="columns is-centered is-multiline">
+              <div class="column is-half">
+                <b-button
+                  tag="router-link"
+                  class="has-radius-border big-button mt-5"
+                  icon-left="hand"
+                  type="is-tertiary"
+                  expanded
+                  size="is-large"
+                  :to="{ name: 'post-exo' }"
+                >
+                  Demander une correction
+                </b-button>
+              </div>
+              <div v-if="isAuthenticated" class="column is-half">
+                <b-button
+                  tag="router-link"
+                  class="has-radius-border big-button mt-5"
+                  icon-left="book-open"
+                  type="is-secondary"
+                  expanded
+                  size="is-large"
+                  :to="{ name: 'mes-exercices' }"
+                >
+                  Mes exercices
+                </b-button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
     <div class="columns is-centered">
       <div class="column is-3">
         <b-sidebar
@@ -21,7 +65,7 @@
               <b-field position="is-centered">
                 <b-radio-button
                   v-model="form.is_corrected"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="false"
                   type="is-secondary"
                 >
@@ -31,7 +75,7 @@
                 <b-radio-button
                   v-model="form.is_corrected"
                   type="is-success"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="null"
                 >
                   <b-icon size="is-medium" icon="minus"></b-icon>
@@ -39,19 +83,19 @@
 
                 <b-radio-button
                   v-model="form.is_corrected"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="true"
                 >
                   <b-icon size="is-medium" icon="check"></b-icon>
                 </b-radio-button>
               </b-field>
-              <p class="has-text-centered is-size-4 mb-4">
+              <p class="has-text-centered is-size-5 mb-4">
                 {{ text_is_corrected }}
               </p>
               <b-field position="is-centered">
                 <b-radio-button
                   v-model="form.is_from_livre"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="false"
                   type="is-secondary"
                 >
@@ -60,7 +104,7 @@
 
                 <b-radio-button
                   v-model="form.is_from_livre"
-                  size="is-large"
+                  size="is-medium"
                   type="is-tertiary"
                   :native-value="null"
                 >
@@ -69,7 +113,7 @@
 
                 <b-radio-button
                   v-model="form.is_from_livre"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="true"
                 >
                   <b-icon
@@ -78,13 +122,13 @@
                   ></b-icon>
                 </b-radio-button>
               </b-field>
-              <p class="has-text-centered is-size-4 mb-4">
+              <p class="has-text-centered is-size-5 mb-4">
                 {{ text_is_from_livre }}
               </p>
               <b-field position="is-centered">
                 <b-radio-button
                   v-model="form.is_delai_depasse"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="true"
                   type="is-secondary"
                 >
@@ -93,7 +137,7 @@
 
                 <b-radio-button
                   v-model="form.is_delai_depasse"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="null"
                   type="is-tertiary"
                 >
@@ -102,13 +146,13 @@
 
                 <b-radio-button
                   v-model="form.is_delai_depasse"
-                  size="is-large"
+                  size="is-medium"
                   :native-value="false"
                 >
                   <b-icon size="is-medium" icon="clock-check"></b-icon>
                 </b-radio-button>
               </b-field>
-              <p class="has-text-centered is-size-4 mb-4">
+              <p class="has-text-centered is-size-5 mb-4">
                 {{ text_is_delai_depasse }}
               </p>
 
@@ -498,7 +542,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import usersService from '@/services/usersService'
 import exercicesService from '@/services/exercicesService'
 import chapitres from '@/data/chapitres.json'
@@ -598,6 +642,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('authentication', ['isAuthenticated']),
     ...mapState('exercices', ['likedExercices']),
     text_is_corrected: function() {
       switch (this.form.is_corrected) {
@@ -662,7 +707,7 @@ export default {
   },
   watch: {
     $route(to) {
-      if (to.name == 'search') {
+      if (to.name == 'home') {
         this.searchExercices()
       }
       if (to.name == 'post-exo') {

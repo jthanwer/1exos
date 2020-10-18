@@ -151,7 +151,6 @@ class UserViewSet(viewsets.ModelViewSet):
     def notifications(self, request):
         user = request.user
         qs = user.notifications.all()[:10]
-        print(qs)
         serializer = NotificationSerializer(qs, many=True)
         return Response(serializer.data)
 

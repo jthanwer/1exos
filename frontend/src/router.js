@@ -4,7 +4,6 @@ import Router from 'vue-router'
 import Accueil from '@/views/Accueil.vue'
 import Search from '@/views/Search.vue'
 import PostExo from '@/views/PostExo.vue'
-// import PostExoWithCorrec from '@/views/PostExoWithCorrec.vue'
 import ExerciceDetail from '@/views/ExerciceDetail.vue'
 import CorrectionDetail from '@/views/CorrectionDetail.vue'
 import ExerciceCorrections from '@/views/ExerciceCorrections.vue'
@@ -58,7 +57,8 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Accueil
+      props: true,
+      component: Search
     },
     {
       path: '/exercice/:id/',
@@ -81,24 +81,18 @@ export default new Router({
       props: true,
       beforeEnter: ifAuthenticated
     },
-    {
-      path: '/rechercher-un-exo/',
-      name: 'search',
-      props: true,
-      component: Search
-    },
+    // {
+    //   path: '/rechercher-un-exo/',
+    //   name: 'search',
+    //   props: true,
+    //   component: Search
+    // },
     {
       path: '/poster-un-enonce/',
       name: 'post-exo',
       component: PostExo,
       beforeEnter: ifAuthenticated
     },
-    // {
-    //   path: '/poster-un-enonce-et-sa-correction/',
-    //   name: 'post-exo-with-correc',
-    //   component: PostExoWithCorrec,
-    //   beforeEnter: ifAuthenticated
-    // },
     {
       path: '/mon-compte/',
       name: 'profile',
@@ -174,11 +168,11 @@ export default new Router({
     {
       path: '/*',
       name: 'others',
-      component: Accueil
+      component: Search
     }
   ],
   scrollBehavior() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve({ x: 0, y: 0 })
       }, 180)

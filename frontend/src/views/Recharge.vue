@@ -1,245 +1,200 @@
 <template>
   <div class="container is-fluid">
     <b-loading is-full-page :active.sync="is_loading"></b-loading>
-    <div class="columns is-centered">
-      <div class="column is-10">
-        <div class="box">
-          <b-steps v-model="activeStep" animated has-navigation>
-            <b-step-item
-              label="Montant"
-              :style="{ 'min-height': height }"
-              clickable
-            >
-              <ValidationObserver ref="firstStep">
-                <hr />
-                <h1 class="title has-text-centered">Montant</h1>
-                <hr class="mb-5" />
+    <div>
+      <b-steps v-model="activeStep" animated has-navigation>
+        <b-step-item
+          label="Montant"
+          :style="{ 'min-height': height }"
+          clickable
+        >
+          <ValidationObserver ref="firstStep">
+            <hr />
+            <h1 class="title has-text-centered">Montant</h1>
+            <hr class="mb-5" />
 
-                <div class="columns is-vcentered">
-                  <div class="column is-4">
-                    <div class="has-text-centered">
-                      <div>
-                        <img
-                          src="@/assets/images/paiement/stripe-secure.png"
-                          style="height: 40px;"
-                        />
-                      </div>
-                      <div class="mb-6">
-                        <img src="@/assets/images/paiement/mastercard.png" />
-                        <img src="@/assets/images/paiement/visa.png" />
-                        <img src="@/assets/images/paiement/amex.png" />
-                      </div>
-                      <div
-                        class="box has-background-primary has-text-centered"
-                        style="display: inline-block;"
-                      >
-                        <span
-                          v-if="constants"
-                          class="has-text-centered title is-5 my-4 has-text-white"
-                        >
-                          1 € = {{ constants['CHANGE'] }}
-                          {{ constants['CHANGE'] > 1 ? 'pts' : 'pt' }}
-                        </span>
-                      </div>
-                    </div>
+            <div class="columns is-vcentered">
+              <div class="column is-4">
+                <div class="has-text-centered">
+                  <div>
+                    <img
+                      src="@/assets/images/paiement/stripe-secure.png"
+                      style="height: 40px;"
+                    />
                   </div>
+                  <div class="mb-6">
+                    <img src="@/assets/images/paiement/mastercard.png" />
+                    <img src="@/assets/images/paiement/visa.png" />
+                    <img src="@/assets/images/paiement/amex.png" />
+                  </div>
+                  <div
+                    class="box has-background-primary has-text-centered"
+                    style="display: inline-block;"
+                  >
+                    <span
+                      v-if="constants"
+                      class="has-text-centered title is-5 my-4 has-text-white"
+                    >
+                      1 € = {{ constants['CHANGE'] }}
+                      {{ constants['CHANGE'] > 1 ? 'pts' : 'pt' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
 
-                  <div class="column is-8">
-                    <div>
-                      <b-field grouped group-multiline position="is-centered">
-                        <b-radio-button
-                          v-model="choice_amount"
-                          :native-value="5"
-                          :disabled="!!specific_amount"
-                          size="is-medium"
-                          type="is-tertiary"
-                        >
-                          <span>5 €</span>
-                        </b-radio-button>
-                        <b-radio-button
-                          v-model="choice_amount"
-                          :native-value="10"
-                          :disabled="!!specific_amount"
-                          size="is-medium"
-                          type="is-tertiary"
-                        >
-                          <span>10 €</span>
-                        </b-radio-button>
-                        <b-radio-button
-                          v-model="choice_amount"
-                          :native-value="20"
-                          :disabled="!!specific_amount"
-                          size="is-medium"
-                          type="is-tertiary"
-                        >
-                          <span>20 €</span>
-                        </b-radio-button>
-                        <b-radio-button
-                          v-model="choice_amount"
-                          :native-value="50"
-                          :disabled="!!specific_amount"
-                          size="is-medium"
-                          type="is-tertiary"
-                        >
-                          <span>50 €</span>
-                        </b-radio-button>
-                        <b-radio-button
-                          v-model="choice_amount"
-                          :native-value="100"
-                          :disabled="!!specific_amount"
-                          size="is-medium"
-                          type="is-tertiary"
-                        >
-                          <span>100 €</span>
-                        </b-radio-button>
-                      </b-field>
+              <div class="column is-8">
+                <div>
+                  <b-field grouped group-multiline position="is-centered">
+                    <b-radio-button
+                      v-model="choice_amount"
+                      :native-value="5"
+                      :disabled="!!specific_amount"
+                      size="is-medium"
+                      type="is-tertiary"
+                    >
+                      <span>5 €</span>
+                    </b-radio-button>
+                    <b-radio-button
+                      v-model="choice_amount"
+                      :native-value="10"
+                      :disabled="!!specific_amount"
+                      size="is-medium"
+                      type="is-tertiary"
+                    >
+                      <span>10 €</span>
+                    </b-radio-button>
+                    <b-radio-button
+                      v-model="choice_amount"
+                      :native-value="20"
+                      :disabled="!!specific_amount"
+                      size="is-medium"
+                      type="is-tertiary"
+                    >
+                      <span>20 €</span>
+                    </b-radio-button>
+                    <b-radio-button
+                      v-model="choice_amount"
+                      :native-value="50"
+                      :disabled="!!specific_amount"
+                      size="is-medium"
+                      type="is-tertiary"
+                    >
+                      <span>50 €</span>
+                    </b-radio-button>
+                    <b-radio-button
+                      v-model="choice_amount"
+                      :native-value="100"
+                      :disabled="!!specific_amount"
+                      size="is-medium"
+                      type="is-tertiary"
+                    >
+                      <span>100 €</span>
+                    </b-radio-button>
+                  </b-field>
 
-                      <div class="columns is-centered">
-                        <div class="column is-half">
-                          <div
-                            class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold"
-                          >
-                            Autre montant ?
-                          </div>
-                          <ValidationProvider
-                            v-slot="{ errors }"
-                            slim
-                            rules="integer|min_value:5"
-                          >
-                            <b-field expanded position="is-centered" grouped>
-                              <b-field
-                                expanded
-                                :message="errors"
-                                :type="{ 'is-danger': errors[0] }"
-                              >
-                                <b-input
-                                  v-model="specific_amount"
-                                  size="is-medium"
-                                  @input="typeSpecificAmount()"
-                                >
-                                </b-input>
-                              </b-field>
-                              <p class="control">
-                                <span class="button is-medium is-static"
-                                  >€</span
-                                >
-                              </p>
-                            </b-field>
-                          </ValidationProvider>
-                          <p class=" mb-1 mt-4 has-text-centered subtitle">
-                            <span class="has-text-weight-bold">
-                              {{ amount }} €
-                            </span>
-                            = {{ gross_amount_points }} pts +
-                            {{ bonus_points }} pts bonus =
-                            <span class="has-text-weight-bold has-text-danger">
-                              {{ net_amount_points }} pts
-                            </span>
-                          </p>
-                        </div>
+                  <div class="columns is-centered">
+                    <div class="column is-half">
+                      <div
+                        class="has-text-centered mt-4 mb-2 is-size-5 has-text-weight-bold"
+                      >
+                        Autre montant ?
                       </div>
+                      <ValidationProvider
+                        v-slot="{ errors }"
+                        slim
+                        rules="integer|min_value:5"
+                      >
+                        <b-field expanded position="is-centered" grouped>
+                          <b-field
+                            expanded
+                            :message="errors"
+                            :type="{ 'is-danger': errors[0] }"
+                          >
+                            <b-input
+                              v-model="specific_amount"
+                              size="is-medium"
+                              @input="typeSpecificAmount()"
+                            >
+                            </b-input>
+                          </b-field>
+                          <p class="control">
+                            <span class="button is-medium is-static">€</span>
+                          </p>
+                        </b-field>
+                      </ValidationProvider>
+                      <p class=" mb-1 mt-4 has-text-centered subtitle">
+                        <span class="has-text-weight-bold">
+                          {{ amount }} €
+                        </span>
+                        = {{ gross_amount_points }} pts + {{ bonus_points }} pts
+                        bonus =
+                        <span class="has-text-weight-bold has-text-danger">
+                          {{ net_amount_points }} pts
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </div>
-                <hr />
-              </ValidationObserver>
-            </b-step-item>
+              </div>
+            </div>
+            <hr />
+          </ValidationObserver>
+        </b-step-item>
 
-            <b-step-item
-              :style="{ 'min-height': height }"
-              label="Informations bancaires"
-              clickable
-            >
-              <ValidationObserver ref="secondStep">
-                <hr />
-                <h1 class="title has-text-centered">Informations bancaires</h1>
-                <hr />
-                <div class="columns is-vcentered">
-                  <div class="column is-4">
-                    <div class="has-text-centered mb-5">
-                      <div>
-                        <img
-                          src="@/assets/images/paiement/stripe-secure.png"
-                          style="height: 40px;"
-                        />
-                      </div>
-                      <div class="mb-6">
-                        <img src="@/assets/images/paiement/mastercard.png" />
-                        <img src="@/assets/images/paiement/visa.png" />
-                        <img src="@/assets/images/paiement/amex.png" />
-                      </div>
-                    </div>
+        <b-step-item
+          :style="{ 'min-height': height }"
+          label="Informations bancaires"
+          clickable
+        >
+          <ValidationObserver ref="secondStep">
+            <hr />
+            <h1 class="title has-text-centered">Informations bancaires</h1>
+            <hr />
+            <div class="columns is-vcentered">
+              <div class="column is-4">
+                <div class="has-text-centered mb-5">
+                  <div>
+                    <img
+                      src="@/assets/images/paiement/stripe-secure.png"
+                      style="height: 40px;"
+                    />
                   </div>
+                  <div class="mb-6">
+                    <img src="@/assets/images/paiement/mastercard.png" />
+                    <img src="@/assets/images/paiement/visa.png" />
+                    <img src="@/assets/images/paiement/amex.png" />
+                  </div>
+                </div>
+              </div>
 
-                  <div class="column is-8">
+              <div class="column is-8">
+                <b-field
+                  label="Numéro de carte bancaire"
+                  :type="{ 'is-danger': stripeFinalErrors.card_number }"
+                  :message="stripeFinalErrors.card_number"
+                >
+                  <div ref="card-number"></div>
+                </b-field>
+
+                <b-field>
+                  <ValidationProvider
+                    v-slot="{ errors, valid }"
+                    slim
+                    rules="required"
+                  >
                     <b-field
-                      label="Numéro de carte bancaire"
-                      :type="{ 'is-danger': stripeFinalErrors.card_number }"
-                      :message="stripeFinalErrors.card_number"
-                    >
-                      <div ref="card-number"></div>
-                    </b-field>
-
-                    <b-field>
-                      <ValidationProvider
-                        v-slot="{ errors, valid }"
-                        slim
-                        rules="required"
-                      >
-                        <b-field
-                          expanded
-                          :message="errors"
-                          :type="{
-                            'is-danger': errors[0],
-                            'is-success': valid
-                          }"
-                        >
-                          <template slot="label">
-                            Nom
-                            <b-tooltip
-                              type="is-dark"
-                              label="Nom associé à la carte bancaire"
-                              multilined
-                            >
-                              <b-icon
-                                size="is-small"
-                                icon="help-circle-outline"
-                              ></b-icon>
-                            </b-tooltip>
-                          </template>
-                          <b-input
-                            v-model="name"
-                            placeholder="Jean Dupont"
-                          ></b-input>
-                        </b-field>
-                      </ValidationProvider>
-                      <!-- <ValidationProvider slim rules="required"
-                                        v-slot="{ errors, valid }">
-                      <b-field label="Code postal"
-                               :message="errors"
-                               :type="{'is-danger': errors[0],'is-success': valid}">
-                        <b-input v-model="postal_code"></b-input>
-                      </b-field>
-                    </ValidationProvider> -->
-                    </b-field>
-
-                    <b-field
-                      label="Date d'expiration"
-                      :message="stripeFinalErrors.card_expiry"
-                      :type="{ 'is-danger': stripeFinalErrors.card_expiry }"
-                    >
-                      <div ref="card-expiry"></div>
-                    </b-field>
-
-                    <b-field
-                      :message="stripeFinalErrors.card_cvc"
-                      :type="{ 'is-danger': stripeFinalErrors.card_cvc }"
+                      expanded
+                      :message="errors"
+                      :type="{
+                        'is-danger': errors[0],
+                        'is-success': valid
+                      }"
                     >
                       <template slot="label">
-                        CVC
+                        Nom
                         <b-tooltip
                           type="is-dark"
-                          label="Série de 3 (ou parfois 4) chiffres au dos de la carte"
+                          label="Nom associé à la carte bancaire"
                           multilined
                         >
                           <b-icon
@@ -248,116 +203,154 @@
                           ></b-icon>
                         </b-tooltip>
                       </template>
-                      <div ref="card-cvc"></div>
+                      <b-input
+                        v-model="name"
+                        placeholder="Jean Dupont"
+                      ></b-input>
                     </b-field>
-
-                    <ValidationProvider
-                      v-slot="{ errors, valid }"
-                      slim
-                      rules="email"
-                    >
-                      <b-field
-                        expanded
-                        :message="errors"
-                        :type="{
-                          'is-danger': errors[0]
-                        }"
-                      >
-                        <template slot="label">
-                          Adresse e-mail du possesseur de la carte bancaire
-                          <b-tooltip
-                            type="is-dark"
-                            label="Elle est utilisée dans le seul but d'éditer et envoyer la facture de l'achat."
-                            multilined
-                          >
-                            <b-icon
-                              size="is-small"
-                              icon="help-circle-outline"
-                            ></b-icon>
-                          </b-tooltip>
-                        </template>
-                        <b-input v-model="email" expanded></b-input>
+                  </ValidationProvider>
+                  <!-- <ValidationProvider slim rules="required"
+                                        v-slot="{ errors, valid }">
+                      <b-field label="Code postal"
+                               :message="errors"
+                               :type="{'is-danger': errors[0],'is-success': valid}">
+                        <b-input v-model="postal_code"></b-input>
                       </b-field>
-                    </ValidationProvider>
+                    </ValidationProvider> -->
+                </b-field>
 
-                    <b-field
-                      class="mt-4"
-                      expanded
-                      :type="{ 'is-danger': !!conditions_error }"
+                <b-field
+                  label="Date d'expiration"
+                  :message="stripeFinalErrors.card_expiry"
+                  :type="{ 'is-danger': stripeFinalErrors.card_expiry }"
+                >
+                  <div ref="card-expiry"></div>
+                </b-field>
+
+                <b-field
+                  :message="stripeFinalErrors.card_cvc"
+                  :type="{ 'is-danger': stripeFinalErrors.card_cvc }"
+                >
+                  <template slot="label">
+                    CVC
+                    <b-tooltip
+                      type="is-dark"
+                      label="Série de 3 (ou parfois 4) chiffres au dos de la carte"
+                      multilined
                     >
-                      <b-checkbox v-model="conditions_agreed" expanded>
-                        <p :class="{ 'has-text-danger': !!conditions_error }">
-                          J’accepte les conditions générales de vente de ce
-                          site.
-                        </p>
-                      </b-checkbox>
-                    </b-field>
-                  </div>
-                </div>
-                <hr />
-              </ValidationObserver>
-            </b-step-item>
+                      <b-icon
+                        size="is-small"
+                        icon="help-circle-outline"
+                      ></b-icon>
+                    </b-tooltip>
+                  </template>
+                  <div ref="card-cvc"></div>
+                </b-field>
 
-            <b-step-item label="Résumé" :style="{ 'min-height': height }">
-              <hr />
-              <h1 class="title has-text-centered">Résumé</h1>
-              <hr />
-              <div class="has-text-centered">
-                <b-icon
-                  class="my-5 has-background-success has-text-white icon-rounded"
-                  size="is-large"
-                  icon="check"
-                ></b-icon>
-                <p v-if="user" class="subtitle">
-                  <span class="has-text-weight-bold">{{ user.username }}</span
-                  >, ta tirelire a été créditée de {{ net_amount_points }} pts !
-                </p>
-                <p>Merci pour ton achat !</p>
-                <b-button
-                  tag="router-link"
-                  type="is-success"
-                  class="m-3"
-                  icon-left="home"
-                  :to="{ name: 'home' }"
+                <ValidationProvider
+                  v-slot="{ errors, valid }"
+                  slim
+                  rules="email"
                 >
-                  Revenir à l'accueil
-                </b-button>
-              </div>
-            </b-step-item>
+                  <b-field
+                    expanded
+                    :message="errors"
+                    :type="{
+                      'is-danger': errors[0]
+                    }"
+                  >
+                    <template slot="label">
+                      Adresse e-mail du possesseur de la carte bancaire
+                      <b-tooltip
+                        type="is-dark"
+                        label="Elle est utilisée dans le seul but d'éditer et envoyer la facture de l'achat."
+                        multilined
+                      >
+                        <b-icon
+                          size="is-small"
+                          icon="help-circle-outline"
+                        ></b-icon>
+                      </b-tooltip>
+                    </template>
+                    <b-input v-model="email" expanded></b-input>
+                  </b-field>
+                </ValidationProvider>
 
-            <template slot="navigation" slot-scope="{ previous, next }">
-              <div class="has-text-centered">
-                <a
-                  v-if="activeStep != 2"
-                  role="button"
-                  class="button pagination-previous is-medium"
-                  :disabled="previous.disabled"
-                  @click.prevent="previous.action"
+                <b-field
+                  class="mt-4"
+                  expanded
+                  :type="{ 'is-danger': !!conditions_error }"
                 >
-                  <b-icon icon="chevron-left" />
-                </a>
-                <a
-                  v-if="activeStep == 0"
-                  role="button"
-                  class="button pagination-next is-medium has-background-success has-text-white"
-                  @click.prevent="goNext(next, activeStep)"
-                >
-                  Valider le montant
-                </a>
-                <a
-                  v-else-if="activeStep == 1"
-                  role="button"
-                  class="button pagination-next is-medium has-background-success has-text-white"
-                  :disabled="next.disabled"
-                  @click.prevent="goNext(next, activeStep)"
-                >
-                  Payer {{ amount }} €
-                </a>
+                  <b-checkbox v-model="conditions_agreed" expanded>
+                    <p :class="{ 'has-text-danger': !!conditions_error }">
+                      J’accepte les conditions générales de vente de ce site.
+                    </p>
+                  </b-checkbox>
+                </b-field>
               </div>
-            </template>
-          </b-steps>
-        </div>
-      </div>
+            </div>
+            <hr />
+          </ValidationObserver>
+        </b-step-item>
+
+        <b-step-item label="Résumé" :style="{ 'min-height': height }">
+          <hr />
+          <h1 class="title has-text-centered">Résumé</h1>
+          <hr />
+          <div class="has-text-centered">
+            <b-icon
+              class="my-5 has-background-success has-text-white icon-rounded"
+              size="is-large"
+              icon="check"
+            ></b-icon>
+            <p v-if="user" class="subtitle">
+              <span class="has-text-weight-bold">{{ user.username }}</span
+              >, ta tirelire a été créditée de {{ net_amount_points }} pts !
+            </p>
+            <p>Merci pour ton achat !</p>
+            <b-button
+              tag="router-link"
+              type="is-success"
+              class="m-3"
+              icon-left="home"
+              :to="{ name: 'home' }"
+            >
+              Revenir à l'accueil
+            </b-button>
+          </div>
+        </b-step-item>
+
+        <template slot="navigation" slot-scope="{ previous, next }">
+          <div class="has-text-centered">
+            <a
+              v-if="activeStep != 2"
+              role="button"
+              class="button pagination-previous is-medium"
+              :disabled="previous.disabled"
+              @click.prevent="previous.action"
+            >
+              <b-icon icon="chevron-left" />
+            </a>
+            <a
+              v-if="activeStep == 0"
+              role="button"
+              class="button pagination-next is-medium has-background-success has-text-white"
+              @click.prevent="goNext(next, activeStep)"
+            >
+              Valider le montant
+            </a>
+            <a
+              v-else-if="activeStep == 1"
+              role="button"
+              class="button pagination-next is-medium has-background-success has-text-white"
+              :disabled="next.disabled"
+              @click.prevent="goNext(next, activeStep)"
+            >
+              Payer {{ amount }} €
+            </a>
+          </div>
+        </template>
+      </b-steps>
     </div>
   </div>
 </template>

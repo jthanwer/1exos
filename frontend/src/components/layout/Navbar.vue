@@ -11,7 +11,7 @@
         </b-navbar-item>
         <b-navbar-item
           v-if="isAuthenticated && user"
-          class="is-hidden-desktop"
+          class="is-hidden-desktop px-1"
           style="margin-left: auto !important;"
           tag="div"
         >
@@ -36,7 +36,7 @@
 
         <b-navbar-item
           v-if="isAuthenticated && user"
-          class="is-hidden-desktop"
+          class="is-hidden-desktop px-1"
           tag="div"
         >
           <b-button
@@ -87,9 +87,9 @@
             Comment bien poster ?
           </b-navbar-item>
         </b-navbar-dropdown>
-        <b-navbar-item tag="router-link" :to="{ name: 'search' }">
-          <b-icon class="mr-1" icon="magnify"></b-icon>
-          <span class="is-uppercase is-size-6">Rechercher un exo</span>
+        <b-navbar-item tag="router-link" :to="{ name: 'post-exo' }">
+          <b-icon class="mr-1" icon="hand"></b-icon>
+          <span class="is-uppercase is-size-6">Demander une correction</span>
         </b-navbar-item>
         <b-navbar-dropdown
           v-if="isAuthenticated"
@@ -224,7 +224,7 @@ export default {
         },
         {
           title: 'Rechercher un exo',
-          path: 'search',
+          path: 'home',
           icon: 'magnify'
         }
         // {

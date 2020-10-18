@@ -21,13 +21,18 @@
               </div> -->
               <div class="column is-7 has-text-centered">
                 <p class="heading">Note moyenne</p>
-                <b-rate
-                  v-if="correc.mean_rating"
-                  v-model="correc.mean_rating"
-                  size="is-medium"
-                  disabled
-                  style="justify-content: center;"
-                ></b-rate>
+                <div v-if="correc.mean_rating">
+                  <b-rate
+                    v-model="correc.mean_rating"
+                    size="is-medium"
+                    disabled
+                    style="justify-content: center;"
+                  ></b-rate>
+                  <p class="is-size-7">
+                    ({{ correc.nb_rating }}
+                    {{ correc.nb_rating > 1 ? 'votes' : 'vote' }})
+                  </p>
+                </div>
                 <p v-else class="title is-6">
                   Aucune note donnée
                 </p>

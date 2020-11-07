@@ -1,7 +1,10 @@
 from filemanager.models import Exercice
-from django.db.models import Avg
+from django.db.models import Avg, Max
 from django.db.models import Count
 from django.db import connection
+from datetime import datetime, timezone
+
+now = datetime.now(timezone.utc)
 
 # -- Points données après s'être enregistré
 def START_POINTS():
@@ -29,10 +32,24 @@ def MEAN_PRICES():
     prices = {niveau: 0 for niveau in range(7)}
     for niveau in range(7):
         qs = Exercice.objects.annotate(num_c=Count('correcs'))
-        qs = qs.filter(niveau=niveau, num_c__lte=0)
+        qs = qs.filter(niveau=niveau)
         count = qs.count()
         if count > 0:
             value = qs.aggregate(Avg('prix'))['prix__avg']
+            prices[niveau] = round(value)
+        else:
+            prices[niveau] = -1
+    return prices
+
+
+def MAX_PRICES():
+    prices = {niveau: 0 for niveau in range(7)}
+    for niveau in range(7):
+        qs = Exercice.objects.annotate(num_c=Count('correcs'))
+        qs = qs.filter(niveau=niveau, num_c=0, date_limite__gt=now)
+        count = qs.count()
+        if count > 0:
+            value = qs.aggregate(Max('prix'))['prix__max']
             prices[niveau] = round(value)
         else:
             prices[niveau] = -1

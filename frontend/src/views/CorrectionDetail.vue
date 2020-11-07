@@ -4,15 +4,11 @@
     <!-- <p class="title is-2">Correction {{id}}</p> -->
     <!-- </div> -->
     <div class="mt-2"></div>
-    <div class="columns">
+    <div class="columns is-centered">
       <div class="column is-3">
         <div class="correc-info box pa-5 mb-8 has-text-centered">
           <div v-if="correc">
             <div class="columns is-centered is-multiline">
-              <div class="column is-7 has-text-centered">
-                <p class="heading">Ajoutée par</p>
-                <p class="title is-6">{{ correc.correcteur }}</p>
-              </div>
               <!-- <div class="column is-7 has-text-centered">
                 <p class="heading">Le</p>
                 <p class="title is-6">
@@ -39,54 +35,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div v-if="correc">
-          <b-button
-            class="mt-6"
-            type="is-primary"
-            expanded
-            icon-left="book-open-page-variant"
-            @click="
-              $router.push({
-                name: 'exercice',
-                params: { id: correc.enonce.id }
-              })
-            "
-          >
-            Voir l'énoncé
-          </b-button>
-        </div>
-        <div v-if="user && correc">
-          <b-button
-            v-if="user_rating && user.username != correc.correcteur"
-            class="mt-6"
-            type="is-secondary"
-            expanded
-            icon-left="star"
-            @click="modal_modify_rating = true"
-          >
-            Modifier ta note
-          </b-button>
-          <b-button
-            v-if="!user_rating && user.username != correc.correcteur"
-            class="mt-6"
-            type="is-secondary"
-            expanded
-            icon-left="star"
-            @click="modal_new_rating = true"
-          >
-            Noter
-          </b-button>
-          <b-button
-            v-if="correc && user.username == correc.correcteur"
-            class="mt-6"
-            type="is-danger"
-            expanded
-            icon-left="delete"
-            @click="confirmDelete()"
-          >
-            Supprimer
-          </b-button>
         </div>
 
         <b-modal
@@ -165,8 +113,10 @@
           </div>
         </b-modal>
       </div>
+    </div>
 
-      <div class="column is-offset-1 is-8">
+    <div class="columns is-centered">
+      <div class="column is-8">
         <div v-if="correc">
           <div v-if="correc.file">
             <div v-if="correc.filetype == 'pdf'">
@@ -231,6 +181,59 @@
               <ImageContainer v-model="correc.file" />
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-4">
+        <div v-if="correc">
+          <b-button
+            class="mt-6 big-button"
+            type="is-primary"
+            expanded
+            icon-left="book-open-page-variant"
+            @click="
+              $router.push({
+                name: 'exercice',
+                params: { id: correc.enonce.id }
+              })
+            "
+          >
+            Voir l'énoncé
+          </b-button>
+        </div>
+        <div v-if="user && correc">
+          <b-button
+            v-if="user_rating && user.username != correc.correcteur"
+            class="mt-6 big-button"
+            type="is-secondary"
+            expanded
+            icon-left="star"
+            @click="modal_modify_rating = true"
+          >
+            Modifier ta note
+          </b-button>
+          <b-button
+            v-if="!user_rating && user.username != correc.correcteur"
+            class="mt-6  big-button"
+            type="is-secondary"
+            expanded
+            icon-left="star"
+            @click="modal_new_rating = true"
+          >
+            Noter
+          </b-button>
+          <b-button
+            v-if="correc && user.username == correc.correcteur"
+            class="mt-6  big-button"
+            type="is-danger"
+            expanded
+            icon-left="delete"
+            @click="confirmDelete()"
+          >
+            Supprimer
+          </b-button>
         </div>
       </div>
     </div>

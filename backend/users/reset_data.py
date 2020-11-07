@@ -21,6 +21,10 @@ user1 = CustomUser.objects.create_user(username="cassosdu46",
                                        ville_etablissement="Cahors",
                                        is_active=True)
 
+user1.is_superuser = True
+user1.is_staff = True
+user1.save()
+
 user2 = CustomUser.objects.create_user(username="cassosdu45",
                                        email="cassosdu45@gmail.com",
                                        password="Zdv:89??",

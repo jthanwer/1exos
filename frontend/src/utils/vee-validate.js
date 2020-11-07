@@ -116,8 +116,7 @@ extend('max_tirelire_value', {
     if (value > tirelire) {
       return "Tu n'as pas assez de points dans ta tirelire"
     } else if (value > tirelire_avail) {
-      return `Tu ne peux pas céder autant de points car tu as 
-      déjà promis trop de points en échange de corrections.`
+      return `Tu as déjà promis trop de points (chiffre orange de ta tirelire)`
     } else {
       return true
     }

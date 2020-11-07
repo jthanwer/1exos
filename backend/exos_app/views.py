@@ -15,6 +15,7 @@ def fetch_constants(request):
         "DEADLINE_POINTS": cst.DEADLINE_POINTS(),
         "MULTIPLECORREC_POINTS": cst.MULTIPLECORREC_POINTS(),
         "MEAN_PRICES": cst.MEAN_PRICES(),
+        "MAX_PRICES": cst.MAX_PRICES(),
     })
 
 

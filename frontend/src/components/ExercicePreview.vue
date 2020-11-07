@@ -173,14 +173,14 @@ export default {
     diff_hours() {
       let date1 = moment()
       let date2 = moment(this.exo.date_limite)
-      let diffMinutes = date2.diff(date1, 'hours')
-      return diffMinutes
+      let diffHours = date2.diff(date1, 'hours')
+      return diffHours
     },
     diff_days() {
       let date1 = moment()
       let date2 = moment(this.exo.date_limite)
-      let diffMinutes = date2.diff(date1, 'days')
-      return diffMinutes
+      let diffDays = date2.diff(date1, 'days')
+      return diffDays
     },
     delai_text() {
       if (this.diff_minutes < 0) {

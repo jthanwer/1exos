@@ -246,7 +246,7 @@
           icon-left="upload"
           @click="modal_correction = !modal_correction"
         >
-          Poster une correction vérifiée par ton prof
+          Poster une correction rédigée par ton prof
         </b-button>
       </div>
       <div class="column is-4 has-text-centered ">

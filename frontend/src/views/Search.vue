@@ -5,12 +5,8 @@
       <div class="columns is-centered is-vcentered">
         <div class="column is-10">
           <section>
-            <p class="title is-1 has-text-centered">
-              Bienvenue sur 1Exo !
-            </p>
-            <p class="subtitle is-4 has-text-centered">
-              Le site où tu as le plus de chances d'obtenir des corrections de
-              maths de qualité !
+            <p class="title is-1 has-text-primary has-text-centered mb-8">
+              Les meilleures corrections de maths du net
             </p>
 
             <div class="columns is-centered is-multiline">
@@ -565,7 +561,7 @@ export default {
     },
     isCorrected: {
       type: Boolean,
-      default: null
+      default: false
     }
   },
   data() {
@@ -582,14 +578,14 @@ export default {
       livres: livres,
 
       order: {
-        date_created: false,
-        prix: null,
+        date_created: null,
+        prix: false,
         date_limite: null
       },
 
       order_icons: {
-        date_created: 'chevron-up-circle',
-        prix: 'chevron-up',
+        date_created: 'chevron-up',
+        prix: 'chevron-up-circle',
         date_limite: 'chevron-up'
       },
 
@@ -644,6 +640,7 @@ export default {
   computed: {
     ...mapGetters('authentication', ['isAuthenticated']),
     ...mapState('exercices', ['likedExercices']),
+    ...mapState('authentication', ['user']),
     text_is_corrected: function() {
       switch (this.form.is_corrected) {
         case false:
@@ -714,6 +711,14 @@ export default {
         this.$store.dispatch('authentication/getProfileUser')
       }
     },
+    user() {
+      if (!this.filter.niveau) {
+        if (this.user && this.user.niveau != 100) {
+          this.filter.niveau = true
+          this.form.niveau = this.user.niveau
+        }
+      }
+    },
     filter: {
       handler(inputs) {
         inputs.prefix_prof = inputs.nom_prof
@@ -773,6 +778,14 @@ export default {
     }
   },
   mounted() {
+    // if (this.isAuthenticated) {
+    //   this.$store.dispatch('authentication/getProfileUser').then(user => {
+    //     if (user && user.niveau != 100) {
+    //       this.filter.niveau = true
+    //       this.form.niveau = user.niveau
+    //     }
+    //   })
+    // }
     usersService
       .getEtablissements()
       .then(etablissements => {
@@ -809,7 +822,6 @@ export default {
         this.order[key] = null
         this.order_icons[key] = 'chevron-up'
       }
-      console.log(formerValue)
       if (formerValue === null) {
         this.order[value] = false
         this.order_icons[value] = 'chevron-up-circle'
@@ -820,9 +832,6 @@ export default {
         this.order[value] = false
         this.order_icons[value] = 'chevron-up-circle'
       }
-
-      console.log(this.order[value])
-      console.log(this.order_icons[value])
     },
     filterEtablissements(v) {
       this.etablissement_items = this.etablissements.filter(object => {

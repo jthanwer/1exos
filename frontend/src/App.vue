@@ -3,7 +3,7 @@
     <NavbarComponent />
     <div class="app-container">
       <transition name="fade" mode="out-in">
-        <keep-alive include="Search">
+        <keep-alive include="PostExo,Search">
           <router-view
             :key="
               $route.path +
@@ -33,7 +33,7 @@ export default {
     ...mapState('authentication', ['notifications']),
     ...mapGetters('authentication', ['isAuthenticated'])
   },
-  created() {
+  beforeCreate() {
     this.$store.dispatch('general/updateConstants').then(() => {
       if (this.isAuthenticated) {
         this.$store.dispatch('authentication/getProfileUser')

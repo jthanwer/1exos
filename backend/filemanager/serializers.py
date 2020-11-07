@@ -84,7 +84,6 @@ class CorrectionSerializer(serializers.ModelSerializer):
     def get_nb_rating(self, obj):
         if obj.ratings.exists():
             nb_rating = obj.ratings.count()
-            print(nb_rating)
             return nb_rating
         return None
 

@@ -561,6 +561,16 @@
                       </template>
                     </b-datetimepicker>
                   </b-field>
+                  <div
+                    v-if="form.date_limite"
+                    class="has-text-weight-bold is-size-5 mt-5"
+                  >
+                    Tu as choisi un délai de : {{ delai_text }}
+                  </div>
+                  <div class="has-text-grey is-size-6 mt-2">
+                    Attention : plus le délai est court, plus il y a de risques
+                    de ne pas avoir de correction... mets un délai raisonnable.
+                  </div>
                 </ValidationProvider>
               </ValidationObserver>
             </div>
@@ -575,7 +585,7 @@
           <hr ref="scroll5" />
           <h1 class="title has-text-centered">Points</h1>
           <hr />
-          <div class="notification is-primary is-light">
+          <!-- <div class="notification is-primary is-light">
             <div class="media">
               <div class="media-left">
                 <b-icon icon="information"></b-icon>
@@ -592,8 +602,8 @@
                 <strong>
                   Les exos de niveau {{ niveaux[user.niveau] }} se corrigent
                   actuellement pour
-                  {{ constants['MEAN_PRICES'][user.niveau] }}
-                  {{ constants['MEAN_PRICES'][user.niveau] > 1 ? 'pts' : 'pt' }}
+                  {{ constants['MAX_PRICES'][user.niveau] }}
+                  {{ constants['MAX_PRICES'][user.niveau] > 1 ? 'pts' : 'pt' }}
                 </strong>
                 (en moyenne).
               </div>
@@ -601,7 +611,7 @@
                 v-else-if="
                   user &&
                     constants &&
-                    constants['MEAN_PRICES'][form.niveau] > 0 &&
+                    constants['MAX_PRICES'][form.niveau] > 0 &&
                     user.niveau == 100
                 "
                 class="media-content"
@@ -609,9 +619,9 @@
                 <strong
                   >Les exos de niveau {{ niveaux[form.niveau] }} se corrigent
                   actuellement pour
-                  {{ constants['MEAN_PRICES'][form.niveau] }}
+                  {{ constants['MAX_PRICES'][form.niveau] }}
                   {{
-                    constants['MEAN_PRICES'][form.niveau] > 1 ? 'pts' : 'pt'
+                    constants['MAX_PRICES'][form.niveau] > 1 ? 'pts' : 'pt'
                   }}</strong
                 >
                 (en moyenne).
@@ -621,7 +631,7 @@
                 Calcul de la moyenne impossible.
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="columns is-centered my-8">
             <div class="columns is-half">
               <b-field position="is-centered" grouped group-multiline>
@@ -631,7 +641,7 @@
                   type="is-secondary"
                   size="is-large"
                 >
-                  Correction gratuite
+                  Correction basique
                 </b-radio-button>
 
                 <b-radio-button
@@ -640,7 +650,7 @@
                   type="is-tertiary"
                   size="is-large"
                 >
-                  Correction payante
+                  Correction boostée
                 </b-radio-button>
               </b-field>
             </div>
@@ -648,67 +658,78 @@
           <div class="columns is-centered mb-2">
             <div class="column is-half has-text-centered">
               <p v-if="is_free" class="is-size-5 has-text-weight-bold">
-                En demandant
-                <span class="has-text-secondary">une correction gratuite</span>,
-                tu as
-                <span class="has-text-danger"> {{ chances }} % de chances</span>
-                d'obtenir une correction. <br />Demande une correction payante
-                et utilise les points de ta cagnotte pour augmenter tes chances
-                !
+                Tu as
+                <span class="has-text-danger"> 10 % de chances</span>
+                d'obtenir une correction.
               </p>
+
               <p v-else class="is-size-5 has-text-weight-bold">
-                En demandant
-                <span class="has-text-tertiary">une correction payante</span>
-                avec
+                Avec
                 <span class="has-text-danger">{{ form.prix }} pt(s)</span> , tu
                 as
                 <span class="has-text-danger"> {{ chances }} % de chances</span>
                 d'obtenir une correction. <br />
-                Tu peux promettre plus de points en échange d'une correction
-                pour augmenter tes chances !
               </p>
             </div>
           </div>
           <div v-if="user" class="columns is-centered is-vcentered mb-5">
             <div class="column is-half">
               <ValidationObserver ref="fifthStep">
-                <ValidationProvider
-                  v-slot="{ errors, valid }"
-                  slim
-                  :rules="{
-                    required: true,
-                    min_value: 0,
-                    max_tirelire_value: [user.tirelire_avail, user.tirelire],
-                    integer: true
-                  }"
-                >
-                  <b-field :message="errors" :type="{ 'is-danger': errors[0] }">
-                    <template slot="label">
-                      Points
-                      <b-tooltip
-                        type="is-dark"
-                        label="Quel est le nombre de points que tu es prêt à céder pour obtenir la correction de ton exo ?"
-                        multilined
-                      >
-                        <b-icon
-                          size="is-small"
-                          icon="help-circle-outline"
-                        ></b-icon>
-                      </b-tooltip>
-                    </template>
-                    <b-numberinput
-                      v-model="form.prix"
-                      :disabled="is_free"
-                      :min="1"
-                      :max="user.tirelire_avail"
-                      placeholder="Choisir un nombre de points"
+                <div :class="{ hidden: is_free }">
+                  <ValidationProvider
+                    v-slot="{ errors, valid }"
+                    slim
+                    :rules="{
+                      required: true,
+                      min_value: 0,
+                      max_tirelire_value: [user.tirelire_avail, user.tirelire],
+                      integer: true
+                    }"
+                  >
+                    <b-field
+                      :message="errors"
+                      :type="{ 'is-danger': errors[0] }"
                     >
-                    </b-numberinput>
-                  </b-field>
-                </ValidationProvider>
-                <div class="has-text-grey is-size-6">
-                  Si tu n’obtiens pas de correction à la fin de ton délai, tu ne
-                  perds pas de points.
+                      <template slot="label">
+                        Points
+                        <b-tooltip
+                          type="is-dark"
+                          label="Quel est le nombre de points que tu es prêt à céder pour obtenir la correction de ton exo ?"
+                          multilined
+                        >
+                          <b-icon
+                            size="is-small"
+                            icon="help-circle-outline"
+                          ></b-icon>
+                        </b-tooltip>
+                      </template>
+                      <b-numberinput
+                        v-model="form.prix"
+                        :disabled="is_free"
+                        :min="1"
+                        placeholder="Choisir un nombre de points"
+                      >
+                      </b-numberinput>
+                    </b-field>
+                  </ValidationProvider>
+                  <div class="has-text-grey is-size-6">
+                    Si tu n’obtiens pas de correction à la fin de ton délai, tu
+                    ne perds pas de points.
+                  </div>
+                  <div
+                    :class="{ hidden: form.prix <= 0.9 * user.tirelire_avail }"
+                  >
+                    <b-button
+                      tag="router-link"
+                      type="is-secondary"
+                      icon-left="credit-card"
+                      class="mt-6 has-radius-border big-button"
+                      expanded
+                      :to="{ name: 'recharge' }"
+                    >
+                      Recharge ta tirelire
+                    </b-button>
+                  </div>
                 </div>
               </ValidationObserver>
             </div>
@@ -801,7 +822,8 @@ export default {
   data() {
     const min = new Date(
       moment()
-        .add(1, 'hours')
+        .add(2, 'hours')
+        .add(1, 'minutes')
         .toISOString(true)
     )
     return {
@@ -934,13 +956,52 @@ export default {
       } else {
         niveau = this.user.niveau
       }
-      if (this.constants['MEAN_PRICES'][niveau] > 0) {
-        return Math.min(
-          (40 / this.constants['MEAN_PRICES'][niveau]) * this.form.prix + 10,
-          100
-        ).toFixed(0)
+      if (this.constants['MAX_PRICES'][niveau] > 0) {
+        return Math.ceil(
+          Math.min(
+            (this.form.prix / this.constants['MAX_PRICES'][niveau]) * 100,
+            95
+          )
+        )
+      } else if (
+        this.constants['MAX_PRICES'][niveau] < 0 &&
+        this.constants['MEAN_PRICES'][niveau] > 0
+      ) {
+        return Math.ceil(
+          Math.min(
+            (this.form.prix / this.constants['MEAN_PRICES'][niveau]) * 100,
+            95
+          )
+        )
       } else {
-        return Math.min(20 * this.form.prix + 10, 100)
+        return Math.min(20 * this.form.prix + 10, 95)
+      }
+    },
+    diff_minutes() {
+      let date1 = moment()
+      let date2 = moment(this.form.date_limite)
+      let diffMinutes = date2.diff(date1, 'minutes')
+      return diffMinutes
+    },
+    diff_hours() {
+      let date1 = moment()
+      let date2 = moment(this.form.date_limite)
+      let diffHours = date2.diff(date1, 'hours')
+      return diffHours
+    },
+    diff_days() {
+      let date1 = moment()
+      let date2 = moment(this.form.date_limite)
+      let diffDays = date2.diff(date1, 'days')
+      return diffDays
+    },
+    delai_text() {
+      if (this.diff_hours < 1) {
+        return this.diff_minutes.toString() + ' minute(s)'
+      } else if (this.diff_days < 2) {
+        return this.diff_hours.toString() + ' heure(s)'
+      } else {
+        return this.diff_days.toString() + ' jour(s)'
       }
     }
   },
@@ -951,6 +1012,14 @@ export default {
       } else {
         this.form.prix = 0
       }
+    },
+    form: {
+      handler(inputs) {
+        if (inputs.prix == 0) {
+          this.is_free = true
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -1016,6 +1085,34 @@ export default {
         .dispatch('exercices/postExercice', { fd, config })
         .then(data => {
           this.is_loading = false
+          this.form = {
+            type: null,
+            is_from_livre: null,
+            chapitre: null,
+            niveau: null,
+            voie: null,
+            option: null,
+            has_num: null,
+            is_from_devoir: null,
+            num_exo: null,
+            livre: {
+              name: null,
+              num_page: null
+            },
+            date_limite: null,
+            prix: 0
+          }
+          this.result_exos = []
+          this.count_elements = 0
+          this.current_page = 1
+          this.drop_file = null
+          this.is_free = true
+          this.$refs.firstStep.reset()
+          this.$refs.secondStep.reset()
+          this.$refs.thirdStep.reset()
+          this.$refs.fourthStep.reset()
+          this.$refs.fifthStep.reset()
+          this.activeStep = 0
           this.$store
             .dispatch('authentication/getProfileUser')
             .then(
@@ -1094,4 +1191,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.hidden {
+  visibility: hidden;
+}
+</style>

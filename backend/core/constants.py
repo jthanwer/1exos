@@ -42,23 +42,21 @@ def MEAN_PRICES():
     return prices
 
 
-def MAX_PRICES():
-    prices = {niveau: 0 for niveau in range(7)}
+def MAX_PRICE():
+    max_price = -1
     for niveau in range(7):
         qs = Exercice.objects.annotate(num_c=Count('correcs'))
-        qs = qs.filter(niveau=niveau, num_c=0, date_limite__gt=now)
+        qs = qs.filter(num_c=0, date_limite__gt=now)
         count = qs.count()
         if count > 0:
             value = qs.aggregate(Max('prix'))['prix__max']
-            prices[niveau] = round(value)
-        else:
-            prices[niveau] = -1
-    return prices
+            max_price = round(value)
+        return max_price
 
 
 # -- Points données lorsque le correcteur corrige un exercice à lui
 def SELFCORREC_POINTS():
-    return 1
+    return 4
     # qs = Exercice.objects.all()
     # if qs.count() > 0:
     #     value = Exercice.objects.all().aggregate(Avg('prix'))['prix__avg']

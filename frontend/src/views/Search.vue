@@ -18,7 +18,9 @@
                   type="is-tertiary"
                   expanded
                   size="is-large"
-                  :to="{ name: 'post-exo' }"
+                  :to="{
+                    name: 'post-exo'
+                  }"
                 >
                   Demander une correction
                 </b-button>
@@ -442,13 +444,17 @@
               </p>
               <b-button
                 tag="router-link"
-                type="is-secondary"
-                class="mt-5 big-button"
-                size="is-large"
+                class="has-radius-border big-button mt-5"
                 icon-left="hand"
-                :to="{ name: 'post-exo' }"
-                >Demander une correction</b-button
+                type="is-tertiary"
+                expanded
+                size="is-large"
+                :to="{
+                  name: 'post-exo'
+                }"
               >
+                Demander une correction
+              </b-button>
             </div>
           </div>
 
@@ -622,7 +628,7 @@ export default {
         nom_prof: null,
         is_from_livre: null,
         is_corrected: this.isCorrected,
-        is_delai_depasse: null
+        is_delai_depasse: false
       },
 
       etablissements: [],
@@ -711,14 +717,6 @@ export default {
         this.$store.dispatch('authentication/getProfileUser')
       }
     },
-    user() {
-      if (!this.filter.niveau) {
-        if (this.user && this.user.niveau != 100) {
-          this.filter.niveau = true
-          this.form.niveau = this.user.niveau
-        }
-      }
-    },
     filter: {
       handler(inputs) {
         inputs.prefix_prof = inputs.nom_prof
@@ -778,14 +776,6 @@ export default {
     }
   },
   mounted() {
-    // if (this.isAuthenticated) {
-    //   this.$store.dispatch('authentication/getProfileUser').then(user => {
-    //     if (user && user.niveau != 100) {
-    //       this.filter.niveau = true
-    //       this.form.niveau = user.niveau
-    //     }
-    //   })
-    // }
     usersService
       .getEtablissements()
       .then(etablissements => {

@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Accueil from '@/views/Accueil.vue'
 import Search from '@/views/Search.vue'
 import PostExo from '@/views/PostExo.vue'
+import PostCorrection from '@/views/PostCorrection.vue'
 import ExerciceDetail from '@/views/ExerciceDetail.vue'
 import CorrectionDetail from '@/views/CorrectionDetail.vue'
 import ExerciceCorrections from '@/views/ExerciceCorrections.vue'
@@ -88,9 +88,17 @@ export default new Router({
     //   component: Search
     // },
     {
-      path: '/poster-un-enonce/',
+      path: '/demander-une-correction/',
       name: 'post-exo',
       component: PostExo,
+      props: true,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: '/poster-une-correction/',
+      name: 'post-correc',
+      component: PostCorrection,
+      props: true,
       beforeEnter: ifAuthenticated
     },
     {

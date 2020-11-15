@@ -61,7 +61,7 @@
           class="mt-3 has-radius-border big-button"
           expanded
           size="is-large"
-          :to="{ name: 'home', params: { id: 2, isCorrected: false } }"
+          :to="{ name: 'post-correc' }"
         >
           En postant une correction
         </b-button>

@@ -17,7 +17,10 @@
                   type="is-tertiary"
                   expanded
                   size="is-large"
-                  :to="{ name: 'post-exo' }"
+                  :to="{
+                    name: 'post-exo',
+                    params: { id: 1, hasCorrection: false }
+                  }"
                 >
                   Demander une correction
                 </b-button>

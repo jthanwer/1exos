@@ -866,7 +866,7 @@ import livres from '@/data/livres.json'
 import Upload from '@/components/Upload.vue'
 import ExercicePreview from '@/components/ExercicePreview.vue'
 export default {
-  name: 'PostExo',
+  name: 'PostCorrection',
   components: {
     Upload,
     ExercicePreview,
@@ -876,7 +876,7 @@ export default {
   props: {
     hasCorrection: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   data() {

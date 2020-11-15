@@ -17,8 +17,6 @@ const api = axios.create({
 
 // api.interceptors.request.use(
 //   function(config) {
-//     console.log(config)
-//     console.log(store.getters["authentication/isAuthenticated"])
 //     return config;
 //   },
 //   function(err) {

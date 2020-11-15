@@ -77,11 +77,12 @@ class Correction(models.Model):
             self.file = files.compress_file(file, self.id, enonce_id=self.enonce_id)
             super(Correction, self).save(force_update=True)
             posteur = self.enonce.posteur
-            notify.send(self.correcteur,
-                        recipient=posteur,
-                        verb='correction_posted',
-                        action_object=self,
-                        target=self.enonce)
+            if posteur != self.correcteur:
+                notify.send(self.correcteur,
+                            recipient=posteur,
+                            verb='correction_posted',
+                            action_object=self,
+                            target=self.enonce)
 
         else:
             previous_file = Correction.objects.get(id=self.id).file

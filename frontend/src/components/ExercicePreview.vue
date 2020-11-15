@@ -30,14 +30,7 @@
               - Sur feuille
             </p>
             <div v-if="exo.posteur" class="subtitle is-size-6">
-              <!-- <p>
-              Posté par <strong>{{ exo.posteur.username }}</strong> le
-              {{ exo.date_created | dateFormatter }}
-            </p> -->
-              <p>
-                <strong> Niveau : </strong>{{ niveaux[exo.niveau] }}
-                <!-- <span v-if="exo.niveau == 0"> - {{ exo.option }}</span> -->
-              </p>
+              <p><strong> Niveau : </strong>{{ niveaux[exo.niveau] }}</p>
               <p><strong>Chapitre :</strong> {{ exo.chapitre }}</p>
               <p v-if="exo.devoir">
                 <strong>Fait partie d'un :</strong> {{ exo.devoir }}
@@ -47,9 +40,6 @@
                   ><strong>Livre : </strong
                   >{{ exo.livre.split('_').join(' - ') }}</span
                 >
-                <!-- <a @click.stop="isLivreModalActive = true">
-                  {{ exo.livre.split('_').join(' - ') }}
-                </a> -->
               </p>
             </div>
           </div>
@@ -62,18 +52,16 @@
             >
             </b-icon>
           </div>
-          <!-- <div v-if="!has_correc" class="media-right">
-            <b-tag type="is-success" size="is-medium">
-              {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à
-              gagner
-            </b-tag>
-          </div> -->
         </div>
         <div class="level">
           <div class="level-left">
             <div class="level-item">
               <b-taglist>
-                <b-tag v-if="!has_correc" type="is-secondary" size="is-medium">
+                <b-tag
+                  v-if="displayDateLimite && !has_correc"
+                  type="is-secondary"
+                  size="is-medium"
+                >
                   <span class="has-text-white">{{ delai_text }}</span>
                 </b-tag>
                 <b-tag
@@ -91,7 +79,11 @@
                   {{ correc_points }} {{ correc_points > 1 ? 'pts' : 'pt' }} à
                   gagner
                 </b-tag>
-                <b-tag v-if="has_correc" type="is-primary" size="is-medium">
+                <b-tag
+                  v-if="displayDateLimite && has_correc && !delai_depasse"
+                  type="is-primary"
+                  size="is-medium"
+                >
                   <span class="has-text-white">{{ delai_text }}</span>
                 </b-tag>
                 <b-tag v-if="has_correc" type="is-primary" size="is-medium">
@@ -138,6 +130,10 @@ export default {
       default: false
     },
     activated: {
+      type: Boolean,
+      default: true
+    },
+    displayDateLimite: {
       type: Boolean,
       default: true
     },

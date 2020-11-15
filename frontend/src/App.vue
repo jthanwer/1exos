@@ -3,7 +3,7 @@
     <NavbarComponent />
     <div class="app-container">
       <transition name="fade" mode="out-in">
-        <keep-alive include="PostExo,Search">
+        <keep-alive include="Search">
           <router-view
             :key="
               $route.path +

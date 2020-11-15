@@ -1,7 +1,7 @@
 pychar<template>
   <div id="profile-container" class="container is-fluid">
     <div class="columns" style="min-height: 800px;">
-      <div class="column is-3 card  my-4">
+      <div class="column is-3 card my-4">
         <div class="card-content">
           <b-menu>
             <b-menu-list label="Profil">
@@ -618,7 +618,6 @@ pychar<template>
                   </b-field>
                 </ValidationProvider>
               </b-field>
-
               <button class="button is-primary is-fullwidth" type="submit">
                 Valider
               </button>

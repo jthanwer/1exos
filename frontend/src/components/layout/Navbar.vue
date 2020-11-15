@@ -91,6 +91,10 @@
           <b-icon class="mr-1" icon="hand"></b-icon>
           <span class="is-uppercase is-size-6">Demander une correction</span>
         </b-navbar-item>
+        <b-navbar-item tag="router-link" :to="{ name: 'post-correc' }">
+          <b-icon class="mr-1" icon="pencil"></b-icon>
+          <span class="is-uppercase is-size-6">Poster une correction</span>
+        </b-navbar-item>
         <b-navbar-dropdown
           v-if="isAuthenticated"
           right
@@ -227,11 +231,6 @@ export default {
           path: 'home',
           icon: 'magnify'
         }
-        // {
-        //   title: 'Poster un exo',
-        //   path: 'post-exo',
-        //   icon: 'magnify'
-        // },
       ]
     }
   },

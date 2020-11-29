@@ -1,9 +1,14 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+from django.shortcuts import render
 from exos_app.settings.storage_backends import PrivateMediaStorage
+
 import core.files as files
 import core.fluxes as fluxes
+
 from notifications.signals import notify
 
 
@@ -83,6 +88,15 @@ class Correction(models.Model):
                             verb='correction_posted',
                             action_object=self,
                             target=self.enonce)
+                message = render_to_string('correction/correction_posted.html', {
+                    'user': posteur,
+                    'exo': self.enonce,
+                    'correction': self
+                })
+                email = EmailMessage('Ton exo a été corrigé',
+                                     message,
+                                     to=[posteur.email])
+                email.send()
 
         else:
             previous_file = Correction.objects.get(id=self.id).file

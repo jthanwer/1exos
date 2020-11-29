@@ -1,0 +1,15 @@
+{% autoescape off %}
+Salut {{ user.get_username }},
+
+L'exo n°{{ exo.id }} que tu as posté récemment a été corrigé.
+
+Clique sur ce lien pour afficher sa correction:
+https://1exo.fr/correction/{{ correction.id }}
+
+Pense à noter cette correction quand tu l'auras vérifiée.
+
+Merci d'utiliser notre site!
+
+L'équipe 1Exo
+
+{% endautoescape %}

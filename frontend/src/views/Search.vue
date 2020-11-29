@@ -438,23 +438,9 @@
               <p class="title">
                 Aucun exo répondant à ces critères n'a été trouvé...
               </p>
-              <p class="is-subtitle">
-                Demande la correction de ton exo en cliquant sur le bouton
-                ci-dessous !
+              <p class="is-subtitle is-size-4">
+                Demande la correction de ton exo !
               </p>
-              <b-button
-                tag="router-link"
-                class="has-radius-border big-button mt-5"
-                icon-left="hand"
-                type="is-tertiary"
-                expanded
-                size="is-large"
-                :to="{
-                  name: 'post-exo'
-                }"
-              >
-                Demander une correction
-              </b-button>
             </div>
           </div>
 

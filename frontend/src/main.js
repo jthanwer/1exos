@@ -5,6 +5,7 @@ import router from '@/router'
 import store from '@/store/'
 
 import Buefy from 'buefy'
+import VueAnalytics from 'vue-analytics'
 import '@/utils/vee-validate.js'
 
 import { dateFormatter } from '@/utils/dates'
@@ -23,6 +24,7 @@ Vue.filter('sizeFormatter', function(value) {
   return sizeFormatter(value)
 })
 
+// Directives
 Vue.directive('click-outside', {
   bind: function(el, binding, vnode) {
     el.clickOutsideEvent = function(event) {
@@ -37,7 +39,14 @@ Vue.directive('click-outside', {
   }
 })
 
+// Plugins
 Vue.use(Buefy)
+
+// Google Analytics
+Vue.use(VueAnalytics, {
+  id: 'UA-156993400-1',
+  router
+})
 
 new Vue({
   store,

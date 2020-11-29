@@ -67,6 +67,13 @@
         </b-button>
       </div>
     </div>
+    <div class="columns is-centered is-multiline">
+      <div class="column has-text-centered is-offset-4 is-4">
+        <p class="has-text-weight-bold is-size-4">
+          1 correction postée = 4 points
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 

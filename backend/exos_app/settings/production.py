@@ -52,7 +52,7 @@ else:
     MEDIA_URL = '/django_media/'
     MEDIA_ROOT = '/home/appeatqc/public_html/django_media/'
 
-DEFAULT_FROM_EMAIL = 'inscription@1exo.fr'
+DEFAULT_FROM_EMAIL = '1exo.fr'
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'node7-fr.n0c.com'

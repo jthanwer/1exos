@@ -661,7 +661,7 @@
             <div class="column is-half has-text-centered">
               <p v-if="is_free" class="is-size-5 has-text-weight-bold">
                 Tu as
-                <span class="has-text-danger"> 20 % de chances</span>
+                <span class="has-text-danger"> 10 % de chances</span>
                 d'obtenir une correction.
               </p>
 

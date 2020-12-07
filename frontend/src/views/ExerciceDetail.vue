@@ -28,7 +28,9 @@
           <ul>
             <li>
               Si tu es le posteur de l'exo,
-              <strong>tu ne gagneras qu'un seul point. </strong>
+              <strong
+                >tu gagneras {{ constants['SELFCORREC_POINTS'] }} points.
+              </strong>
             </li>
             <li>
               Si la date limite renseignée par le posteur a déjà été dépassée,

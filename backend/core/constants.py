@@ -8,7 +8,7 @@ now = datetime.now(timezone.utc)
 
 # -- Points données après s'être enregistré
 def START_POINTS():
-    return 20
+    return 0
 
 
 # -- 1€ = 4 points

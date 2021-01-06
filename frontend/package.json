@@ -9,7 +9,7 @@
     "postinstall": "npm run build"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "buefy": "^0.9.3",
     "core-js": "^2.6.11",
     "moment": "^2.27.0",

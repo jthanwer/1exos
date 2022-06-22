@@ -18,7 +18,7 @@ gunicorn==20.0.0
 idna==2.10
 jmespath==0.10.0
 mysqlclient==2.0.1
-numpy==1.17.4
+numpy==1.22.0
 pandas==0.25.3
 Pillow==7.2.0
 PyJWT==1.7.1

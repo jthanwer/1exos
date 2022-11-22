@@ -20,7 +20,7 @@ jmespath==0.10.0
 mysqlclient==2.0.1
 numpy==1.17.4
 pandas==0.25.3
-Pillow==7.2.0
+Pillow==9.3.0
 PyJWT==1.7.1
 python-dateutil==2.8.1
 pytz==2020.1
